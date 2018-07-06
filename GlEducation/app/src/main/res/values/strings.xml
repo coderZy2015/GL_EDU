@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">冠林教育</string>
+
+    <string name="login_hint_password">输入密码</string>
+    <string name="login_hint_username">持卡用户/用户名/有线电视用户/移动用户/电信用户</string>
+    <string name="login_other">其他第三方登录方式</string>
+    <string name="login_register">注册账号</string>
+    <string name="login_forget_password">忘记密码</string>
+    <string name="register_username">请输入手机号</string>
+    <string name="register_code">请输入您获取的验证码</string>
+    <string name="register_password">请输入密码</string>
+    <string name="register_agree">同意</string>
+    <string name="register_agreement">相关注册协议</string>
+    <string name="forget_new_password">新密码</string>
+    <string name="forget_repeat_password">确认密码</string>
+    <string name="camera_search_title">搜索结果</string>
+    <string name="assistant_menu">教辅目录</string>
+    <string name="interest_choice_title">兴趣选择</string>
+    <string name="interest_choice_go_on">跳 过</string>
+
+
+    <string name="camera_search_error">没有搜索到题目</string>
+    <string name="camera_search_ques_body">题目</string>
+    <string name="camera_search_ques_answer_txt">答案</string>
+    <string name="home_text1">首页</string>
+    <string name="home_text2">个人中心</string>
+
+
+    <!--iconfont字体图标-->
+    <string name="tab_left">&#xe620; </string> <!--左对齐-->
+    <string name="tab_right">&#xe618; </string> <!--右对齐-->
+    <string name="ic_hot">&#xe66d; </string> <!--火-->
+    <string name="ic_return">&#xe6e5; </string> <!--返回-->
+    <string name="ic_share">&#xe66c; </string> <!--分享-->
+    <string name="ic_search">&#xe6a8; </string> <!--搜索-->
+    <string name="ic_collect_nor">&#xe63c; </string> <!--未收藏-->
+    <string name="ic_collect_sel">&#xe63b; </string> <!--已收藏-->
+    <string name="ic_about">&#xe7ca; </string> <!--关于-->
+    <string name="ic_close">&#xe80b; </string> <!--关闭的叉-->
+    <string name="ic_home">&#xe611; </string> <!--首页-->
+    <string name="ic_type">&#xe654; </string> <!--分类-->
+    <string name="ic_user">&#xe652; </string> <!--用户-->
+    <string name="ic_more">&#xe62b; </string> <!--更多-->
+
+    <string name="permission_rationale_message">You have rejected us to apply for authorization,
+        please agree to authorization, otherwise the function can\'t be used normally!</string>
+    <string name="permission_denied_forever_message">We need some of the permissions you rejected
+        or the system failed to apply failed, please manually set to the page authorize, otherwise
+        the function can\'t be used normally!</string>
+
+</resources>

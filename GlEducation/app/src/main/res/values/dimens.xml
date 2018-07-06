@@ -1,0 +1,8 @@
+<resources>
+
+    <!--底部icon大小-->
+    <dimen name="bottom_bar_icon">24dp</dimen>
+    <dimen name="bottom_bar_heitght">52dp</dimen>
+    <dimen name="bottom_bar_text">14sp</dimen>
+
+</resources>
