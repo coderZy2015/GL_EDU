@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.gl.education.app.AppCommonData;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.annotations.Nullable;
 import me.yokeyword.fragmentation.SupportFragment;
 
@@ -20,14 +23,14 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Suppor
 {
 
     protected T mPresenter;
-    public boolean fragIsHide = false;
-
+    public String eventTAG = "";//当前类 event的标识 用于区分event发送的类
+    public String fragType = "";//当前类 event的标识 用于区分event发送的类
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-
         //判断是否使用MVP模式
         mPresenter = createPresenter();
         if (mPresenter != null) {
@@ -39,7 +42,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Suppor
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(provideContentViewId(), container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         //拿到布局填充器返回的view后
         ScreenAdapterTools.getInstance().loadView(rootView);
         initView(rootView);
@@ -55,22 +58,31 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Suppor
     @Override
     public void onLazyInitView(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
-        initData();
+        setEventTAG();
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden){
-            fragIsHide = true;
-        }else{
-            fragIsHide = false;
+    public void onResume() {
+        super.onResume();
+        setEventTAG();
+    }
+
+    public void initFragTag(String tag){
+        fragType = tag;
+    }
+
+    public void setEventTAG(){
+        if (setIdentifier() != null){
+            eventTAG = setIdentifier();
+            AppCommonData.CURRENT_TAG = eventTAG;
+            LogUtils.d("CURRENT_TAG = "+eventTAG);
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unbinder.unbind();
         if (mPresenter != null) {
             mPresenter.detachView();
         }
@@ -83,10 +95,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Suppor
     public void initView(View rootView) {
     }
 
-    public void initData() {
-
-    }
-
     public void clickBackBtn(){
         _mActivity.onBackPressed();
     }
@@ -97,5 +105,6 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Suppor
     //得到当前界面的布局文件id(由子类实现)
     protected abstract int provideContentViewId();
 
-
+    //设置当前类event事件的标识  不需要传null即可
+    protected abstract String setIdentifier();
 }

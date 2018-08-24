@@ -1,5 +1,6 @@
 package com.gl.education.camera.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,10 +22,12 @@ public class CameraSearchAdapter extends FragmentPagerAdapter {
     FragmentManager mFragmentManager;
     //保存每个Fragment的Tag，刷新页面的依据
     protected SparseArray<String> tags = new SparseArray<>();
+    private Context mContext;
 
 
-    public CameraSearchAdapter(FragmentManager fm, List<PhotographResultBean.DataBean> _list) {
+    public CameraSearchAdapter(Context context, FragmentManager fm, List<PhotographResultBean.DataBean> _list) {
         super(fm);
+        mContext = context;
         mFragmentManager = fm;
         mFragShowIdList = _list;
 
@@ -57,12 +60,4 @@ public class CameraSearchAdapter extends FragmentPagerAdapter {
         return fragment;
     }
 
-    //拿到指定位置的Fragment
-    public Fragment getFragmentByPosition(int position) {
-        return mFragmentManager.findFragmentByTag(tags.get(position));
-    }
-
-    public List<Fragment> getFragments(){
-        return mFragmentManager.getFragments();
-    }
 }

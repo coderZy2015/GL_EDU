@@ -35,13 +35,40 @@
 
     </RelativeLayout>
 
-    <net.lucode.hackware.magicindicator.MagicIndicator
-        android:id="@+id/magic_indicator"
-        android:layout_width="match_parent"
-        android:layout_gravity="center"
-        android:layout_height="40dp" />
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:layout_gravity="center_horizontal"
+        app:tabMode="scrollable"
+        app:tabGravity="center"
+        app:tabPaddingStart="15dp"
+        app:tabPaddingEnd="15dp"
+        app:tabMaxWidth="200dp"
+        app:tabMinWidth="50dp"
+        android:background="@color/home_tab_bg"
+        app:tabIndicatorColor="@color/home_tab_select"
+        app:tabIndicatorHeight="2dp"
+        app:tabSelectedTextColor="@color/TabSelectColor"
+        app:tabTextAppearance="@style/TabLayoutTextStyle"
+        app:tabTextColor="@color/TabTextColor" />
 
-    <com.gl.education.home.utlis.PersonalScrollView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <ImageView
+            android:id="@+id/camera_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="15dp"
+            android:scaleType="fitXY" />
+
+    </RelativeLayout>
+
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -49,38 +76,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp">
-
-                <ImageView
-                    android:id="@+id/camera_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:scaleType="fitXY"
-                    android:layout_centerInParent="true"/>
-
-            </RelativeLayout>
 
             <TextView
                 android:id="@+id/camera_search_error"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:text="@string/camera_search_error"
                 android:textSize="20dp"
-                android:visibility="gone"
-                android:text="@string/camera_search_error"/>
+                android:visibility="gone" />
 
             <com.gl.education.home.utlis.MyViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
-    </com.gl.education.home.utlis.PersonalScrollView>
+    </ScrollView>
 
 
 </LinearLayout>

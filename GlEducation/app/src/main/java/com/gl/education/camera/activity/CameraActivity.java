@@ -1,18 +1,20 @@
 package com.gl.education.camera.activity;
 
-import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.TabLayout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
 import com.gl.education.camera.adapter.CameraSearchAdapter;
@@ -24,15 +26,7 @@ import com.google.gson.JsonSyntaxException;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
-import net.lucode.hackware.magicindicator.MagicIndicator;
-import net.lucode.hackware.magicindicator.ViewPagerHelper;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
-
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -54,9 +48,8 @@ public class CameraActivity extends BaseActivity {
     @BindView(R.id.camera_photo)
     ImageView camera_photo;
 
-    @BindView(R.id.magic_indicator)
-    MagicIndicator magicIndicator;
-
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
     @BindView(R.id.view_pager)
     MyViewPager mViewPager;
 
@@ -78,10 +71,15 @@ public class CameraActivity extends BaseActivity {
     }
 
     @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
+    @Override
     public void initView() {
         super.initView();
 
-        if (openCamera){
+        if (openCamera) {
             openCamera = false;
             Intent intent = new Intent(CameraActivity.this, CaptureActivity.class);
             startActivityForResult(intent, 0);
@@ -90,7 +88,7 @@ public class CameraActivity extends BaseActivity {
     }
 
     @OnClick(R.id.c_result_close)
-    public void closeView(){
+    public void closeView() {
         onBackPressed();
         finish();
     }
@@ -99,138 +97,182 @@ public class CameraActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        LogUtils.d("requestCode = " + requestCode + "  resultCode = " + resultCode);
-        if (requestCode == 0) {
+        if (resultCode == CANCLE) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
 
-            if (resultCode == CANCLE){
-                if (data != null) {
-                    Bundle bundle = data.getExtras();
-
-                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_CANCLE) {
-                        finish();
-                    }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_CANCLE) {
+                    finish();
                 }
             }
+        }
 
-            if (resultCode == PHOTOGRAPH) {
+        if (resultCode == PHOTOGRAPH) {//处理拍照搜题结果
 
-                if (data != null) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
                     //拍照的图片
-                    byte[] bis = data.getByteArrayExtra("bitmap");
-                    if (bis != null){
-                        Bitmap bitmap= BitmapFactory.decodeByteArray(bis, 0, bis.length);
-                        camera_photo.setImageBitmap(bitmap);
+                    String path = bundle.getString("path");
+                    Bitmap bm = getDiskBitmap(path);
+                    if (bm != null) {
+                        camera_photo.setImageBitmap(bm);
+                        delFile(path);
                     }
 
-                    Bundle bundle = data.getExtras();
-
-                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
-                        String result = bundle.getString(CodeUtils.RESULT_STRING);
-
-                        try {
-                            Gson gson = new Gson();
-                            PhotographResultBean bean = gson.fromJson(result, PhotographResultBean
-                                    .class);
-                            if (bean != null){
-                                if ( bean.getData() != null){
-                                    if (bean.getData().size() == 0){
-                                        camera_search_error.setVisibility(View.VISIBLE);
-                                    }
-                                }else{
+                    try {
+                        Gson gson = new Gson();
+                        PhotographResultBean bean = gson.fromJson(result, PhotographResultBean
+                                .class);
+                        if (bean != null) {
+                            if (bean.getData() != null) {
+                                if (bean.getData().size() == 0) {
                                     camera_search_error.setVisibility(View.VISIBLE);
-                                    return;
                                 }
-
-                                CameraSearchAdapter adapter = new CameraSearchAdapter(getSupportFragmentManager(), bean.getData());
-                                mViewPager.setAdapter(adapter);
-                                mViewPager.setOffscreenPageLimit(2);
-//                                mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//                                    @Override
-//                                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                                    }
-//                                    @Override
-//                                    public void onPageSelected(int position) {
-//                                        mViewPager.resetHeight(position);
-//                                    }
-//                                    @Override
-//                                    public void onPageScrollStateChanged(int state) {
-//                                    }
-//                                });
-
-                                for (int i=0; i<bean.getData().size(); i++){
-                                    mTitleDataList.add("No."+i);
-                                }
-                                initMagicIndicator();
-                                ViewPagerHelper.bind(magicIndicator, mViewPager);
-
-                            }else{
+                            } else {
                                 camera_search_error.setVisibility(View.VISIBLE);
+                                return;
                             }
 
-                        } catch (JsonSyntaxException e) {
-                            e.printStackTrace();
-                            ToastUtils.showShort("解析结果失败");
+                            CameraSearchAdapter adapter = new CameraSearchAdapter(this,
+                                    getSupportFragmentManager(), bean.getData());
+                            mViewPager.setAdapter(adapter);
+                            mViewPager.setOffscreenPageLimit(3);
+
+                            tabLayout.setupWithViewPager(mViewPager);
+
+                            for (int i = 0; i < tabLayout.getTabCount(); i++) {
+                                tabLayout.getTabAt(i).setCustomView(getTabView(i));
+                            }
+
+                        } else {
+                            camera_search_error.setVisibility(View.VISIBLE);
                         }
 
-                    } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                        camera_search_error.setVisibility(View.VISIBLE);
-                        Toast.makeText(CameraActivity.this, "搜索结果失败", Toast.LENGTH_LONG).show();
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                        ToastUtils.showShort("解析结果失败");
                     }
 
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    //拍照的图片
+                    String path = bundle.getString("path");
+                    Bitmap bm = getDiskBitmap(path);
+                    if (bm != null) {
+                        camera_photo.setImageBitmap(bm);
+                        delFile(path);
+                    }
+
+                    camera_search_error.setVisibility(View.VISIBLE);
+                    Toast.makeText(CameraActivity.this, "搜索结果失败", Toast.LENGTH_LONG).show();
                 }
-            } else if (resultCode == CAPTURE) {
-                //处理扫描结果（在界面上显示）
-                if (null != data) {
-                    Bundle bundle = data.getExtras();
-                    if (bundle == null) {
-                        return;
-                    }
-                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
-                        String result = bundle.getString(CodeUtils.RESULT_STRING);
-                        Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
-                    } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                        Toast.makeText(CameraActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
-                    }
+
+            }
+        }
+        else if(resultCode == SEARCHCOVER){//处理拍封面结果
+
+        }
+        else if(resultCode == SEARCHISBN){//扫ISBN结果
+            //处理扫描结果（在界面上显示）
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+
+                    Intent intent = new Intent();
+                    intent.setClass(CameraActivity.this, CameraResultISBNActivity.class);
+                    intent.putExtra("isbn", result);
+                    startActivity(intent);
+                    finish();
+
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    camera_search_error.setVisibility(View.VISIBLE);
+                    Toast.makeText(CameraActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
                 }
             }
 
         }
+        else if (resultCode == CAPTURE) {//扫码结果
+            //处理扫描结果（在界面上显示）
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+
+                    Intent intent = new Intent();
+                    intent.setClass(CameraActivity.this, CameraResultSMActivity.class);
+                    intent.putExtra("id", result);
+                    startActivity(intent);
+                    finish();
+
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    camera_search_error.setVisibility(View.VISIBLE);
+                    Toast.makeText(CameraActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
-    public void initMagicIndicator()
-    {
-        CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
+    public View getTabView(int position) {
+        View view = LayoutInflater.from(this).inflate(R.layout
+                .camera_result_layout, null);
+        ImageView iamge = view.findViewById(R.id.result_num);
 
-            @Override
-            public int getCount() {
-                return mTitleDataList == null ? 0 : mTitleDataList.size();
-            }
+        switch (position) {
+            case 0:
+                iamge.setImageResource(R.drawable.result_1);
+                break;
+            case 1:
+                iamge.setImageResource(R.drawable.result_2);
+                break;
+            case 2:
+                iamge.setImageResource(R.drawable.result_3);
+                break;
+            case 3:
+                iamge.setImageResource(R.drawable.result_4);
+                break;
+            case 4:
+                iamge.setImageResource(R.drawable.result_5);
+                break;
+            default:
+                break;
+        }
 
-            @Override
-            public IPagerTitleView getTitleView(Context context, final int index) {
-                ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
-                colorTransitionPagerTitleView.setNormalColor(Color.GRAY);
-                colorTransitionPagerTitleView.setSelectedColor(Color.BLACK);
-                colorTransitionPagerTitleView.setText(mTitleDataList.get(index));
-                colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mViewPager.setCurrentItem(index);
-                    }
-                });
-                return colorTransitionPagerTitleView;
-            }
-
-            @Override
-            public IPagerIndicator getIndicator(Context context) {
-                LinePagerIndicator indicator = new LinePagerIndicator(context);
-                indicator.setMode(LinePagerIndicator.MODE_WRAP_CONTENT);
-                return indicator;
-            }
-        });
-        magicIndicator.setNavigator(commonNavigator);
+        return view;
     }
 
 
+    private Bitmap getDiskBitmap(String pathString) {
+        Bitmap bitmap = null;
+        try {
+            File file = new File(pathString);
+            if (file.exists()) {
+                bitmap = BitmapFactory.decodeFile(pathString);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return bitmap;
+    }
+
+    //删除图片
+    public void delFile(String fileName) {
+        File file = new File(fileName);
+        if (file.isFile()) {
+            file.delete();
+        }
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver mContentResolver = getContentResolver();
+        String where = MediaStore.Images.Media.DATA + "='" + fileName + "'";
+        mContentResolver.delete(uri, where, null);
+
+    }
 }

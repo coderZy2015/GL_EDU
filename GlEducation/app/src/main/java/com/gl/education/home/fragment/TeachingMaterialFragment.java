@@ -1,13 +1,24 @@
 package com.gl.education.home.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
+import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
-import com.gl.education.home.event.ToTeachingAssistantDetailPageEvent;
+import com.gl.education.home.event.JSJCFragmentOpenWebViewEvent;
+import com.gl.education.home.event.JSJCFragmentRefreshViewEvent;
+import com.gl.education.home.event.UpdateChannelEvent;
+import com.gl.education.home.interactive.JCFragmentInteractive;
+import com.gl.education.home.model.ChannelEntity;
+import com.gl.education.teachingmaterial.activity.JCBookMenuActivity;
+import com.gl.education.teachingmaterial.activity.JCBookShelfActivity;
+import com.just.agentweb.AgentWeb;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,6 +36,11 @@ public class TeachingMaterialFragment extends BaseFragment{
     @BindView(R.id.web_container)
     LinearLayout web_container;
 
+    protected AgentWeb mAgentWeb;
+    private ChannelEntity channelEntity;
+    String url = "";
+    String token = "";
+
     @Override
     protected BasePresenter createPresenter() {
         return null;
@@ -32,15 +48,21 @@ public class TeachingMaterialFragment extends BaseFragment{
 
     @Override
     protected int provideContentViewId() {
-        return R.layout.frag_teaching_assistant;
+        return R.layout.frag_webview;
     }
 
-    public static TeachingMaterialFragment newInstance() {
-        Bundle args = new Bundle();
+    @Override
+    protected String setIdentifier() {
+        return "HomePageFragment";
+    }
 
-        TeachingMaterialFragment fragment = new TeachingMaterialFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public static TeachingMaterialFragment newInstance(ChannelEntity entity) {
+        TeachingMaterialFragment frag = new TeachingMaterialFragment();
+        Bundle b = new Bundle();
+
+        b.putSerializable("ChannelEntity", entity);
+        frag.setArguments(b);
+        return frag;
     }
 
     @Override
@@ -48,6 +70,13 @@ public class TeachingMaterialFragment extends BaseFragment{
         super.init();
         // 注册订阅者
         EventBus.getDefault().register(this);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            channelEntity = (ChannelEntity) args.getSerializable("ChannelEntity");
+        }
+
+        url = channelEntity.getUrl();
     }
 
     @Override
@@ -61,12 +90,67 @@ public class TeachingMaterialFragment extends BaseFragment{
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
 
+        token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
+        token = "?token="+token+"&grade="+ AppCommonData.userGrade;
+
+        mAgentWeb = AgentWeb.with(this)//传入Activity
+                .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
+                //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
+                .useDefaultIndicator()// 使用默认进度条
+                //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
+                .interceptUnkownUrl() //拦截找不到相关页面的Scheme
+                //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
+                .createAgentWeb()
+                .ready()
+                .go(url+token);
+
+
+        //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+        mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
+        mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
+        mAgentWeb.clearWebCache();
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JCFragmentInteractive(mAgentWeb,
+                getActivity()));
+
     }
 
-    //跳转到教辅详情页面
+    @Override
+    public boolean onBackPressedSupport() {
+        boolean isBack = false;
+        if (mAgentWeb != null){
+            isBack = mAgentWeb.back();
+        }
+        return isBack;
+    }
+
+
+    //跳转到详情页面
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void toBookDetailEvent(ToTeachingAssistantDetailPageEvent event) {
-
+    public void toBookMenuEvent(JSJCFragmentOpenWebViewEvent event) {
+        if (event.getBean().getTitle().equals("我的书架")){
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(getActivity(), JCBookShelfActivity.class);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(getActivity(), JCBookMenuActivity.class);
+            startActivity(intent);
+        }
     }
 
+    //刷新我的书架
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshView(JSJCFragmentRefreshViewEvent event) {
+        mAgentWeb.getWebCreator().getWebView().reload();
+    }
+
+    //更新频道信息
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateChannelData(UpdateChannelEvent event) {
+        mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+    }
 }

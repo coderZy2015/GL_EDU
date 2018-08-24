@@ -63,7 +63,7 @@ public class MyALipayUtils {
                 case "9000":
                 case "8000":
                 case "4000":
-                case "5000":
+                //case "5000":
                 case "6002":
                 case "6004":
                     event.setMessage(eventTag);

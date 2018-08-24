@@ -6,10 +6,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.utlis.TimeButton;
 import com.gl.education.login.model.IdentifyBean;
 import com.gl.education.login.model.RegisterBean;
 import com.gl.education.login.presenter.RegisterPresenter;
@@ -32,8 +34,11 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
     ImageButton btn_register;
 
     @BindView(R.id.register_get_code)
-    ImageView register_get_code;
-
+    TimeButton register_get_code;
+    @BindView(R.id.btn_agree)
+    ImageView btn_agree;
+    @BindView(R.id.btn_agreement)
+    TextView btn_agreement;
     @BindView(R.id.edit_usename)
     EditText edit_usename;
     @BindView(R.id.edit_password)
@@ -46,6 +51,7 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
     private String identify_code = "";
 
     boolean isSend = false;
+    private boolean isAgree = true;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -61,6 +67,12 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
         return R.layout.frag_register;
     }
 
+    @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
+
     @OnClick(R.id.btn_back)
     public void backPressed(){
         _mActivity.onBackPressed();
@@ -75,33 +87,56 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
         if(TextUtils.isEmpty(username)){// 判断密码
             // 以字母开头，长度在6~18之间，只能包含字母、数字和下划线。
             ToastUtils.showShort("账号不能为空");
+            return;
         }else if(TextUtils.isEmpty(password)){
             ToastUtils.showShort("密码不能为空");
+            return;
         }else if(TextUtils.isEmpty(identify_code)){
             ToastUtils.showShort("验证码不能为空");
+            return;
+        }else if(!isAgree){
+            ToastUtils.showShort("请查看协议");
+            return;
         }
         mPresenter.toRegister(username, password, identify_code);
     }
 
+    @OnClick(R.id.btn_agree)
+    public void agreeBtn(){
+        //同意协议
+        if (isAgree){
+            isAgree = false;
+            btn_agree.setBackgroundResource(R.drawable.register_disagree);
+        }else{
+            isAgree = true;
+            btn_agree.setBackgroundResource(R.drawable.register_agree);
+        }
+    }
+
+    @OnClick(R.id.btn_agreement)
+    public void intoAgreement(){
+        //进入协议详情
+    }
+
     @OnClick(R.id.register_get_code)
     public void getDentifyCode(){
-        if (isSend){
-            return;
-        }
-        if (!isSend){
-            isSend = true;
-        }
         username = edit_usename.getText().toString();
-        if(TextUtils.isEmpty(username)) {// 判断密码
-            // 以字母开头，长度在6~18之间，只能包含字母、数字和下划线。
-            ToastUtils.showShort("账号不能为空");
+
+        if (username.length() == 11) {
+            register_get_code.startTime();
+            mPresenter.getIdentifyCode(username, "regist");
+        } else if (TextUtils.isEmpty(username)) {
+            ToastUtils.showShort("请输入手机号码！");
+        } else {
+            ToastUtils.showShort("长度不够11位数字");
         }
-        mPresenter.getIdentifyCode(username, "regist");
+
     }
 
     @Override
     public void initView(View rootView) {
         super.initView(rootView);
+        register_get_code.setTextAfter("秒后重新获取").setTextBefore("点击发送验证码").setLenght(60 * 1000);
     }
 
     @Override
@@ -123,5 +158,11 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
     @Override
     public void sendCodeError(String msg) {
         ToastUtils.showShort(msg);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        register_get_code.onDestroy();
     }
 }

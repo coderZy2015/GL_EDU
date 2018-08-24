@@ -186,9 +186,9 @@ public class CodeUtils {
     }
 
     public interface PhotographCallback{
-        public void onPotographSuccess(Bitmap bm, String result);
+        public void onPotographSuccess(String bitmapPath, String result);
 
-        public void onPhotographFailed(Bitmap bm);
+        public void onPhotographFailed(String bitmapPath);
 
         public void cancle();
     }

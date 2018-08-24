@@ -1,11 +1,11 @@
 package com.uuzuche.lib_zxing.activity;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -21,7 +21,6 @@ import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -30,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edmodo.cropper.CropImageView;
 import com.lzy.okgo.OkGo;
@@ -39,6 +39,7 @@ import com.uuzuche.lib_zxing.R;
 import com.uuzuche.lib_zxing.camear.CameraPreview;
 import com.uuzuche.lib_zxing.camear.FocusView;
 import com.uuzuche.lib_zxing.camear.Utils;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,15 +52,14 @@ import java.io.OutputStream;
  */
 
 public class SearchCameraFragment extends Fragment implements CameraPreview
-        .OnCameraStatusListener, SensorEventListener {
+        .OnCameraStatusListener {
 
     public final String loadPicUrl = "http://a1guanlin.eugames.cn/iclient/cliuser/uploadFile";
 
-    //true:横屏   false:竖屏
-    public static final boolean isTransverse = false;
+    private Loading_view loading;
+
     private CodeUtils.PhotographCallback photographCallback;
 
-    private static final String TAG = "SearchCameraFragment";
     public static final Uri IMAGE_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     public static final String PATH = Environment.getExternalStorageDirectory().toString() +
             "/AndroidMedia/";
@@ -69,21 +69,23 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
     LinearLayout mCropperLayout;
 
     private ImageView btnClose;
-    private ImageView btnShutter;
+    private RelativeLayout btnShutter;  //拍照
     private ImageButton btnAlbum;  //图库
 
     private ImageView btnStartCropper;  //对
     private ImageView btnCloseCropper;  //错
 
-    TextView tvHint;
-    TextView crop_hint;
-    /**
-     * 旋转文字
-     */
-    private boolean isRotated = true;
+    private TextView tvHint;
+    private TextView crop_hint;
+
     public Context mContext;
-    private SurfaceHolder holder;
-    public boolean firstEnter = true;
+    private int rotateNum = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+
+    private float mLastX = 0;
+    private float mLastY = 0;
+    private float mLastZ = 0;
+    private boolean mInitialized = false;
+    private SensorManager mSensorManager;
 
     public static SearchCameraFragment newInstance() {
         Bundle args = new Bundle();
@@ -136,61 +138,176 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
 
         mCameraPreview.setFocusView(focusView);
         mCameraPreview.setOnCameraStatusListener(this);
-        holder = mCameraPreview.getHolder();
 
         mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-        mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         tvHint = view.findViewById(R.id.hint);
         crop_hint = view.findViewById(R.id.crop_hint);
-        btnShutter = view.findViewById(R.id.btn_shutter);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (isTransverse) {
-            if (!isRotated) {
 
-                ObjectAnimator animator = ObjectAnimator.ofFloat(tvHint, "rotation", 0f, 90f);
-                animator.setStartDelay(800);
-                animator.setDuration(500);
-                animator.setInterpolator(new LinearInterpolator());
-                animator.start();
+        Sensor mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);//加速度传感器
+        mSensorManager.registerListener(listener, mAccel, SensorManager.SENSOR_DELAY_UI);
 
-                ObjectAnimator animator1 = ObjectAnimator.ofFloat(btnShutter, "rotation", 0f, 90f);
-                animator1.setStartDelay(800);
-                animator1.setDuration(500);
-                animator1.setInterpolator(new LinearInterpolator());
-                animator1.start();
-
-                AnimatorSet animSet = new AnimatorSet();
-                ObjectAnimator animator2 = ObjectAnimator.ofFloat(crop_hint, "rotation", 0f, 90f);
-                ObjectAnimator moveIn = ObjectAnimator.ofFloat(crop_hint, "translationX", 0f, -50f);
-                animSet.play(animator2).before(moveIn);
-                animSet.setDuration(10);
-                animSet.start();
-                isRotated = true;
-            }
-        } else {
-            if (!isRotated) {
-
-                AnimatorSet animSet = new AnimatorSet();
-                ObjectAnimator animator2 = ObjectAnimator.ofFloat(crop_hint, "rotation", 0f, 90f);
-                ObjectAnimator moveIn = ObjectAnimator.ofFloat(crop_hint, "translationX", 0f, -50f);
-                animSet.play(animator2).before(moveIn);
-                animSet.setDuration(10);
-                animSet.start();
-                isRotated = true;
-            }
-        }
-        mSensorManager.registerListener(this, mAccel, SensorManager.SENSOR_DELAY_UI);
+        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        mSensorManager.registerListener(glistener, sensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this);
+        mSensorManager.unregisterListener(listener);
+        mSensorManager.unregisterListener(glistener);
+    }
+
+    /**
+     * 位移 自动对焦
+     */
+    private SensorEventListener listener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            //当传感器的数值发生变化时调用
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            if (!mInitialized) {
+                mLastX = x;
+                mLastY = y;
+                mLastZ = z;
+                mInitialized = true;
+            }
+            float deltaX = Math.abs(mLastX - x);
+            float deltaY = Math.abs(mLastY - y);
+            float deltaZ = Math.abs(mLastZ - z);
+
+            if (deltaX > 0.5 || deltaY > 0.5 || deltaZ > 0.5) {
+                mCameraPreview.setFocus();
+            }
+            mLastX = x;
+            mLastY = y;
+            mLastZ = z;
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    /**
+     * 自动旋转文字
+     */
+    private SensorEventListener glistener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float[] values = event.values;
+            int orientation = -1;
+            float X = -values[0];
+            float Y = -values[1];
+            float Z = -values[2];
+            float magnitude = X * X + Y * Y;
+            // Don't trust the angle if the magnitude is small compared to the y value
+            if (magnitude * 4 >= Z * Z) {
+                float OneEightyOverPi = 57.29577957855f;
+                float angle = (float) Math.atan2(-Y, X) * OneEightyOverPi;
+                orientation = 90 - (int) Math.round(angle);
+                // normalize to 0 - 359 range
+                while (orientation >= 360) {
+                    orientation -= 360;
+                }
+                while (orientation < 0) {
+                    orientation += 360;
+                }
+            }
+
+            if (orientation > 45 && orientation < 135) {
+                //Log.i("zy_code", "反向横向");
+                if (rotateNum != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+                    rotateDegree(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                }
+            } else if (orientation > 135 && orientation < 225) {
+                //Log.i("zy_code", "反向竖向");
+                if (rotateNum != ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                    rotateDegree(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                }
+            } else if (orientation > 225 && orientation < 315) {
+                //Log.i("zy_code", "横向");
+                if (rotateNum != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    rotateDegree(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }
+            } else if ((orientation > 315 && orientation < 360) || (orientation > 0 &&
+                    orientation < 45)) {
+                if (rotateNum != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    rotateDegree(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+                //Log.i("zy_code", "竖向");
+            }
+
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    public void rotateDegree(int rotate) {
+        float degree_start = 0;
+        float degree_end = 90f;
+
+        switch (rotateNum) {
+            case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
+                degree_start = 0;
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
+                degree_start = 90;
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT:
+                degree_start = 180;
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
+                degree_start = 270;
+                break;
+            default:
+                break;
+        }
+
+        switch (rotate) {
+            case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
+                if (degree_start == 270) {
+                    degree_end = 360;
+                } else {
+                    degree_end = 0;
+                }
+
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
+                degree_end = 90f;
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT:
+                degree_end = 180;
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
+                if (degree_start == 0) {
+                    degree_end = -90;
+                } else {
+                    degree_end = 270;
+                }
+                break;
+            default:
+                break;
+        }
+        rotateNum = rotate;
+        Log.i("zy_code", "degree_start = " + degree_start + "   degree_end = " + degree_end);
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tvHint, "rotation", degree_start,
+                degree_end);
+        animator.setStartDelay(1);
+        animator.setDuration(200);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.start();
     }
 
 
@@ -222,8 +339,6 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
 
     /**
      * 截图界面
-     *
-     * @param view
      */
     private View.OnClickListener cropcper = new View.OnClickListener() {
         @Override
@@ -231,88 +346,58 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
             if (view.getId() == R.id.btn_closecropper) {
                 showTakePhotoLayout();
             } else if (view.getId() == R.id.btn_startcropper) {
-                //获取截图并旋转90度
-                Bitmap cropperBitmap = mCropImageView.getCroppedImage();
+                try {
+                    //获取截图并旋转90度
+                    Bitmap cropperBitmap = mCropImageView.getCroppedImage();
+                    Bitmap bitmap;
+                    bitmap = Utils.rotate(cropperBitmap, 0);
 
-                Bitmap bitmap;
-                bitmap = Utils.rotate(cropperBitmap, 0);
+                    // 系统时间
+                    long dateTaken = System.currentTimeMillis();
+                    // 图像名称
+                    String filename = DateFormat.format("yyyy-MM-dd kk.mm.ss",
+                            dateTaken).toString() + ".jpg";
+                    // 存储进本地库
+                    Uri uri = insertImage(mContext.getContentResolver(), filename,
+                            dateTaken, PATH, filename, bitmap, null);
 
-                // 系统时间
-                long dateTaken = System.currentTimeMillis();
-                // 图像名称
-                String filename = DateFormat.format("yyyy-MM-dd kk.mm.ss",
-                        dateTaken).toString() + ".jpg";
-                //存储
-                Uri uri = insertImage(mContext.getContentResolver(), filename,
-                        dateTaken, PATH, filename, bitmap, null);
+                    crop_hint.setText("查找中，请稍后...");
+                    loading = new Loading_view(getActivity(), R.style.CustomDialog);
+                    loading.show();
 
-
-                if (fileIsExists(PATH + filename)) {
-                    Log.i("zy_code", "you--------------  " + PATH + filename);
-                } else {
-                    Log.i("zy_code", "no---------------   " + PATH + filename);
-                }
-
-                crop_hint.setText("查找中，请稍后...");
-
-//                OkHttpClient client = OkGo.getInstance().getOkHttpClient();
-//                Log.i("zy_code", "write超时时间 == " +  client.writeTimeoutMillis());
-//                Log.i("zy_code", "read超时时间 == " +  client.readTimeoutMillis());
-//                Log.i("zy_code", "connect超时时间 == " +  client.connectTimeoutMillis());
-
-
-                OkGo.<String>post(loadPicUrl)
-                        .params("a1_upload", new File(PATH + filename))
-
-                        .execute(new StringCallback() {
-                            @Override
-                            public void onSuccess(Response<String> response) {
-                                delFile(filename);
-                                if (photographCallback != null) {
-                                    photographCallback.onPotographSuccess(bitmap, response.body().toString());
-                                }
-                                Log.i("zy_code", "" + response.body().toString());
-                            }
-
-                            @Override
-                            public void onError(Response<String> response) {
-                                super.onError(response);
-                                delFile(filename);
-                                crop_hint.setText("查找超时，请重试");
-                                if (response != null){
-                                    if (response.body() != null){
-                                        if (photographCallback != null) {
-                                            photographCallback.onPhotographFailed(bitmap);
-                                        }
-                                        Log.i("zy_code", "" + response.body().toString());
+                    OkGo.<String>post(loadPicUrl)
+                            .params("a1_upload", new File(PATH + filename))
+                            .execute(new StringCallback() {
+                                @Override
+                                public void onSuccess(Response<String> response) {
+                                    if (photographCallback != null) {
+                                        photographCallback.onPotographSuccess(PATH+filename, response
+                                                .body());
                                     }
+                                    loading.dismiss();
                                 }
 
-                            }
-                        });
+                                @Override
+                                public void onError(Response<String> response) {
+                                    super.onError(response);
+                                    crop_hint.setText("查找超时，请重试");
+                                    if (response.body() != null) {
+                                        if (photographCallback != null) {
+                                            photographCallback.onPhotographFailed(PATH+filename);
+                                        }
+                                        loading.dismiss();
+                                    }
 
-                //                Intent intent = new Intent(getActivity(),
-                //                        ShowCropperedActivity.class);
-                //                intent.setData(uri);
-                //                intent.putExtra("path", PATH + filename);
-                //                intent.putExtra("width", bitmap.getWidth());
-                //                intent.putExtra("height", bitmap.getHeight());
-                //                //                  intent.putExtra("cropperImage", bitmap);
-                //                startActivity(intent);
-//                bitmap.recycle();
-//                getActivity().finish();
-
+                                }
+                            });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "图片处理出现问题", Toast.LENGTH_SHORT).show();
+                    showTakePhotoLayout();
+                }
             }
         }
     };
-
-    //删除文件
-    public static void delFile(String fileName) {
-        File file = new File(PATH + fileName);
-        if (file.isFile()) {
-            file.delete();
-        }
-    }
 
     /**
      * 拍照成功后回调
@@ -326,21 +411,19 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
         // 创建图像
         Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-        if (!isTransverse) {
-            bitmap = Utils.rotate(bitmap, 90);
-        }
         // 系统时间
         long dateTaken = System.currentTimeMillis();
         // 图像名称
         String filename = DateFormat.format("yyyy-MM-dd kk.mm.ss", dateTaken).toString() + ".jpg";
         // 存储图像（PATH目录）
-        //        Uri source = insertImage(mContext.getContentResolver(), filename, dateTaken,
-        // PATH, filename,
-        //                bitmap, data);
+//        Uri source = insertImage(mContext.getContentResolver(), filename, dateTaken,
+//                PATH, filename,
+//                bitmap, data);
 
         //准备截图
-        bitmap = Utils.rotate(bitmap, 0);
+        //bitmap = Utils.rotate(bitmap, 90);
         mCropImageView.setImageBitmap(bitmap);
+        mCropImageView.rotateImage(90);
         showCropperLayout();
     }
 
@@ -349,25 +432,23 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
     * */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("zy_code", "requestCode = " + requestCode);
-        Log.i("zy_code", "resultCode = " + resultCode);
 
-        //            if (resultCode == RESULT_OK) {
-        //
-        //            }
-        Uri uri = data.getData();
-        Log.e("uri", uri.toString());
-        ContentResolver cr = getActivity().getContentResolver();
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
-            //与拍照保持一致方便处理
-            bitmap = Utils.rotate(bitmap, 0);
-            mCropImageView.setImageBitmap(bitmap);
-        } catch (Exception e) {
-            Log.e("Exception", e.getMessage(), e);
+        if (data != null) {
+            Uri uri = data.getData();
+            Log.e("uri", uri.toString());
+            ContentResolver cr = getActivity().getContentResolver();
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                //与拍照保持一致方便处理
+                bitmap = Utils.rotate(bitmap, 0);
+                mCropImageView.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                Log.e("Exception", e.getMessage(), e);
+            }
+            super.onActivityResult(requestCode, resultCode, data);
+            showCropperLayout();
         }
-        super.onActivityResult(requestCode, resultCode, data);
-        showCropperLayout();
+
     }
 
     /**
@@ -392,10 +473,8 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
                 }
             }
         } catch (FileNotFoundException e) {
-            Log.e(TAG, e.getMessage());
             return null;
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
             return null;
         } finally {
             if (outputStream != null) {
@@ -417,71 +496,25 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
     private void showTakePhotoLayout() {
         mTakePhotoLayout.setVisibility(View.VISIBLE);
         mCropperLayout.setVisibility(View.GONE);
+        setCameraBottomShow();
     }
 
     private void showCropperLayout() {
         mTakePhotoLayout.setVisibility(View.GONE);
         mCropperLayout.setVisibility(View.VISIBLE);
         mCameraPreview.start();   //继续启动摄像头
+        setCameraBottomHide();
     }
 
-
-    private float mLastX = 0;
-    private float mLastY = 0;
-    private float mLastZ = 0;
-    private boolean mInitialized = false;
-    private SensorManager mSensorManager;
-    private Sensor mAccel;
-
-
-    /**
-     * 位移 自动对焦
-     *
-     * @param event
-     */
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-        float x = event.values[0];
-        float y = event.values[1];
-        float z = event.values[2];
-        if (!mInitialized) {
-            mLastX = x;
-            mLastY = y;
-            mLastZ = z;
-            mInitialized = true;
-        }
-        float deltaX = Math.abs(mLastX - x);
-        float deltaY = Math.abs(mLastY - y);
-        float deltaZ = Math.abs(mLastZ - z);
-
-        if (deltaX > 0.8 || deltaY > 0.8 || deltaZ > 0.8) {
-            mCameraPreview.setFocus();
-        }
-        mLastX = x;
-        mLastY = y;
-        mLastZ = z;
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-
-    //判断文件是否存在
-    public boolean fileIsExists(String strFile) {
-        try {
-            File f = new File(strFile);
-            if (!f.exists()) {
-                return false;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
 
     public void setAnalyzeCallback(CodeUtils.PhotographCallback analyzeCallback) {
         this.photographCallback = analyzeCallback;
+    }
+
+    public void setCameraBottomHide() {
+        ((CaptureActivity)getActivity()).cameraHide();
+    }
+    public void setCameraBottomShow() {
+        ((CaptureActivity)getActivity()).cameraShow();
     }
 }

@@ -8,6 +8,15 @@ package com.gl.education.home.event;
 public class MessageEvent {
 
     String msg;
+    String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getMsg() {
         return msg;

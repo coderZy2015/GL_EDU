@@ -7,4 +7,5 @@ package com.gl.education.home.model;
 public class TablayoutModel {
     public int index;
     public String tabnName;
+    public String url;
 }

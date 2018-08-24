@@ -1,14 +1,15 @@
 package com.gl.education.login;
 
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.utlis.TimeButton;
 import com.gl.education.login.model.ForgetPasswordBean;
 import com.gl.education.login.model.IdentifyBean;
 import com.gl.education.login.presenter.ForgetPasswordPresenter;
@@ -40,7 +41,7 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
     ImageButton btn_sure;
 
     @BindView(R.id.get_code)
-    ImageView get_code;
+    TimeButton get_code;
 
     String username = "";
     String password1 = "";
@@ -59,6 +60,17 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
     @Override
     protected int provideContentViewId() {
         return R.layout.frag_forget_password;
+    }
+
+    @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
+    @Override
+    public void initView(View rootView) {
+        super.initView(rootView);
+        get_code.setTextAfter("秒后重新获取").setTextBefore("点击发送验证码").setLenght(60 * 1000);
     }
 
     @OnClick(R.id.btn_sure)
@@ -86,10 +98,14 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
     @OnClick(R.id.get_code)
     public void getCode(){
         username = edit_usename.getText().toString();
-        if (TextUtils.isEmpty(username)){
-            ToastUtils.showShort("账号不能为空");
-        }else{
-            mPresenter.getIdentifyCode(username, "resetpassword");
+
+        if (username.length() == 11) {
+            get_code.startTime();
+            mPresenter.getIdentifyCode(username, "regist");
+        } else if (TextUtils.isEmpty(username)) {
+            ToastUtils.showShort("请输入手机号码！");
+        } else {
+            ToastUtils.showShort("长度不够11位数字");
         }
 
     }

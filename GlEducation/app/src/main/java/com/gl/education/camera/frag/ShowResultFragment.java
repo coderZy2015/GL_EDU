@@ -13,6 +13,7 @@ import com.gl.education.R;
 import com.gl.education.camera.activity.PhotographResultBean;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.utlis.CustomViewPager;
 import com.gl.education.home.utlis.ImageLoader;
 
 import butterknife.BindView;
@@ -35,14 +36,26 @@ public class ShowResultFragment extends BaseFragment {
     TextView answer_text;
 
     PhotographResultBean.DataBean dataBean;
+    private boolean isLast = false;
+
+    CustomViewPager vp;
+    private int fragmentID=0;
+
 
     public static ShowResultFragment newInstance(PhotographResultBean.DataBean parentCategory) {
         ShowResultFragment frag = new ShowResultFragment();
         Bundle b = new Bundle();
 
         b.putSerializable("parentCategory", parentCategory);
+
         frag.setArguments(b);
         return frag;
+    }
+
+    public void setViewPagerID(CustomViewPager vp, int fragmentID)
+    {
+        this.vp = vp;
+        this.fragmentID =fragmentID;
     }
 
     @Override
@@ -73,6 +86,11 @@ public class ShowResultFragment extends BaseFragment {
         }else{
             answer_text.setVisibility(View.GONE);
              for (int i=0; i<dataBean.getQues_answer_pic().size(); i++){
+                 if (i == dataBean.getQues_answer_pic().size() - 1){
+                     isLast = true;
+                 }else{
+                     isLast = false;
+                 }
                  addImg(answer_container, dataBean.getQues_answer_pic().get(i));
               }
         }
@@ -89,6 +107,11 @@ public class ShowResultFragment extends BaseFragment {
         return R.layout.frag_show_result;
     }
 
+    @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
     public void addImg(LinearLayout container, String url) {
 
         ImageView newImg = new ImageView(getContext());
@@ -98,7 +121,11 @@ public class ShowResultFragment extends BaseFragment {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 5, 10, 0);
+        if (isLast){
+            params.setMargins(10, 5, 10, 20);
+        }else{
+            params.setMargins(10, 5, 10, 0);
+        }
         newImg.setLayoutParams(params);
         // 也可以自己想要的宽度，参数（int width, int height）均表示px
         // 如dp单位，首先获取屏幕的分辨率在求出密度，根据屏幕ppi=160时，1px=1dp

@@ -10,7 +10,16 @@ import com.gl.education.home.model.JSPayInfoBean;
 public class PayMoneyEvent {
 
     private String message;
+    private String type;
     private JSPayInfoBean bean;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public JSPayInfoBean getBean() {
         return bean;
@@ -18,11 +27,6 @@ public class PayMoneyEvent {
 
     public void setBean(JSPayInfoBean bean) {
         this.bean = bean;
-    }
-
-    public PayMoneyEvent(String message, JSPayInfoBean _bean){
-        this.message = message;
-        this.bean = _bean;
     }
 
     public String getMessage() {

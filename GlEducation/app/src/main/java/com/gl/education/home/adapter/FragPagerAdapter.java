@@ -3,9 +3,11 @@ package com.gl.education.home.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import com.gl.education.home.base.BaseFragment;
-import com.gl.education.home.model.TablayoutModel;
+import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.utlis.FragmentFactory;
 
 import java.util.List;
@@ -16,22 +18,26 @@ import java.util.List;
  */
 
 public class FragPagerAdapter extends FragmentPagerAdapter {
-    private List<TablayoutModel> mFragShowIdList;
+    private List<ChannelEntity> mFragShowIdList;
+    private FragmentManager fragmentManager;
+    private SparseArray<String> mTags = new SparseArray<>();
+    private BaseFragment mCurrentFragment;
 
-    public FragPagerAdapter(FragmentManager fm, List<TablayoutModel> _list) {
+    public FragPagerAdapter(FragmentManager fm, List<ChannelEntity> _list) {
         super(fm);
+        fragmentManager = fm;
         mFragShowIdList = _list;
     }
 
     @Override
     public int getItemPosition(Object object) {
+        //return POSITION_NONE;//必须返回的是POSITION_NONE，否则不会刷新
         return super.getItemPosition(object);
     }
 
     @Override
     public Fragment getItem(int position) {
-        int index = mFragShowIdList.get(position).index;
-        BaseFragment fragment = FragmentFactory.getFragment(index);
+        BaseFragment fragment = FragmentFactory.getFragment(mFragShowIdList.get(position));
         return fragment;
     }
 
@@ -42,6 +48,27 @@ public class FragPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return mFragShowIdList.get(position).tabnName;
+        return mFragShowIdList.get(position).getName();
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        mTags.put(position, makeFragmentName(container.getId(), position));
+        return super.instantiateItem(container, position);
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        mTags.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
+    }
+
+    private String makeFragmentName(int viewId, int position) {
+        return "android:switcher:" + viewId + ":" + position;
     }
 }

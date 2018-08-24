@@ -15,9 +15,7 @@
  */
 package com.gl.education.helper;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.gl.education.helper.exception.MyException;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.request.base.Request;
 
@@ -99,23 +97,24 @@ public abstract class JsonCallback<T> extends AbsCallback<T> {
     public void onError(com.lzy.okgo.model.Response<T> response) {
         super.onError(response);
         int code = response.code();
-        if (code == 404) {
-            LogUtils.e("404 当前链接不存在");
-        }
-        ToastUtils.showShort(""+code);
+
         if (response.getException() instanceof SocketTimeoutException) {
-            LogUtils.d("JsonCallback", "请求超时");
+            ToastUtils.showShort("请求超时");
         } else if (response.getException() instanceof SocketException) {
-            LogUtils.d("JsonCallback", "服务器异常");
-        } else if (response.getException() instanceof MyException) { //个人自定义 异常 根据后台 约定值判断异常雷系
-
-//            switch (((MyException) response.getException()).getErrorBean().code) {
-//                case 107://约定的身份表示过期
-//                    //重登录
-//                    break;
-//            }
-
+            ToastUtils.showShort("服务器异常");
+        }else{
+            ToastUtils.showShort("错误码："+code);
         }
+
+
+
+//        else if (response.getException() instanceof MyException) { //个人自定义 异常 根据后台 约定值判断异常雷系
+
+            //            switch (((MyException) response.getException()).getErrorBean().code) {
+            //                case 107://约定的身份表示过期
+            //                    //重登录
+            //                    break;
+            //            }
 
     }
 

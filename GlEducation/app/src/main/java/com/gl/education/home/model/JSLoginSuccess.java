@@ -6,22 +6,13 @@ package com.gl.education.home.model;
 
 public class JSLoginSuccess {
 
-    private int uid;
-    private String guid;
+    private String token;
 
-    public int getUid() {
-        return uid;
+    public String getToken() {
+        return token;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setGuid(String _token) {
+        this.token = _token;
     }
 }

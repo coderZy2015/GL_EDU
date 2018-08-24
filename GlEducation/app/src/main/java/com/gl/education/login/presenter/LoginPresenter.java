@@ -1,6 +1,6 @@
 package com.gl.education.login.presenter;
 
-import com.gl.education.api.HomeAPI;
+import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.login.model.LoginBean;

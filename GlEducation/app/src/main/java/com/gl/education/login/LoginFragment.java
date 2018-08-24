@@ -6,12 +6,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.EncryptUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.login.model.LoginBean;
 import com.gl.education.login.presenter.LoginPresenter;
@@ -41,6 +41,10 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
     @BindView(R.id.edit_password)
     EditText edit_password;
 
+    @BindView(R.id.btn_back)
+    RelativeLayout btn_back;
+
+
     String username = "";
     String password = "";
 
@@ -58,6 +62,11 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
         return R.layout.frag_login;
     }
 
+    @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
     @OnClick(R.id.btn_login)
     public void clickLogin(){
         username = edit_usename.getText().toString();
@@ -73,8 +82,6 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
     @Override
     public void initView(View rootView) {
         super.initView(rootView);
-        String aaa = EncryptUtils.encryptMD5ToString("123456");
-        LogUtils.d("aaa  ==  "+aaa);
     }
 
     @OnClick(R.id.btn_register)
@@ -86,6 +93,12 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
     @OnClick(R.id.btn_password)
     public void clickReatPassword(){
         startForResult(ForgetPasswordFragment.newInstance(), 1);
+    }
+
+    @OnClick(R.id.btn_back)
+    public void onBack(){
+        _mActivity.onBackPressed();
+        _mActivity.finish();
     }
 
     @Override
@@ -102,12 +115,17 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
 
     @Override
     public void loginSuccess(LoginBean bean) {
-        ToastUtils.showShort("登录成功！");
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("uid", bean.getData().getUserid());
-        resultIntent.putExtra("guid", bean.getData().getGuid());
-        _mActivity.setResult(1000, resultIntent);
-        _mActivity.finish();
+        if (bean.getData() != null){
+            AppCommonData.isLogin = true;
+            ToastUtils.showShort("登录成功！");
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("token", bean.getData().getToken());
+            _mActivity.setResult(1000, resultIntent);
+            _mActivity.finish();
+        }else{
+            ToastUtils.showShort("登陆出现问题，请重新尝试");
+        }
+
     }
 
     @Override

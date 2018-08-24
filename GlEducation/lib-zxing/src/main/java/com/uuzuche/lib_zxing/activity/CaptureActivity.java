@@ -10,10 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.uuzuche.lib_zxing.R;
-
-import java.io.ByteArrayOutputStream;
 
 /**
  * Initial the camera
@@ -22,10 +21,10 @@ import java.io.ByteArrayOutputStream;
  */
 public class CaptureActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private LinearLayout search_camera; //拍照搜题
-    private LinearLayout cover_camera;  //拍封面
-    private LinearLayout search_isbn;   //扫ISBN
-    private LinearLayout Scanning_code; //扫描码
+    private RelativeLayout search_camera; //拍照搜题
+    private RelativeLayout cover_camera;  //拍封面
+    private RelativeLayout search_isbn;   //扫ISBN
+    private RelativeLayout Scanning_code; //扫描码
 
     CaptureFragment captureFragment;
     SearchCameraFragment searchCameraFragment;
@@ -38,6 +37,8 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
     ImageView image_scan;
 
     int selectId = 0;
+
+    LinearLayout cameraBottom;
 
 
     @Override
@@ -59,6 +60,8 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
         search_isbn = findViewById(R.id.search_isbn);
         Scanning_code = findViewById(R.id.Scanning_code);
 
+        cameraBottom = findViewById(R.id.camera_bottom);
+
         image_search = findViewById(R.id.image_search);
         image_cover = findViewById(R.id.image_cover);
         image_isbn = findViewById(R.id.image_isbn);
@@ -69,6 +72,13 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
         search_isbn.setOnClickListener(this);
         Scanning_code.setOnClickListener(this);
 
+    }
+
+    public void cameraHide(){
+        cameraBottom.setVisibility(View.GONE);
+    }
+    public void cameraShow(){
+        cameraBottom.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -87,12 +97,22 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
         } else if (v.getId() == R.id.cover_camera) {
             selectId = 1;
             SearchCoverFragment searchCoverFragment = SearchCoverFragment.newInstance();
+            searchCoverFragment.setAnalyzeCallback(photographCallback);
             transaction.replace(R.id.fl_zxing_container, searchCoverFragment);
 
             transaction.commit();
         } else if (v.getId() == R.id.search_isbn) {
             selectId = 2;
             SearchISBNFragment searchISBNFragment = SearchISBNFragment.newInstance();
+            searchISBNFragment.setAnalyzeCallback(isbnCallback);
+            searchISBNFragment.setCameraInitCallBack(new CaptureFragment.CameraInitCallBack() {
+                @Override
+                public void callBack(Exception e) {
+                    if (e == null) {
+                    } else {
+                    }
+                }
+            });
             transaction.replace(R.id.fl_zxing_container, searchISBNFragment);
 
             transaction.commit();
@@ -137,33 +157,26 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
     CodeUtils.PhotographCallback photographCallback = new CodeUtils.PhotographCallback(){
 
         @Override
-        public void onPotographSuccess(Bitmap bm, String result) {
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte [] bitmapByte =baos.toByteArray();
+        public void onPotographSuccess(String path, String result) {
 
             Intent resultIntent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
             bundle.putString(CodeUtils.RESULT_STRING, result);
-            resultIntent.putExtra("bitmap", bitmapByte);
+            bundle.putString("path", path);
             resultIntent.putExtras(bundle);
             CaptureActivity.this.setResult(1001, resultIntent);
             CaptureActivity.this.finish();
         }
 
         @Override
-        public void onPhotographFailed(Bitmap bm) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte [] bitmapByte =baos.toByteArray();
+        public void onPhotographFailed(String path) {
 
             Intent resultIntent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_FAILED);
             bundle.putString(CodeUtils.RESULT_STRING, "");
-            resultIntent.putExtra("bitmap", bitmapByte);
+            bundle.putString("path", path);
             resultIntent.putExtras(bundle);
             CaptureActivity.this.setResult(1001, resultIntent);
             CaptureActivity.this.finish();
@@ -205,6 +218,34 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
             bundle.putString(CodeUtils.RESULT_STRING, "");
             resultIntent.putExtras(bundle);
             CaptureActivity.this.setResult(1004, resultIntent);
+            CaptureActivity.this.finish();
+        }
+    };
+
+    /**
+     * isbn解析回调函数
+     */
+    CodeUtils.AnalyzeCallback isbnCallback = new CodeUtils.AnalyzeCallback() {
+        @Override
+        public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
+            Intent resultIntent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
+            bundle.putString(CodeUtils.RESULT_STRING, result);
+
+            resultIntent.putExtras(bundle);
+            CaptureActivity.this.setResult(1003, resultIntent);
+            CaptureActivity.this.finish();
+        }
+
+        @Override
+        public void onAnalyzeFailed() {
+            Intent resultIntent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_FAILED);
+            bundle.putString(CodeUtils.RESULT_STRING, "");
+            resultIntent.putExtras(bundle);
+            CaptureActivity.this.setResult(1003, resultIntent);
             CaptureActivity.this.finish();
         }
     };

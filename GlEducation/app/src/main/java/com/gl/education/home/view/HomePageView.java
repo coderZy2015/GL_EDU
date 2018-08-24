@@ -1,11 +1,14 @@
 package com.gl.education.home.view;
 
-import android.support.design.widget.TabLayout;
+import com.gl.education.home.model.ChannelEntity;
+
+import java.util.List;
 
 /**
  * Created by zy on 2018/6/6.
  */
 
 public interface HomePageView {
-    TabLayout getTabLayout();
+    void getChannelGradeSuccess(int grade, List<ChannelEntity> mFragShowIdList);
+
 }

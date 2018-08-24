@@ -11,8 +11,7 @@ import java.util.List;
 public class UserBean implements Serializable {
 
     /**
-     * id : 1847
-     * username : 猥琐的豆腐6
+     * id : 1847     * username : 猥琐的豆腐6
      * password : 123456
      * icon : null
      * type : 0

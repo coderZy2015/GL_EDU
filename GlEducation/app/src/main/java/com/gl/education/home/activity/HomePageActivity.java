@@ -18,15 +18,20 @@ import com.gl.education.helper.DialogHelper;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.fragment.HomePageFragment;
 import com.gl.education.home.fragment.MineFragment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-
+/**
+ * 主页面
+ */
 public class HomePageActivity extends BaseActivity {
 
     public static final int FIRST = 0;
@@ -54,6 +59,11 @@ public class HomePageActivity extends BaseActivity {
     }
 
     @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
+    @Override
     public void initView() {
 
         BaseFragment firstFragment = findFragment(HomePageFragment.class);
@@ -74,17 +84,25 @@ public class HomePageActivity extends BaseActivity {
 
     }
 
+
     @OnClick({R.id.btn_home_page, R.id.btn_home_mine })
     public void onClick(LinearLayout btn){
         if (btn.getId() == R.id.btn_home_page){
-            image_ic_page.setImageResource(R.drawable.home_ic_page_s);
-            image_ic_person.setImageResource(R.drawable.home_ic_person);
+            image_ic_page.setBackgroundResource(R.drawable.home_ic_page_s);
+            image_ic_person.setBackgroundResource(R.drawable.home_ic_person);
             showHideFragment(mFragments[FIRST], mFragments[SECOND]);
         }
         else if(btn.getId() == R.id.btn_home_mine){
-            image_ic_page.setImageResource(R.drawable.home_ic_page);
-            image_ic_person.setImageResource(R.drawable.home_ic_person_s);
+//            Intent intent = new Intent();
+//            intent.setClass(this, MineActivity.class);
+//            startActivity(intent);
+
+            image_ic_page.setBackgroundResource(R.drawable.home_ic_page);
+            image_ic_person.setBackgroundResource(R.drawable.home_ic_person_s);
             showHideFragment(mFragments[SECOND], mFragments[FIRST]);
+
+            UpdateUserDataEvent event = new UpdateUserDataEvent();
+            EventBus.getDefault().post(event);
         }
     }
 

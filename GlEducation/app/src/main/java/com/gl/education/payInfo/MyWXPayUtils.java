@@ -7,6 +7,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.home.event.PayFinishEvent;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -68,13 +69,12 @@ public class MyWXPayUtils {
     public void toWXPayNotSign(Context context, String appid) {
         iwxapi = WXAPIFactory.createWXAPI(context, null); //初始化微信api
         iwxapi.registerApp(appid); //注册appid  appid可以在开发平台获取
-//        IWXAPI payApi = WXAPIFactory.createWXAPI(context, weChatBean.getAppid(),
-//                false);
-//        if (!payApi.isWXAppInstalled()) {
-//            //未安装的处理
-//            ToastUtils.showShort("未安装微信");
-//        }
-//        payApi.registerApp(weChatBean.getAppid());
+
+        if (!iwxapi.isWXAppInstalled()) {
+            //未安装的处理
+            ToastUtils.showShort("未安装微信");
+            return;
+        }
 
         Runnable payRunnable = new Runnable() {  //这里注意要放在子线程
             @Override

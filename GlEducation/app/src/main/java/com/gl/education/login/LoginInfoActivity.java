@@ -24,6 +24,11 @@ public class LoginInfoActivity extends BaseActivity{
     }
 
     @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
+    @Override
     public void initView() {
         super.initView();
 

@@ -28,6 +28,8 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
     private CustomDialog mDialogWaiting;
     private Unbinder unbinder;
 
+    public String eventTAG = "";//当前类 event的标识 用于区分event发送的类
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +41,8 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
         if (mPresenter != null) {
             mPresenter.attachView((V) this);//因为之后所有的子类都要实现对应的View接口
         }
-
+        //设置EventTAG
+        setEventTag();
         //子类不再需要设置布局ID，也不再需要使用ButterKnife.bind()
         setContentView(provideContentViewId());
         //ScreenAdapterTools.getInstance().reset(this);//如果希望android7.0分屏也适配的话,加上这句
@@ -53,6 +56,19 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
         initView();
         initData();
         initListener();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setEventTag();
+    }
+
+    public void setEventTag(){
+        if (setIdentifier() != null){
+            eventTAG = setIdentifier();
+        }
     }
 
     @Override
@@ -98,6 +114,9 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
     //得到当前界面的布局文件id(由子类实现)
     protected abstract int provideContentViewId();
 
+    //设置当前类event事件的标识  不需要传null即可
+    protected abstract String setIdentifier();
+
     /**
      * 显示等待提示框
      */
@@ -124,7 +143,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
 
     /** 子类可以重写改变状态栏颜色 */
     protected int setStatusBarColor() {
-        return getColorPrimary();
+        return getResources().getColor(R.color.black);
     }
 
     /** 子类可以重写决定是否使用透明状态栏 */

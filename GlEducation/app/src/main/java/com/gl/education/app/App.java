@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
+import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.Utils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -13,11 +14,14 @@ import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.SPCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
+import com.umeng.commonsdk.UMConfigure;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -36,6 +40,9 @@ public class App extends Application {
 
     private static Context mContext;
 
+    // 用于存放倒计时时间
+    public static Map<String, Long> map;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,13 +52,13 @@ public class App extends Application {
         initFragmention();
         initZXing_lib();
         initScreenTools();
+
     }
 
     /**
      * 初始化okgo
      */
     private void initOkGo() {
-
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         //使用sp保持cookie，如果cookie不过期，则一直有效
@@ -81,8 +88,34 @@ public class App extends Application {
 //        Log.i("zy_code", "write超时时间 == " +  client.writeTimeoutMillis());
 //        Log.i("zy_code", "read超时时间 == " +  client.readTimeoutMillis());
 //        Log.i("zy_code", "connect超时时间 == " +  client.connectTimeoutMillis());
-
     }
+
+    public void initUM(){
+        /**
+         * 初始化common库
+         * 参数1:上下文，不能为空
+         * 参数2:【友盟+】 AppKey
+         * 参数3:【友盟+】 Channel
+         * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
+         * 参数5:Push推送业务的secret
+         */
+        UMConfigure.init(this,"5b63b8fbb27b0a5afb00024f"
+                ,"test",UMConfigure.DEVICE_TYPE_PHONE,"");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
+
+        //wxc3d63044c63e0b27
+    }
+
+
+    public String getDeviceId(){
+        String deviceId = "";
+
+        deviceId = DeviceUtils.getAndroidID();
+        if (deviceId.equals("")){
+
+        }
+        return deviceId;
+    }
+
     /**
      * Fragment管理初始化
      */
@@ -138,6 +171,28 @@ public class App extends Application {
         }
         dm.density = relativeDensity;
     }
+
+
+    /**
+     * 产生字母和数字的随机组合,长度为length
+     * @param length
+     * @return 一个字母和数字随机组合的String型数据
+     */
+    public static String getRandomNumAndChacters(int length) {
+        Random random = new Random();
+        String str = new String();;
+        for (int i = 0; i < length; i++) {
+            boolean b = random.nextBoolean();
+            if (b) {
+                int choice = random.nextBoolean() ? 65 : 97;//随机到65：大写字母  97：小写字母
+                str += (char) (choice + random.nextInt(26));
+            } else {
+                str += String.valueOf(random.nextInt(10));
+            }
+        }
+        return str;
+    }
+
 
 
     public static Context getmContext() {

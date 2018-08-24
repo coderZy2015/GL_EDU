@@ -6,7 +6,6 @@ package com.gl.education.home.model;
  */
 
 public class JSPayInfoBean {
-    private String uid;
     private String orderType;
     private String price;
 
@@ -26,11 +25,4 @@ public class JSPayInfoBean {
         this.price = price;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
 }
