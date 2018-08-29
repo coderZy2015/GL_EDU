@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.helper.JsonCallback;
 import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
 
 import java.io.File;
 
@@ -14,7 +15,11 @@ import java.io.File;
 public class HomeAPI {
 
     //基础
-    public static final String BASE_URL = "http://a1guanlin.eugames.cn/";
+    //public static final String BASE_URL = "http://a1guanlin.eugames.cn/";
+    //beta版
+    public static final String BASE_URL = "http://appserbeta.hebeijiaoyu.cn/";
+    //正式
+    //public static final String BASE_URL = "http://appser.hebeijiaoyu.cn/";
 
     //header
     public static String HTTP_HEADER = "GL-Token";
@@ -37,10 +42,8 @@ public class HomeAPI {
     private static String ALIPAY_UNIFIEDORDER_URL = BASE_URL + "iclient/cliuser/unifiedorderAlipay";
     //获取微信预订单
     private static String WX_UNIFIEDORDER_URL = BASE_URL + "iclient/cliuser/unifiedorderWechat";
-
     //代币数量
     private static String DB_AMOUNT_URL = BASE_URL + "iclient/cliuser/dbAmount";
-
     //获取全频道信息
     private static String GET_ALL_CHANNEL_URL = BASE_URL + "iclient/clicenter/getAllChannel";
     //当前用户的年级频道信息
@@ -64,7 +67,7 @@ public class HomeAPI {
     //推荐页首页
     private static String GET_RECOMHOME_URL = BASE_URL + "iclient/clirecom/getRecomHome";
     //查看某篇文章
-    private static String GET_ARTICLE_URL = BASE_URL + "iclient/clirecom/getArticle";
+    private static String GET_ARTICLE_URL = BASE_URL + "iclient/clipublics/getArticle";
     //点赞/取消点赞某篇文章
     private static String GET_ARTICLE_LIKE_URL = BASE_URL + "iclient/clirecom/setArticleLikes";
     //浏览了某篇文章
@@ -81,7 +84,17 @@ public class HomeAPI {
     private static String SEARCH_BY_KEYWORD_URL = BASE_URL + "iclient/Clirecom/searchByKeyword";
     //上传头像
     private static String SET_USER_AVATAR = BASE_URL + "iclient/clicenter/setUserAvatar";
+    //微信注册绑定
+    private static String REGIST_WECHAT = BASE_URL + "iclient/clipublics/registWechat";
+    //微信unid检查
+    private static String CHECK_WECHAT = BASE_URL + "iclient/clipublics/checkWechat";
+    //我的订单流水
+    private static String GET_ORDER_RECORD = BASE_URL + "iclient/clicenter/getOrderRecord";
+    //删除我的用户
+    private static String DELETE_USER = BASE_URL + "iclient/clipublics/delUser";
 
+    //删除我的用户
+    private static String HAS_QUES_DETAIL_AUTH	= BASE_URL + "iclient/cliuser/hasQuesDetailAuth";
 
 
     /**
@@ -363,10 +376,39 @@ public class HomeAPI {
      * @param callback
      */
     public static <T>void getRecomHome(JsonCallback<T> callback) {
-
+//        'channel_id' =>'频道id',
+//                'pageNum'=>'页码',
+//                'pageSize'=>'每页显示数量',
         OkGo.<T>get(GET_RECOMHOME_URL)
                 .execute(callback);
     }
+
+    /**
+     *  查看某篇文章
+     * @param callback
+     */
+    public static <T>void getArticlUrl(String channel_itemid, JsonCallback<T> callback) {
+
+        OkGo.<T>get(GET_ARTICLE_URL)
+                .params("channel_itemid", channel_itemid)
+                .execute(callback);
+    }
+
+    /**
+     *  获取评论
+     返回值里的total_amount：评论总数
+     参数里channel_itemType：0=文章，1=教材，2=教辅，3=视频
+     */
+    public static <T>void getArticleComment(String channel_itemid, String channel_itemType, String start, String end, JsonCallback<T> callback) {
+
+        OkGo.<T>post(GET_ARTICLE_COMMENTS_URL)
+                .params("channel_itemid", channel_itemid)
+                .params("channel_itemType", channel_itemType)
+                .params("start", start)
+                .params("end", end)
+                .execute(callback);
+    }
+
 
     /**
      *  获取热搜词
@@ -395,6 +437,66 @@ public class HomeAPI {
 
         OkGo.<T>post(SET_USER_AVATAR)
                 .params("a1_avatar",  file)
+                .execute(callback);
+
+    }
+
+
+    /**
+     * 微信unid检查
+     */
+    public static <T>void checkWechat(String unid, JsonCallback<T> callback) {
+
+        OkGo.<T>post(CHECK_WECHAT)
+                .params("unid",  unid)
+                .execute(callback);
+
+    }
+
+
+    /**
+     * 微信注册绑定
+     */
+    public static <T>void registWechat(String username, String password, String checkcode, String unid, JsonCallback<T> callback) {
+        password = EncryptUtils.encryptMD5ToString(password);
+        //LogUtils.d("password = " + password);
+        OkGo.<T>post(REGIST_WECHAT)
+                .params("username",  username)
+                .params("password",  password)
+                .params("checkcode",  checkcode)
+                .params("unid", unid)
+                .execute(callback);
+
+    }
+
+
+    /**
+     *  我的订单流水
+     * @param callback
+     */
+    public static <T>void getOrderRecord(JsonCallback<T> callback) {
+
+        OkGo.<T>get(GET_ORDER_RECORD)
+                .execute(callback);
+    }
+
+    /**
+     *  删除用户
+     * @param callback
+     */
+    public static void deleteUser(StringCallback callback) {
+
+        OkGo.<String>get(DELETE_USER)
+                .execute(callback);
+    }
+
+    /**
+     * 查看是否有权限看题目
+     */
+    public static <T>void hasQuesDetailAuth(String catalog_id, JsonCallback<T> callback) {
+
+        OkGo.<T>post(HAS_QUES_DETAIL_AUTH)
+                .params("catalog_id",  catalog_id)
                 .execute(callback);
 
     }

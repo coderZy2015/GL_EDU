@@ -8,13 +8,23 @@ import android.util.DisplayMetrics;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.Utils;
+import com.gl.education.R;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.SPCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.umeng.commonsdk.UMConfigure;
+import com.umeng.socialize.PlatformConfig;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
@@ -52,7 +62,7 @@ public class App extends Application {
         initFragmention();
         initZXing_lib();
         initScreenTools();
-
+        initUM();
     }
 
     /**
@@ -99,10 +109,12 @@ public class App extends Application {
          * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
          * 参数5:Push推送业务的secret
          */
-        UMConfigure.init(this,"5b63b8fbb27b0a5afb00024f"
+
+        UMConfigure.init(this,"570f58cc67e58e0c58002195"
                 ,"test",UMConfigure.DEVICE_TYPE_PHONE,"");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
 
-        //wxc3d63044c63e0b27
+        PlatformConfig.setWeixin("wxc3d63044c63e0b27", "9a7afa803a0da2903ba135c298d8bd93");
+        PlatformConfig.setQQZone("1106391961", "lSbEuDwBMLrub94f");
     }
 
 
@@ -193,7 +205,25 @@ public class App extends Application {
         return str;
     }
 
-
+    //static 代码段可以防止内存泄露
+    static {
+        //设置全局的Header构建器
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
+            @Override
+            public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
+                layout.setPrimaryColorsId(R.color.colorPrimary, android.R.color.white);//全局设置主题颜色
+                return new ClassicsHeader(context);//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
+            }
+        });
+        //设置全局的Footer构建器
+        SmartRefreshLayout.setDefaultRefreshFooterCreator(new DefaultRefreshFooterCreator() {
+            @Override
+            public RefreshFooter createRefreshFooter(Context context, RefreshLayout layout) {
+                //指定为经典Footer，默认是 BallPulseFooter
+                return new ClassicsFooter(context).setDrawableSize(20);
+            }
+        });
+    }
 
     public static Context getmContext() {
         return mContext;

@@ -11,12 +11,12 @@ import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -50,7 +50,7 @@ public class SearchISBNFragment extends Fragment implements SurfaceHolder.Callba
     private SurfaceHolder surfaceHolder;
     private CodeUtils.AnalyzeCallback analyzeCallback;
     private Camera camera;
-
+    private ImageView btn_close;
 
     public static SearchISBNFragment newInstance() {
         Bundle args = new Bundle();
@@ -68,7 +68,13 @@ public class SearchISBNFragment extends Fragment implements SurfaceHolder.Callba
         viewfinderView = (ViewfinderView) view.findViewById(R.id.viewfinder_view);
         surfaceView = (SurfaceView) view.findViewById(R.id.preview_view);
         surfaceHolder = surfaceView.getHolder();
-
+        btn_close = view.findViewById(R.id.btn_close);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
         return view;
 
     }
@@ -86,7 +92,6 @@ public class SearchISBNFragment extends Fragment implements SurfaceHolder.Callba
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("zy_code", "CaptureFragment onResume");
         if (hasSurface) {
             initCamera(surfaceHolder);
         } else {

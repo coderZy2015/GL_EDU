@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.gl.education.camera.activity.PhotographResultBean;
 import com.gl.education.camera.frag.ShowResultFragment;
@@ -20,8 +18,6 @@ import java.util.List;
 public class CameraSearchAdapter extends FragmentPagerAdapter {
     private List<PhotographResultBean.DataBean> mFragShowIdList = new ArrayList<>();
     FragmentManager mFragmentManager;
-    //保存每个Fragment的Tag，刷新页面的依据
-    protected SparseArray<String> tags = new SparseArray<>();
     private Context mContext;
 
 
@@ -30,14 +26,12 @@ public class CameraSearchAdapter extends FragmentPagerAdapter {
         mContext = context;
         mFragmentManager = fm;
         mFragShowIdList = _list;
-
     }
 
     @Override
     public Fragment getItem(int position) {
         PhotographResultBean.DataBean bean = mFragShowIdList.get(position);
         return ShowResultFragment.newInstance(bean);
-
     }
 
     @Override
@@ -48,16 +42,6 @@ public class CameraSearchAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return mFragShowIdList == null ? 0 : mFragShowIdList.size();
-    }
-
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        //得到缓存的fragment
-        Fragment fragment = (Fragment) super.instantiateItem(container, position);
-        String tag = fragment.getTag();
-        //保存每个Fragment的Tag
-        tags.put(position, tag);
-        return fragment;
     }
 
 }

@@ -6,11 +6,10 @@ import android.widget.RelativeLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.just.agentweb.AgentWeb;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -20,7 +19,6 @@ import butterknife.OnClick;
  */
 public class WrongTopicBookActivity extends BaseActivity {
 
-    private final String b_url = "http://ctb.hebeijiaoyu.com.cn/glwz-ctb/mainMobCtb/index/";
     protected AgentWeb mAgentWeb;
 
     @BindView(R.id.web_container)
@@ -53,10 +51,7 @@ public class WrongTopicBookActivity extends BaseActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
 
-        String url = b_url+username;
-
-        // 注册订阅者
-        EventBus.getDefault().register(this);
+        String url = AppConstant.ctb_url + username;
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
@@ -77,8 +72,6 @@ public class WrongTopicBookActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // 注册订阅者
-        EventBus.getDefault().unregister(this);
     }
 
     @OnClick(R.id.btn_back)

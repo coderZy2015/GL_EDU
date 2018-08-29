@@ -47,7 +47,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="30dp"
-                android:text="听说你该交版本了？？？"
+                android:text=""
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:textColor="@color/my_composition_text"

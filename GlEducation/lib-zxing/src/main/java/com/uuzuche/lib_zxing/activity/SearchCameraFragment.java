@@ -54,7 +54,7 @@ import java.io.OutputStream;
 public class SearchCameraFragment extends Fragment implements CameraPreview
         .OnCameraStatusListener {
 
-    public final String loadPicUrl = "http://a1guanlin.eugames.cn/iclient/cliuser/uploadFile";
+    public final String loadPicUrl = "http://appserbeta.hebeijiaoyu.cn/iclient/cliuser/uploadFile";
 
     private Loading_view loading;
 

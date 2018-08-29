@@ -51,4 +51,31 @@
         android:orientation="vertical">
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/layout_into_content"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/text_introduce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/camera_top"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textSize="12dp"/>
+        
+        <ImageView
+            android:id="@+id/btn_into_content"
+            android:layout_width="300dp"
+            android:layout_height="31dp"
+            android:layout_below="@+id/text_introduce"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/btn_into_explanation"
+            android:layout_centerInParent="true"/>
+        
+        
+    </RelativeLayout>
+    
 </LinearLayout>

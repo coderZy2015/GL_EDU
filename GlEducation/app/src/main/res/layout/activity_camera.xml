@@ -42,12 +42,12 @@
         android:layout_gravity="center_horizontal"
         app:tabMode="scrollable"
         app:tabGravity="center"
-        app:tabPaddingStart="15dp"
-        app:tabPaddingEnd="15dp"
+        app:tabPaddingStart="20dp"
+        app:tabPaddingEnd="20dp"
         app:tabMaxWidth="200dp"
         app:tabMinWidth="50dp"
-        android:background="@color/home_tab_bg"
-        app:tabIndicatorColor="@color/home_tab_select"
+        android:background="@color/transparent"
+        app:tabIndicatorColor="@color/transparent"
         app:tabIndicatorHeight="2dp"
         app:tabSelectedTextColor="@color/TabSelectColor"
         app:tabTextAppearance="@style/TabLayoutTextStyle"
@@ -74,26 +74,51 @@
         android:fillViewport="true"
         android:scrollbars="none">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:id="@+id/layout_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
-            <TextView
-                android:id="@+id/camera_search_error"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/camera_search_error"
-                android:textSize="20dp"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/camera_search_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:text="@string/camera_search_error"
+                    android:textSize="20dp"/>
+
+                <ImageView
+                    android:id="@+id/camera_search_again"
+                    android:layout_width="260dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/camera_search_error"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/camera_again"/>
+
+                <ImageView
+                    android:id="@+id/camera_search_in_jiaofu"
+                    android:layout_width="260dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/camera_search_again"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/in_jiaofu"/>
+
+            </RelativeLayout>
+
 
             <com.gl.education.home.utlis.MyViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
 

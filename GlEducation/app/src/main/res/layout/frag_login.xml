@@ -199,29 +199,53 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="21dp"
-                    android:orientation="horizontal"
-                    android:layout_centerVertical="true">
+                    android:orientation="horizontal">
 
-                    <ImageView
+                    <RelativeLayout
                         android:id="@+id/btn_login_qq"
-                        android:layout_width="19dp"
-                        android:layout_height="21dp"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/login_qq"/>
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
-                    <ImageView
+                        <ImageView
+                            android:layout_width="19dp"
+                            android:layout_height="21dp"
+                            android:layout_marginLeft="25dp"
+                            android:src="@drawable/login_qq"/>
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
                         android:id="@+id/btn_login_wx"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/login_wx"/>
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
-                    <ImageView
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/login_wx"/>
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:id="@+id/btn_login_wb"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="20dp"
-                        android:src="@drawable/login_wb"/>
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="25dp"
+                            android:src="@drawable/login_wb"/>
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 

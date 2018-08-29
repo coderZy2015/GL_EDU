@@ -3,7 +3,6 @@ package com.gl.education.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.SPUtils;
@@ -13,8 +12,8 @@ import com.gl.education.home.activity.BookMenuActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.OpenWebViewEvent;
-import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.interactive.AndroidInteractive;
+import com.gl.education.home.model.ChannelEntity;
 import com.just.agentweb.AgentWeb;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,9 +34,6 @@ public class CompositionFragment extends BaseFragment {
 
     @BindView(R.id.web_container)
     LinearLayout web_container;
-
-    @BindView(R.id.btn_angentWeb)
-    Button btn_angentWeb;
 
     protected AgentWeb mAgentWeb;
 
@@ -125,6 +121,8 @@ public class CompositionFragment extends BaseFragment {
     @Override
     public boolean onBackPressedSupport() {
         boolean isBack = false;
+
+        if (mAgentWeb!= null)
         isBack = mAgentWeb.back();
 
         return isBack;

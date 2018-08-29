@@ -5,17 +5,26 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
-import com.gl.education.home.activity.BookMenuActivity;
-import com.gl.education.home.activity.MyBookShelfActivity;
+import com.gl.education.app.HomeAPI;
+import com.gl.education.helper.Convert;
+import com.gl.education.helper.JsonCallback;
+import com.gl.education.home.activity.RecommendContentActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
-import com.gl.education.home.event.OpenWebViewEvent;
+import com.gl.education.home.event.JSRecommentOpenWebViewEvent;
+import com.gl.education.home.event.JSRecommentRequest;
+import com.gl.education.home.interactive.RecommendInteractive;
 import com.gl.education.home.model.ChannelEntity;
-import com.gl.education.home.interactive.AndroidInteractive;
+import com.gl.education.home.model.RecommendRequestBean;
 import com.just.agentweb.AgentWeb;
+import com.lzy.okgo.model.Response;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,6 +41,9 @@ public class RecommendFragment extends BaseFragment {
 
     @BindView(R.id.web_container)
     LinearLayout web_container;
+
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout refreshLayout;
 
     protected AgentWeb mAgentWeb;
 
@@ -95,6 +107,8 @@ public class RecommendFragment extends BaseFragment {
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token;
 
+        url = AppConstant.YY_WEB_RECOMMEND;
+
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
@@ -106,37 +120,69 @@ public class RecommendFragment extends BaseFragment {
                 .ready()
                 .go(url+token);
 
+        LogUtils.d(url+token);
+
+
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
         mAgentWeb.clearWebCache();
-        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new AndroidInteractive(mAgentWeb,
-                getActivity(), eventTAG, fragType));
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new RecommendInteractive(mAgentWeb,
+                getActivity()));
+
+        refreshLayout.setEnableLoadMore(false);
+        refreshLayout.setEnableRefresh(false);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                //isCanDropDown = false;
+            }
+        });
+
     }
 
     @Override
     public boolean onBackPressedSupport() {
-        boolean isBack = mAgentWeb.back();
-        return isBack;
+//        boolean isBack = mAgentWeb.back();
+//        return isBack;
+        return false;
     }
 
     //跳转到详情页面
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void toBookMenuEvent(OpenWebViewEvent event) {
-        if (event.getMessage().equals(eventTAG) && event.getFragType().equals(fragType)){//通过eventTag判断哪个fragement过来的
-            if (event.getBean().getTitle().equals("我的书架")){
-                Intent intent = new Intent();
-                intent.putExtra("url", event.getBean().getUrl());
-                intent.putExtra("title", event.getBean().getTitle());
-                intent.setClass(getActivity(), MyBookShelfActivity.class);
-                startActivity(intent);
-            }else{
-                Intent intent = new Intent();
-                intent.putExtra("url", event.getBean().getUrl());
-                intent.putExtra("title", event.getBean().getTitle());
-                intent.setClass(getActivity(), BookMenuActivity.class);
-                startActivity(intent);
-            }
-        }
-
+    public void toBookMenuEvent(JSRecommentOpenWebViewEvent event) {
+        Intent intent = new Intent();
+        String url = AppConstant.YY_WEB_DETAIL;
+        intent.putExtra("url", event.getBean().getUrl());
+        intent.putExtra("url", url);
+        intent.putExtra("title", event.getBean().getTitle());
+        intent.putExtra("channel_itemid", event.getBean().getChannel_itemid());
+        intent.setClass(getActivity(), RecommendContentActivity.class);
+        startActivity(intent);
     }
+
+    //获取数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void toBookMenuEvent(JSRecommentRequest event) {
+        HomeAPI.getRecomHome(new JsonCallback<RecommendRequestBean>() {
+            @Override
+            public void onSuccess(Response<RecommendRequestBean> response) {
+                if (response.body().getResult() == 1000){
+                    RecommendRequestBean.DataBean bean = response.body().getData();
+
+                    String json = Convert.toJson(bean);
+
+                    mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                            .callJs_loadData,  json);
+                }
+            }
+
+            @Override
+            public void onError(Response<RecommendRequestBean> response) {
+                super.onError(response);
+            }
+        });
+    }
+
 }

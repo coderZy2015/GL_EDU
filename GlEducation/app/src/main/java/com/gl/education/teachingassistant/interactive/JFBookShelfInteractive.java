@@ -4,6 +4,7 @@ import android.content.Context;
 import android.webkit.JavascriptInterface;
 
 import com.gl.education.helper.Convert;
+import com.gl.education.home.event.JSJFFragmentRefreshViewEvent;
 import com.gl.education.home.model.JSOpenWebViewBean;
 import com.gl.education.teachingassistant.event.JSJFBookShelfOpenWebViewEvent;
 import com.just.agentweb.AgentWeb;
@@ -30,6 +31,13 @@ public class JFBookShelfInteractive {
         JSOpenWebViewBean bean = Convert.fromJson(json, JSOpenWebViewBean.class);
         JSJFBookShelfOpenWebViewEvent event = new JSJFBookShelfOpenWebViewEvent();
         event.setBean(bean);
+        EventBus.getDefault().post(event);
+    }
+
+    //刷新我的书架
+    @JavascriptInterface
+    public void refreshBookshelf(){
+        JSJFFragmentRefreshViewEvent event = new JSJFFragmentRefreshViewEvent();
         EventBus.getDefault().post(event);
     }
 }

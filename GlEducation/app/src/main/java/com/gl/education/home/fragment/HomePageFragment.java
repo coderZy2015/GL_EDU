@@ -8,17 +8,20 @@ import android.support.v4.view.ViewPager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.home.activity.ChannelActivity;
+import com.gl.education.home.activity.MyMessageActivity;
 import com.gl.education.home.activity.SearchActivity;
 import com.gl.education.home.adapter.FragPagerAdapter;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.event.OpenJFChannelEvent;
 import com.gl.education.home.event.UpdateChannelEvent;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.presenter.HomePagePresenter;
+import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.home.view.HomePageView;
+import com.gl.education.login.LoginInfoActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,6 +51,9 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
 
     @BindView(R.id.btn_search)
     TextView btn_search;
+
+    @BindView(R.id.home_notify)
+    RelativeLayout home_notify;
 
     /**
      * 记录频道排序
@@ -81,8 +87,8 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
 
         //后台登陆
         if (!AppCommonData.loginBackground){
-            //mPresenter.autoLogin();
-            mPresenter.getUserChannelGrade();
+            mPresenter.autoLogin();
+            //mPresenter.getUserChannelGrade();
         }else{
             mPresenter.getUserChannelGrade();
         }
@@ -119,6 +125,11 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
 
     @OnClick(R.id.home_add_channel)
     public void onClickAdd(){
+
+        if (ButtonUtils.isFastDoubleClick(R.id.home_add_channel)){
+            return;
+        }
+
         Intent intent = new Intent();
         intent.setClass(_mActivity, ChannelActivity.class);
         intent.putExtra("from", ChannelActivity.FROM_MAIN);
@@ -129,8 +140,27 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
 
     @OnClick(R.id.btn_search)
     public void intoSearchView(){
+        if (ButtonUtils.isFastDoubleClick(R.id.btn_search)){
+            return;
+        }
         Intent intent = new Intent();
         intent.setClass(getActivity(), SearchActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.home_notify)
+    public void home_notify(){
+        if (ButtonUtils.isFastDoubleClick(R.id.home_notify)){
+            return;
+        }
+        if (!AppCommonData.isLogin){
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), LoginInfoActivity.class);
+            startActivity(intent);
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), MyMessageActivity.class);
         startActivity(intent);
     }
 
@@ -151,7 +181,17 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
                 }
             }, 100);
         }
+    }
+    //更新频道信息
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void openJF(OpenJFChannelEvent event) {
 
+        mTab.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTab.getTabAt(2).select();
+            }
+        }, 100);
     }
 
     @Override
@@ -161,15 +201,6 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
         mFragShowIdList.addAll(_mFragShowIdList);
         adapter.notifyDataSetChanged();
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null){
-            int postion = data.getIntExtra("tabId", -1);
-        }
-        LogUtils.d("requestCode = "+requestCode+"  resultCode = "+resultCode);
     }
 
 }

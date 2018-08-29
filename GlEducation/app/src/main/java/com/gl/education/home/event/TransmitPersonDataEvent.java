@@ -7,6 +7,24 @@ package com.gl.education.home.event;
 public class TransmitPersonDataEvent {
     String url;
     String nickName;
+    String phone;
+    String xb;
+
+    public String getXb() {
+        return xb;
+    }
+
+    public void setXb(String xb) {
+        this.xb = xb;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public String getUrl() {
         return url;

@@ -18,11 +18,14 @@ import com.gl.education.helper.DialogHelper;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.OpenCameraEvent;
 import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.fragment.HomePageFragment;
 import com.gl.education.home.fragment.MineFragment;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -65,7 +68,7 @@ public class HomePageActivity extends BaseActivity {
 
     @Override
     public void initView() {
-
+        EventBus.getDefault().register(this);
         BaseFragment firstFragment = findFragment(HomePageFragment.class);
         if (firstFragment == null) {
             mFragments[FIRST] = HomePageFragment.newInstance();
@@ -82,6 +85,13 @@ public class HomePageActivity extends BaseActivity {
             mFragments[SECOND] = findFragment(MineFragment.class);
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 注册订阅者
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -163,5 +173,12 @@ public class HomePageActivity extends BaseActivity {
                     }
                 })
                 .request();
+    }
+
+    //打开摄像机
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void openCamera(OpenCameraEvent event) {
+        Intent intent = new Intent(HomePageActivity.this, CameraActivity.class);
+        startActivity(intent);
     }
 }

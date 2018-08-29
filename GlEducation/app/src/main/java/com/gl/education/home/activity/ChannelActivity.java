@@ -16,6 +16,7 @@ import com.gl.education.home.helper.ItemDragHelperCallback;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.presenter.ChannelPresenter;
 import com.gl.education.home.view.ChannelView;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,6 +47,8 @@ public class ChannelActivity extends BaseActivity<ChannelView, ChannelPresenter>
     private ChannelAdapter adapter;
 
     public int openFrom = -1;
+
+    private Loading_view loading;
 
     @Override
     protected int provideContentViewId() {
@@ -79,6 +82,7 @@ public class ChannelActivity extends BaseActivity<ChannelView, ChannelPresenter>
     @Override
     public void initView() {
         super.initView();
+        loading = new Loading_view(this, com.uuzuche.lib_zxing.R.style.CustomDialog);
 
         Intent intent = getIntent();
         openFrom = intent.getIntExtra("from", -1);
@@ -89,7 +93,7 @@ public class ChannelActivity extends BaseActivity<ChannelView, ChannelPresenter>
         else if (openFrom == FROM_MAIN){
             channel_title.setText("频道选择");
         }
-
+        loading.show();
         mPresenter.getAllChannel(openFrom);
 
         GridLayoutManager manager = new GridLayoutManager(this, 4);
@@ -146,11 +150,11 @@ public class ChannelActivity extends BaseActivity<ChannelView, ChannelPresenter>
         myChannelList.addAll(mList);
         otherChannelList.addAll(oList);
         adapter.notifyDataSetChanged();
-
+        loading.dismiss();
     }
 
     @Override
     public void getChannelDataErroer() {
-
+        loading.dismiss();
     }
 }

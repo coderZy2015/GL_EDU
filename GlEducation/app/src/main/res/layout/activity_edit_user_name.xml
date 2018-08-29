@@ -68,6 +68,8 @@
             android:layout_weight="3"
             android:textSize="16dp"
             android:maxEms="20"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:background="@null"
             android:paddingLeft="10dp"
             android:hint="@string/edit_person_name"

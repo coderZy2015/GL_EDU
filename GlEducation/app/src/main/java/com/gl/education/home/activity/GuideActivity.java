@@ -1,13 +1,12 @@
 package com.gl.education.home.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -23,14 +22,6 @@ import com.gl.education.home.view.GuideView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpHeaders;
 
-import net.lucode.hackware.magicindicator.MagicIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.BezierPagerIndicator;
-import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ClipPagerTitleView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +36,18 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    @BindView(R.id.btn_enter)
-    Button guide_start;
+    @BindView(R.id.guide_btn)
+    TextView guide_start;
 
-    @BindView(R.id.bottom_indicator)
-    MagicIndicator magicIndicator;
+    @BindView(R.id.main_linear)
+    LinearLayout mLinearLayout;
 
     private ArrayList<Integer> imageList;
-    private List<View> pages;
+    //ImageView动态数组
+    private List<ImageView> mImageViewList = new ArrayList<ImageView>();
+    private int mNum = 0;
+
+    private boolean clickLogin = false;
 
     @Override
     protected GuidePresenter createPresenter() {
@@ -87,10 +82,40 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
         imageList.add(R.drawable.open2);
         imageList.add(R.drawable.open3);
         imageList.add(R.drawable.open4);
-        pages = getPages();
-
+        getData();
         initViewPager();
-        initIndicator();
+
+        //第一次显示小白点
+        mLinearLayout.getChildAt(0).setEnabled(true);
+    }
+
+    /**
+     * 获取数据
+     */
+    private void getData() {
+        //设置图片
+        ImageView imageView;
+        View view;
+        for (int pic : imageList) {
+            imageView = new ImageView(GuideActivity.this);
+            imageView.setBackgroundResource(pic);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //添加到数组
+            mImageViewList.add(imageView);
+
+            //创建底部指示器(小圆点)
+            view = new View(GuideActivity.this);
+            view.setBackgroundResource(R.drawable.background);
+            view.setEnabled(false);
+            //设置宽高
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(20, 20);
+            //设置间隔
+            if (pic != imageList.get(0)) {
+                layoutParams.leftMargin = 10;
+            }
+            //添加到LinearLayout
+            mLinearLayout.addView(view, layoutParams);
+        }
     }
 
     private List<View> getPages() {
@@ -108,16 +133,19 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
 
     public void initViewPager(){
         viewPager = (ViewPager) findViewById(R.id.view_pager);
-        PagerAdapter adapter = new GuidePageAdapter(pages);
+        PagerAdapter adapter = new GuidePageAdapter(mImageViewList);
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
+                mLinearLayout.getChildAt(mNum).setEnabled(false);
+                mLinearLayout.getChildAt(position).setEnabled(true);
+                mNum = position;
+
                 if (position == imageList.size()-1){
                     guide_start.setVisibility(View.VISIBLE);
                 }else{
@@ -132,67 +160,14 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
         });
     }
 
-    private void initIndicator() {
-
-        final CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
-
-            @Override
-            public int getCount() {
-                return imageList == null ? 0 : imageList.size();
-            }
-
-            @Override
-            public IPagerTitleView getTitleView(Context context, int i) {
-                ClipPagerTitleView clipPagerTitleView = new ClipPagerTitleView(context);
-
-                clipPagerTitleView.setText("");
-                clipPagerTitleView.setTextColor(Color.parseColor("#f2c4c4"));
-                clipPagerTitleView.setClipColor(Color.WHITE);
-
-                clipPagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        viewPager.setCurrentItem(i);
-                    }
-                });
-                return clipPagerTitleView;
-            }
-
-            @Override
-            public IPagerIndicator getIndicator(Context context) {
-                BezierPagerIndicator indicator = new BezierPagerIndicator(context);
-                indicator.setColors(Color.parseColor("#ff4a42"), Color.parseColor("#fcde64"), Color.parseColor("#73e8f4"), Color.parseColor("#76b0ff"), Color.parseColor("#c683fe"));
-                return indicator;
-            }
-        });
-        magicIndicator.setNavigator(commonNavigator);
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                magicIndicator.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                magicIndicator.onPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                magicIndicator.onPageScrollStateChanged(state);
-            }
-        });
-
-        viewPager.setCurrentItem(1);
-
-    }
-
-
-    @OnClick(R.id.btn_enter)
+    @OnClick(R.id.guide_btn)
     public void onClick(){
+        if (clickLogin){
+            return;
+        }
+        if (!clickLogin){
+            clickLogin = true;
+        }
 
         String token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN, "");
 
@@ -219,30 +194,25 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
 
     @Override
     public void getTokenSuccess(ApplyTokenBean bean) {
-        if (bean != null){
-            if (bean.getData() != null){
-                SPUtils.getInstance().put(AppConstant.SP_TOKEN, bean.getData().getToken());
+        SPUtils.getInstance().put(AppConstant.SP_TOKEN, bean.getData().getToken());
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.put("GL-Token", bean.getData().getToken());
-                OkGo.getInstance().addCommonHeaders(headers);
+        HttpHeaders headers = new HttpHeaders();
+        headers.put("GL-Token", bean.getData().getToken());
+        OkGo.getInstance().addCommonHeaders(headers);
 
-                boolean firstEnter = SPUtils.getInstance().getBoolean(AppConstant.SP_FIRST_ENTER, true);
-                if (firstEnter){
-                    AppCommonData.loginBackground = true;
-                    Intent intent = new Intent();
-                    intent.setClass(this, ChannelActivity.class);
-                    intent.putExtra("from",ChannelActivity.FROM_BEGIN);
-                    startActivity(intent);
-                    finish();
-                }else{
-                    Intent intent = new Intent();
-                    intent.setClass(this, HomePageActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
+        boolean firstEnter = SPUtils.getInstance().getBoolean(AppConstant.SP_FIRST_ENTER, true);
+        if (firstEnter){
+            AppCommonData.loginBackground = true;
+            Intent intent = new Intent();
+            intent.setClass(this, ChannelActivity.class);
+            intent.putExtra("from",ChannelActivity.FROM_BEGIN);
+            startActivity(intent);
+            finish();
+        }else{
+            Intent intent = new Intent();
+            intent.setClass(this, HomePageActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 

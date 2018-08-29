@@ -4,6 +4,7 @@ import android.content.Context;
 import android.webkit.JavascriptInterface;
 
 import com.gl.education.helper.Convert;
+import com.gl.education.home.event.JSJFDropDownEvent;
 import com.gl.education.home.event.JSJFFragmentOpenWebViewEvent;
 import com.gl.education.home.model.JSOpenWebViewBean;
 import com.just.agentweb.AgentWeb;
@@ -38,6 +39,12 @@ public class JFFragInteractive {
         JSOpenWebViewBean bean = Convert.fromJson(json, JSOpenWebViewBean.class);
         JSJFFragmentOpenWebViewEvent event = new JSJFFragmentOpenWebViewEvent();
         event.setBean(bean);
+        EventBus.getDefault().post(event);
+    }
+    //下拉刷新
+    @JavascriptInterface
+    public void dropDownRefresh(){
+        JSJFDropDownEvent event = new JSJFDropDownEvent();
         EventBus.getDefault().post(event);
     }
 

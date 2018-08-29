@@ -11,8 +11,10 @@ import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.model.GetDbCountBean;
+import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.widget.RoundImageView;
 import com.lzy.okgo.model.Response;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -24,6 +26,7 @@ public class MyWalletActivity extends BaseActivity {
 
     @BindView(R.id.btn_back)
     RelativeLayout btn_back;
+
     @BindView(R.id.wallet_bar)
     RoundImageView wallet_bar;
 
@@ -32,6 +35,15 @@ public class MyWalletActivity extends BaseActivity {
 
     @BindView(R.id.btn_wallet_transaction)
     LinearLayout btn_wallet_transaction;//交易记录
+
+    @BindView(R.id.btn_recharge_center)
+    LinearLayout btn_recharge_center;//充值中心
+
+    @BindView(R.id.btn_wallet_recharge)
+    LinearLayout btn_wallet_recharge;//充值记录
+
+
+    private Loading_view loading;
 
     @Override
     protected BasePresenter createPresenter() {
@@ -52,25 +64,57 @@ public class MyWalletActivity extends BaseActivity {
     public void initView() {
         super.initView();
         wallet_bar.setType(RoundImageView.TYPE_ROUND);
-
+        loading = new Loading_view(this, com.uuzuche.lib_zxing.R.style.CustomDialog);
+        loading.show();
         HomeAPI.dbAmount(new JsonCallback<GetDbCountBean>() {
             @Override
             public void onSuccess(Response<GetDbCountBean> response) {
+                loading.dismiss();
                 if (response.body().getResult() == 1000){
                     double count = response.body().getData().getDbcount();
                     wallet_num.setText(""+count);
                 }
 
             }
+
+            @Override
+            public void onError(Response<GetDbCountBean> response) {
+                super.onError(response);
+                loading.dismiss();
+            }
         });
     }
 
     @OnClick(R.id.btn_wallet_transaction)
     public void intoTransaction(){
+        if ( ButtonUtils.isFastDoubleClick(R.id.btn_wallet_transaction)){
+            return;
+        }
         Intent intent = new Intent();
         intent.setClass(this, TransactionActivity.class);
         startActivity(intent);
     }
+
+    @OnClick(R.id.btn_wallet_recharge)
+    public void intoRecharge(){
+        if ( ButtonUtils.isFastDoubleClick(R.id.btn_wallet_recharge)){
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, RechargeRecordActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_recharge_center)
+    public void intoRechargeCenter(){
+        if ( ButtonUtils.isFastDoubleClick(R.id.btn_recharge_center)){
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, RechargeCenterActivity.class);
+        startActivity(intent);
+    }
+
 
     @OnClick(R.id.btn_back)
     public void onBack(){

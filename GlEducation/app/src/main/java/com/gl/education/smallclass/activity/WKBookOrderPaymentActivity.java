@@ -21,6 +21,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 订单支付
+ */
 public class WKBookOrderPaymentActivity extends BaseActivity {
 
     @BindView(R.id.web_container)
@@ -102,11 +105,20 @@ public class WKBookOrderPaymentActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSWKBookOrderPaymentOpenWebViewEvent event) {
-        Intent intent = new Intent();
-        intent.putExtra("url", event.getBean().getUrl());
-        intent.putExtra("title", event.getBean().getTitle());
-        intent.setClass(this, WKBookBuySuccessActivity.class);
-        startActivity(intent);
+        if (event.getBean().getTitle().equals("充值")){
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, WKBookRechargeAactivity.class);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, WKBookBuySuccessActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

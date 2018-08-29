@@ -62,6 +62,11 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop" />
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- 微信E -->
 
         <activity
@@ -86,23 +91,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".home.activity.PersonDataActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyWalletActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.TransactionActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyCompositionActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.SearchActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyBookShelfActivity" />
-        <activity android:name=".home.activity.EditUserNameActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyClassCollectionActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.BookDetailActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
+        <activity
+            android:name=".home.activity.PersonDataActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyWalletActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.TransactionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyCompositionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.SearchActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.EditUserNameActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyClassCollectionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.BookDetailActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
             android:name=".teachingassistant.activity.JFBookMenuActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
@@ -139,52 +151,87 @@
         <activity
             android:name=".teachingassistant.activity.JFBookWKActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".teachingassistant.activity.JFBookOrderPaymentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingassistant.activity.JFBookPackageBuyActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingassistant.activity.JFBookRechargeAactivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingassistant.activity.JFBookPaySuccessActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingassistant.activity.JFBookBuySuccessActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingmaterial.activity.JCBookOrderPaymentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingmaterial.activity.JCBookBuySuccessActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingmaterial.activity.JCBookRechargeAactivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".smallclass.activity.WKBookOrderPaymentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".smallclass.activity.WKBookRechargeAactivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".smallclass.activity.WKBookBuySuccessActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".smallclass.activity.WKBookBetterClassActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".teachingmaterial.activity.JCBookPaySuccessActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".smallclass.activity.WKBookPaySuccessActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.SearchResultActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyMessageActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyJCCollectionActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyJFCollectionActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.MyWKCollectionActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.InstallActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".home.activity.WrongTopicBookActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".camera.activity.CameraResultISBNActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
-        <activity android:name=".camera.activity.CameraResultSMActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
+        <activity
+            android:name=".teachingassistant.activity.JFBookOrderPaymentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingassistant.activity.JFBookPackageBuyActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingassistant.activity.JFBookRechargeAactivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingassistant.activity.JFBookPaySuccessActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingassistant.activity.JFBookBuySuccessActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingmaterial.activity.JCBookOrderPaymentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingmaterial.activity.JCBookBuySuccessActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingmaterial.activity.JCBookRechargeAactivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".smallclass.activity.WKBookOrderPaymentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".smallclass.activity.WKBookRechargeAactivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".smallclass.activity.WKBookBuySuccessActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".smallclass.activity.WKBookBetterClassActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".teachingmaterial.activity.JCBookPaySuccessActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".smallclass.activity.WKBookPaySuccessActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.SearchResultActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyMessageActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyJCCollectionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyJFCollectionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.MyWKCollectionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.InstallActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".home.activity.WrongTopicBookActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".camera.activity.CameraResultISBNActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".camera.activity.CameraResultSMActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".home.activity.MyZXCollectionActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".home.activity.RecommendContentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".camera.activity.CameraFinishExplainActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".home.activity.RechargeCenterActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".home.activity.RechargeRecordActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".home.activity.EditXbActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
     </application>
 
 </manifest>

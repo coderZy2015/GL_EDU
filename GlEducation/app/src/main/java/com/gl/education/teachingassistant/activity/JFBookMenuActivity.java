@@ -11,11 +11,11 @@ import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.model.JSLoginSuccess;
+import com.gl.education.login.LoginInfoActivity;
 import com.gl.education.teachingassistant.event.JSJFBookBuySuccessFinishEvent;
 import com.gl.education.teachingassistant.event.JSJFBookMenuLoginEvent;
 import com.gl.education.teachingassistant.event.JSJFBookMenuOpenWebViewEvent;
 import com.gl.education.teachingassistant.interactive.JFBookMenuInteractive;
-import com.gl.education.login.LoginInfoActivity;
 import com.just.agentweb.AgentWeb;
 
 import org.greenrobot.eventbus.EventBus;

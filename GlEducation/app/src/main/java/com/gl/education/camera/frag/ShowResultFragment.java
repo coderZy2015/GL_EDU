@@ -1,5 +1,6 @@
 package com.gl.education.camera.frag;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -7,24 +8,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppConstant;
+import com.gl.education.camera.activity.CameraFinishExplainActivity;
 import com.gl.education.camera.activity.PhotographResultBean;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.home.utlis.CustomViewPager;
 import com.gl.education.home.utlis.ImageLoader;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by zy on 2018/6/29.
  */
 
 public class ShowResultFragment extends BaseFragment {
-
-    public static final String DownloadPic_Url = "http://jiaofu-image.oss-cn-qingdao.aliyuncs.com";
 
     @BindView(R.id.ques_container)
     LinearLayout ques_container;
@@ -34,6 +38,15 @@ public class ShowResultFragment extends BaseFragment {
 
     @BindView(R.id.answer_text)
     TextView answer_text;
+
+    @BindView(R.id.layout_into_content)
+    RelativeLayout layout_into_content;
+
+    @BindView(R.id.btn_into_content)
+    ImageView btn_into_content;
+
+    @BindView(R.id.text_introduce)
+    TextView text_introduce;
 
     PhotographResultBean.DataBean dataBean;
     private boolean isLast = false;
@@ -50,12 +63,6 @@ public class ShowResultFragment extends BaseFragment {
 
         frag.setArguments(b);
         return frag;
-    }
-
-    public void setViewPagerID(CustomViewPager vp, int fragmentID)
-    {
-        this.vp = vp;
-        this.fragmentID =fragmentID;
     }
 
     @Override
@@ -95,6 +102,27 @@ public class ShowResultFragment extends BaseFragment {
               }
         }
 
+        String vedio_num = dataBean.getVideo_num().trim();
+
+        if (vedio_num.length() < 4){
+            text_introduce.setText("本题提供举一反三和微课");
+        }else{
+            text_introduce.setText("本题提供视频讲解、举一反三和微课");
+        }
+
+    }
+
+    @OnClick(R.id.btn_into_content)
+    public void intoJJ(){
+        if (ButtonUtils.isFastDoubleClick(R.id.btn_into_content)){
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), CameraFinishExplainActivity.class);
+        intent.putExtra("qesid", ""+dataBean.getQues_id());
+        intent.putExtra("catalogid", dataBean.getCatalog_id());
+        startActivity(intent);
     }
 
     @Override
@@ -116,7 +144,7 @@ public class ShowResultFragment extends BaseFragment {
 
         ImageView newImg = new ImageView(getContext());
         //设置想要的图片，相当于android:src="@drawable/image"
-        ImageLoader.loadImage(getActivity(), DownloadPic_Url + url, newImg);
+        ImageLoader.loadImage(getActivity(), AppConstant.Camera_search_url + url, newImg);
         //设置子控件在父容器中的位置布局，wrap_content,match_parent
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,

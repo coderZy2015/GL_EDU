@@ -21,12 +21,12 @@ import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gl.education.R;
-import com.gl.education.app.HomeAPI;
 import com.gl.education.app.AppCommonData;
+import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.activity.ChannelActivity;
 import com.gl.education.home.activity.HomePageActivity;
-import com.gl.education.home.event.UpdateChannelEvent;
+import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.helper.OnDragVHListener;
 import com.gl.education.home.helper.OnItemMoveListener;
 import com.gl.education.home.model.ChannelEntity;
@@ -293,9 +293,8 @@ public class ChannelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     }
                                     if (((ChannelActivity)mContext).openFrom == ChannelActivity.FROM_MAIN){
                                         AppCommonData.userGrade = selectGrade;
-                                        UpdateChannelEvent event = new UpdateChannelEvent();
-                                        event.setChannelList(mMyChannelItems);
-                                        event.setSelectChannel(-1);
+                                        ReloadChannelEvent event = new ReloadChannelEvent();
+
 //                                        //当前观看频道位置切换
 //                                        if (!mMyChannelItems.get(mPostion).getName().equals(mName)){
 //                                             for (int i=0; i<mMyChannelItems.size(); i++) {

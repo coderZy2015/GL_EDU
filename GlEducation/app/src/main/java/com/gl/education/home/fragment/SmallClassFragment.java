@@ -3,35 +3,25 @@ package com.gl.education.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
-import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.Convert;
-import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.JSWKDropDwonEvent;
 import com.gl.education.home.event.JSWKFragmentLoginEvent;
 import com.gl.education.home.event.JSWKFragmentOpenWebViewEvent;
-import com.gl.education.home.event.PayFinishEvent;
-import com.gl.education.home.event.PayMoneyEvent;
-import com.gl.education.home.event.UpdateChannelEvent;
-import com.gl.education.home.interactive.AndroidInteractive;
+import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.interactive.WKFragmentInteractive;
-import com.gl.education.home.model.AliPayOrderBean;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.model.JSLoginSuccess;
-import com.gl.education.home.model.JSPayInfoBean;
-import com.gl.education.home.model.JSPayOverBean;
-import com.gl.education.home.model.WXPreOrderBean;
 import com.gl.education.login.LoginInfoActivity;
-import com.gl.education.payInfo.MyALipayUtils;
-import com.gl.education.payInfo.MyWXPayUtils;
 import com.gl.education.smallclass.activity.WKBookBetterClassActivity;
 import com.gl.education.smallclass.activity.WKBookContentActivity;
 import com.gl.education.smallclass.activity.WKBookMenuActivity;
@@ -39,7 +29,10 @@ import com.gl.education.smallclass.activity.WKBookOrderPaymentActivity;
 import com.gl.education.smallclass.activity.WKBookShelfActivity;
 import com.gl.education.smallclass.event.JSWKBookBuySuccessFinishEvent;
 import com.just.agentweb.AgentWeb;
-import com.lzy.okgo.model.Response;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,13 +47,13 @@ import butterknife.BindView;
 
 public class SmallClassFragment extends BaseFragment {
 
-    //支付宝字段
-    private String AliPayEvenyStr;
-    //微信字段
-    private String WxPayEventStr;
-
     @BindView(R.id.web_container)
     LinearLayout web_container;
+
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout refreshLayout;
+
+    private boolean isCanDropDown = false;
 
     protected AgentWeb mAgentWeb;
 
@@ -106,7 +99,6 @@ public class SmallClassFragment extends BaseFragment {
         }
 
         url = channelEntity.getUrl();
-
     }
 
     @Override
@@ -122,9 +114,8 @@ public class SmallClassFragment extends BaseFragment {
 
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
-        LogUtils.d("token");
-        AliPayEvenyStr = eventTAG + AndroidInteractive.callApp_toAliPayMoney;
-        WxPayEventStr = eventTAG + AndroidInteractive.callApp_toWXPayMoney;
+
+        //url = "http://appstuweb.hebeijiaoyu.cn/#/weike";
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
@@ -144,12 +135,39 @@ public class SmallClassFragment extends BaseFragment {
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new WKFragmentInteractive(mAgentWeb,
                 getActivity()));
 
+        refreshLayout.setEnableLoadMore(false);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                isCanDropDown = false;
+            }
+        });
+
+        refreshLayout.setScrollBoundaryDecider(new ScrollBoundaryDecider() {
+            @Override
+            public boolean canRefresh(View content) {
+                if (isCanDropDown){
+                    isCanDropDown = false;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean canLoadMore(View content) {
+                return false;
+            }
+        });
     }
 
     @Override
     public boolean onBackPressedSupport() {
         boolean isBack = false;
-        isBack = mAgentWeb.back();
+
+        if (mAgentWeb!= null)
+            isBack = mAgentWeb.back();
 
         return isBack;
     }
@@ -195,121 +213,28 @@ public class SmallClassFragment extends BaseFragment {
         mAgentWeb.getWebCreator().getWebView().reload();    //刷新
     }
 
-
     //跳转到登录页面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toLogin(JSWKFragmentLoginEvent event) {
         Intent intent = new Intent();
         intent.setClass(getActivity(), LoginInfoActivity.class);
-        startActivityForResult(intent, 103);
+        startActivityForResult(intent, 100);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 103) {
+        if (requestCode == 100) {
 
             if (data != null) {
-
                 String token = data.getStringExtra("token");
                 JSLoginSuccess loginS = new JSLoginSuccess();
                 loginS.setGuid(token);
                 String json = Convert.toJson(loginS);
 
-                mAgentWeb.getJsAccessEntrace().quickCallJs(AndroidInteractive
+                LogUtils.d("onActivityResult");
+                mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
                         .callJs_login, json);
-            }
-
-        }
-    }
-
-    //支付结束  通知js
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void payOver(PayFinishEvent event) {
-        if (event.getMessage().equals(eventTAG)) {
-
-            JSPayOverBean bean = new JSPayOverBean();
-            bean.setOrderId(event.getOrderId());
-            bean.setStatus("" + event.getResult());
-            String json = Convert.toJson(bean);
-
-            LogUtils.d(json);
-
-            mAgentWeb.getJsAccessEntrace().quickCallJs(AndroidInteractive.callJs_payInfo, json);
-
-        }
-    }
-
-
-    //发起支付请求   获取预订单  调起支付宝
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPayMoneyEvent(PayMoneyEvent event) {
-
-        if (event.getMessage().equals(AliPayEvenyStr)) {
-            JSPayInfoBean bean = event.getBean();
-            if (bean != null) {
-                HomeAPI.getAlipayOrder(bean.getPrice(), new JsonCallback<AliPayOrderBean>() {
-                    @Override
-                    public void onSuccess(Response<AliPayOrderBean> response) {
-                        AliPayOrderBean responseData = response.body();
-
-                        try {
-                            if (responseData.getResult() == 1000){
-                                MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
-                                String orderId = responseData.getData().getOrderid();
-                                builder.build(eventTAG, orderId).toALiPay(getActivity(), responseData.getData().getOrderStr());
-                            }else{
-
-                                ToastUtils.showShort("创建订单出现问题");
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            ToastUtils.showShort("支付出现问题，请更换支付方式");
-                        }
-
-                    }
-                });
-            }
-
-        } else if (event.getMessage().equals(WxPayEventStr)) {
-            JSPayInfoBean bean = event.getBean();
-            if (bean != null) {
-                HomeAPI.getWxOrder(bean.getPrice(), new JsonCallback<WXPreOrderBean>() {
-
-                    @Override
-                    public void onSuccess(Response<WXPreOrderBean> response) {
-                        WXPreOrderBean wxPreOrderBean = response.body();
-                        if (wxPreOrderBean != null){
-                            try {
-                                String orderId = wxPreOrderBean.getData().getOrderid();
-                                String appId = wxPreOrderBean.getData().getOrderStr().getAppid();
-                                String partnerId = wxPreOrderBean.getData().getOrderStr()
-                                        .getPartnerid();
-                                String prepayId = wxPreOrderBean.getData().getOrderStr().getPrepayid();
-                                String nonceStr = wxPreOrderBean.getData().getOrderStr().getNoncestr();
-                                String timestamp = "" + wxPreOrderBean.getData().getOrderStr()
-                                        .getTimestamp();
-                                String sgin = wxPreOrderBean.getData().getOrderStr().getSign();
-
-                                MyWXPayUtils.WXPayBuilder builder = new MyWXPayUtils
-                                        .WXPayBuilder();
-                                builder.setAppId(appId)
-                                        .setPartnerId(partnerId)
-                                        .setPrepayId(prepayId)
-                                        .setPackageValue("Sign=WXPay")
-                                        .setNonceStr(nonceStr)
-                                        .setTimeStamp(timestamp)
-                                        .setSign(sgin)
-                                        .build(eventTAG, orderId).toWXPayNotSign(getActivity(), appId);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                ToastUtils.showShort("支付出现问题，请更换支付方式");
-                            }
-                        }
-                    }
-                });
-
             }
 
         }
@@ -317,7 +242,16 @@ public class SmallClassFragment extends BaseFragment {
 
     //更新频道信息
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateChannelData(UpdateChannelEvent event) {
-        mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+    public void updateChannelData(ReloadChannelEvent event) {
+        token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
+        token = "?token="+token+"&grade="+ AppCommonData.userGrade;
+        mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
     }
+
+    //下拉刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void dropDownEvent(JSWKDropDwonEvent event) {
+        isCanDropDown = true;
+    }
+
 }

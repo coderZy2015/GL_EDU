@@ -1,7 +1,6 @@
 package com.gl.education.smallclass.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,24 +51,18 @@ public class WKBookRechargeAactivity extends BaseActivity {
     public String bookTitle = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wkbook_recharge_aactivity);
-    }
-
-    @Override
     protected BasePresenter createPresenter() {
         return null;
     }
 
     @Override
     protected int provideContentViewId() {
-        return 0;
+        return R.layout.activity_wkbook_recharge_aactivity;
     }
 
     @Override
     protected String setIdentifier() {
-        return null;
+        return "WKBookRechargeAactivity";
     }
 
     @Override

@@ -11,7 +11,6 @@ import com.lzy.okgo.model.Response;
 /**
  * Created by zy on 2018/6/28.
  */
-
 public class RegisterPresenter extends BasePresenter<RegisterView> {
 
     public void getIdentifyCode(String username, String func){
@@ -34,9 +33,9 @@ public class RegisterPresenter extends BasePresenter<RegisterView> {
             }
         });
     }
-
     
     public void toRegister(String username, String password, String identifyCode){
+
         HomeAPI.register(username, password, identifyCode, new JsonCallback<RegisterBean>() {
             @Override
             public void onSuccess(Response<RegisterBean> response) {
@@ -49,6 +48,21 @@ public class RegisterPresenter extends BasePresenter<RegisterView> {
                 }
             }
         });
-
     }
+
+    public void toWXRegister(String username, String password, String identifyCode, String unid){
+        HomeAPI.registWechat(username, password, identifyCode, unid, new JsonCallback<RegisterBean>() {
+            @Override
+            public void onSuccess(Response<RegisterBean> response) {
+                RegisterBean responseData = response.body();
+
+                if (responseData.getResult() == 1000){
+                    getView().registerWXSuccess(responseData);
+                }else{
+                    getView().registerWXFail(responseData.getMessage());
+                }
+            }
+        });
+    }
+
 }

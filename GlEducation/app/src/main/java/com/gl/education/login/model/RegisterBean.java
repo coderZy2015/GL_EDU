@@ -8,10 +8,11 @@ import java.io.Serializable;
 
 public class RegisterBean implements Serializable {
 
+
     /**
      * result : 1000
      * message : 注册成功
-     * data : {"userid":44096,"guid":"94da8318-79dc-11e8-80a4-7200073c8a50"}
+     * data : {"token":"a98523560ee211596074dd2b7480e078de8e20ab"}
      */
 
     private int result;
@@ -44,27 +45,17 @@ public class RegisterBean implements Serializable {
 
     public static class DataBean {
         /**
-         * userid : 44096
-         * guid : 94da8318-79dc-11e8-80a4-7200073c8a50
+         * token : a98523560ee211596074dd2b7480e078de8e20ab
          */
 
-        private int userid;
-        private String guid;
+        private String token;
 
-        public int getUserid() {
-            return userid;
+        public String getToken() {
+            return token;
         }
 
-        public void setUserid(int userid) {
-            this.userid = userid;
-        }
-
-        public String getGuid() {
-            return guid;
-        }
-
-        public void setGuid(String guid) {
-            this.guid = guid;
+        public void setToken(String token) {
+            this.token = token;
         }
     }
 }

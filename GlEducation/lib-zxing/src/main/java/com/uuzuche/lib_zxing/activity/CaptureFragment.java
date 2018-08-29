@@ -12,12 +12,12 @@ import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -37,6 +37,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
 
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
+    private ImageView btn_close;
     private boolean hasSurface;
     private Vector<BarcodeFormat> decodeFormats;
     private String characterSet;
@@ -88,14 +89,20 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         viewfinderView = (ViewfinderView) view.findViewById(R.id.viewfinder_view);
         surfaceView = (SurfaceView) view.findViewById(R.id.preview_view);
         surfaceHolder = surfaceView.getHolder();
-
+        btn_close = view.findViewById(R.id.btn_close);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("zy_code", "CaptureFragment onResume");
+
         if (hasSurface) {
             initCamera(surfaceHolder);
         } else {

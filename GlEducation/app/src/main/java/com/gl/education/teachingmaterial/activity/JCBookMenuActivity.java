@@ -11,11 +11,11 @@ import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.model.JSLoginSuccess;
+import com.gl.education.login.LoginInfoActivity;
 import com.gl.education.teachingmaterial.event.JSJCBookBuySuccessFinishEvent;
 import com.gl.education.teachingmaterial.event.JSJCBookMenuLoginEvent;
 import com.gl.education.teachingmaterial.event.JSJCBookMenuOpenWebViewEvent;
 import com.gl.education.teachingmaterial.interactive.JCBookMenuInteractive;
-import com.gl.education.login.LoginInfoActivity;
 import com.just.agentweb.AgentWeb;
 
 import org.greenrobot.eventbus.EventBus;
@@ -150,9 +150,9 @@ public class JCBookMenuActivity extends BaseActivity {
 
         }
     }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void paySuccess(JSJCBookBuySuccessFinishEvent event) {
         mAgentWeb.getWebCreator().getWebView().reload();    //刷新
     }
+
 }

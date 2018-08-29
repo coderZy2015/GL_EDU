@@ -4,6 +4,7 @@ import android.content.Context;
 import android.webkit.JavascriptInterface;
 
 import com.gl.education.helper.Convert;
+import com.gl.education.home.event.JSJCFragmentRefreshViewEvent;
 import com.gl.education.home.model.JSOpenWebViewBean;
 import com.gl.education.teachingmaterial.event.JSJCBookMenuLoginEvent;
 import com.gl.education.teachingmaterial.event.JSJCBookMenuOpenWebViewEvent;
@@ -37,6 +38,13 @@ public class JCBookMenuInteractive {
         JSOpenWebViewBean bean = Convert.fromJson(json, JSOpenWebViewBean.class);
         JSJCBookMenuOpenWebViewEvent event = new JSJCBookMenuOpenWebViewEvent();
         event.setBean(bean);
+        EventBus.getDefault().post(event);
+    }
+
+    //刷新我的书架
+    @JavascriptInterface
+    public void refreshBookshelf(){
+        JSJCFragmentRefreshViewEvent event = new JSJCFragmentRefreshViewEvent();
         EventBus.getDefault().post(event);
     }
 }

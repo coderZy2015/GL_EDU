@@ -27,8 +27,6 @@ import butterknife.OnClick;
  */
 public class MyJCCollectionActivity extends BaseActivity {
 
-    private final String url = "http://guanlin.gl.to3.cc/dist/#/jcwdsj";
-
     @BindView(R.id.web_container)
     LinearLayout web_container;
 
@@ -73,7 +71,7 @@ public class MyJCCollectionActivity extends BaseActivity {
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 .createAgentWeb()
                 .ready()
-                .go(url+token+grade);
+                .go(AppConstant.TH_MY_JIAOCAI + token + grade);
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示

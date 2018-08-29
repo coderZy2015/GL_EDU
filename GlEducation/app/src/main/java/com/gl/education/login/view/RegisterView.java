@@ -16,4 +16,8 @@ public interface RegisterView {
     void sendCode(IdentifyBean bean);
 
     void sendCodeError(String msg);
+
+    void registerWXSuccess(RegisterBean bean);
+
+    void registerWXFail(String msg);
 }

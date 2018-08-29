@@ -60,8 +60,8 @@ public class GetUserCenterDataBean implements Serializable {
         private String phone;
         private String username;
         private String grade;
-        private Object nick_name;
-        private Object xb;
+        private String nick_name;
+        private String xb;
         private String avatar;
         private int jiaocai;
         private int jiaofu;
@@ -92,19 +92,19 @@ public class GetUserCenterDataBean implements Serializable {
             this.grade = grade;
         }
 
-        public Object getNick_name() {
+        public String getNick_name() {
             return nick_name;
         }
 
-        public void setNick_name(Object nick_name) {
+        public void setNick_name(String nick_name) {
             this.nick_name = nick_name;
         }
 
-        public Object getXb() {
+        public String getXb() {
             return xb;
         }
 
-        public void setXb(Object xb) {
+        public void setXb(String xb) {
             this.xb = xb;
         }
 

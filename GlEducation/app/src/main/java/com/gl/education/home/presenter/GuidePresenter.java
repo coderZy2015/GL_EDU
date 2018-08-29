@@ -17,7 +17,10 @@ public class GuidePresenter extends BasePresenter<GuideView>{
         HomeAPI.applyToken(deviceId, new JsonCallback<ApplyTokenBean>() {
             @Override
             public void onSuccess(Response<ApplyTokenBean> response) {
-                getView().getTokenSuccess( response.body());
+                if (response.body().getResult() == 1000){
+                    getView().getTokenSuccess( response.body());
+                }
+
             }
 
             @Override

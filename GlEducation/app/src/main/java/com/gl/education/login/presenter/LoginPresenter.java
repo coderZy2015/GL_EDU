@@ -19,15 +19,17 @@ public class LoginPresenter extends BasePresenter<LoginView>{
             public void onSuccess(Response<LoginBean> response) {
                 LoginBean responseData = response.body();
 
-                if (responseData == null)
-                    return;
-
                 if (responseData.getResult() == 1000){
                     getView().loginSuccess(responseData);
                 }else{
-                    getView().loginFail(responseData.getMessage());
+                    getView().loginFail(responseData);
                 }
+            }
 
+            @Override
+            public void onError(Response<LoginBean> response) {
+                super.onError(response);
+                getView().loginFail(response.body());
             }
         });
     }

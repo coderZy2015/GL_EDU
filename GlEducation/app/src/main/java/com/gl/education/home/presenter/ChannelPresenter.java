@@ -44,13 +44,14 @@ public class ChannelPresenter extends BasePresenter<ChannelView> {
                     HomeAPI.getUserChannelGrade(callback);
 
                 } else {
-                    ToastUtils.showShort("");
+                    getView().getChannelDataErroer();
                 }
             }
 
             @Override
             public void onError(Response<GetAllChannelBean> response) {
                 super.onError(response);
+                getView().getChannelDataErroer();
             }
         });
     }
@@ -61,13 +62,12 @@ public class ChannelPresenter extends BasePresenter<ChannelView> {
             if (response.body().getResult() == 1000) {
                 AppCommonData.userGrade = response.body().getData().getGrade();
                 myChannelList = response.body().getData().getChannel_data();
-                if (myChannelList.size() == 0){
-                    initData();
-                }
 
+                initData();
                 removeRepeatView();//从全部频道中去除我的频道
                 getView().getChannelDataSuccess(myChannelList, otherChannelList);
             }else{
+                getView().getChannelDataErroer();
                 ToastUtils.showShort("获取频道失败");
             }
         }
@@ -75,12 +75,13 @@ public class ChannelPresenter extends BasePresenter<ChannelView> {
         @Override
         public void onError(Response<GetUserChannelGradeBean> response) {
             super.onError(response);
+            getView().getChannelDataErroer();
         }
     };
 
     //第一次进入默认添加4个频道
     public void initData(){
-
+        myChannelList.clear();
          for (int i=0; i<allChannelList.size(); i++){
              if (i<4){
                  myChannelList.add( allChannelList.get(i));

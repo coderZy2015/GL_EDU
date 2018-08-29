@@ -34,8 +34,10 @@
     <string name="mine_person_data">个人资料设置</string>
     <string name="mine_person_change">点击编辑头像</string>
     <string name="mine_person_name">&#160;&#160;昵称</string>
+    <string name="mine_person_xb">&#160;&#160;性别</string>
     <string name="edit_person_name">请输入4-20个字符</string>
     <string name="edit_user_title">修改昵称</string>
+    <string name="edit_xb_title">修改性别</string>
     <string name="mine_set">设置</string>
     <string name="mine_wrong_book">我的错题本</string>
     <string name="mine_person_sex">&#160;&#160;性别</string>
@@ -45,8 +47,9 @@
     <string name="mine_my_wallet_title">我的钱包</string>
     <string name="mine_my_composition_title">我的作文</string>
     <string name="mine_my_message_title">我的消息</string>
-
+    <string name="recharge_center_title">充值中心</string>
     <string name="mine_transaction_record_title">交易记录</string>
+    <string name="mine_recharge_record_title">充值记录</string>
     <string name="mine_my_wallet_bi">币</string>
     <string name="mine_my_wallet_account">账户余额</string>
     <string name="mine_my_wallet_voucher_center">&#160;&#160;充值中心</string>

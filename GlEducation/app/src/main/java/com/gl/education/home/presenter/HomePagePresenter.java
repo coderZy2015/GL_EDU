@@ -37,7 +37,6 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
                         SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
                         OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
                         AppCommonData.loginBackground = true;
-                        ToastUtils.showShort("登录成功 ");
 
                         getUserChannelGrade();
                     }else{

@@ -62,7 +62,7 @@ public class JCBookRechargeAactivity extends BaseActivity {
 
     @Override
     protected String setIdentifier() {
-        return null;
+        return "JCBookRechargeAactivity";
     }
 
     @Override

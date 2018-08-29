@@ -11,15 +11,15 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
 import com.gl.education.R;
+import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BaseActivity;
@@ -27,9 +27,12 @@ import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.TransmitPersonDataEvent;
 import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.model.UploadBean;
+import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.home.utlis.ImageLoader;
+import com.gl.education.login.LoginInfoActivity;
 import com.gl.education.widget.RoundImageView;
 import com.lzy.okgo.model.Response;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,23 +43,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 public class PersonDataActivity extends BaseActivity {
 
-    private final String downloadUrl = "http://gl-appres.oss-cn-qingdao.aliyuncs.com/";
-
     public static final Uri IMAGE_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     public static final String PATH = Environment.getExternalStorageDirectory().toString() +
             "/AndroidMedia/";
 
-    @BindView(R.id.spinner)
-    Spinner spinner;
     @BindView(R.id.mine_person)
     RoundImageView mine_person;
+
     @BindView(R.id.imageView)
     ImageView imageView;
 
@@ -65,9 +64,23 @@ public class PersonDataActivity extends BaseActivity {
     @BindView(R.id.edit_name)
     TextView edit_name;
 
+    @BindView(R.id.user_phone)
+    TextView user_phone;
+
+    @BindView(R.id.exit_account)
+    ImageView exit_count;
+
+    @BindView(R.id.change_password)
+    LinearLayout change_password;
+
+    @BindView(R.id.user_xb)
+    TextView user_xb;
+
     private String nickName = "";
     private String pic_url = "";
+    private String xb = "0";
 
+    private Loading_view loading;
     @Override
     protected BasePresenter createPresenter() {
         return null;
@@ -107,18 +120,9 @@ public class PersonDataActivity extends BaseActivity {
         super.initView();
         // 注册订阅者
         EventBus.getDefault().register(this);
-
+        loading = new Loading_view(this, com.uuzuche.lib_zxing.R.style.CustomDialog);
         mine_person.setType(RoundImageView.TYPE_CIRCLE);
 
-        //数据
-        ArrayList data_list = new ArrayList<String>();
-        data_list.add("男  ");
-        data_list.add("女  ");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data_list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //加载适配器
-        spinner.setAdapter(adapter);
     }
 
     @Override
@@ -130,21 +134,90 @@ public class PersonDataActivity extends BaseActivity {
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(TransmitPersonDataEvent event) {
-        if (!nickName.equals(""))
-            edit_name.setText("" + nickName);
-
-        if (pic_url.equals("")){
+        if (!event.getNickName().equals(""))
+            edit_name.setText("" + event.getNickName());
+            nickName = event.getNickName();
+        if (event.getUrl().equals("")){
             Glide.with(this).load(R.drawable.ic_photo).into(mine_person);
         }else{
-            ImageLoader.loadImage(this, downloadUrl+pic_url, mine_person);
+            ImageLoader.loadImage(this, AppConstant.downloadUrl + event.getUrl(), mine_person);
+        }
+
+        if (!event.getPhone().equals("")){
+            String mobile = event.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
+            user_phone.setText(""+mobile);
+        }
+
+        if (!event.getXb().equals("")){
+            String xb = event.getXb();
+            if (xb.equals("0")){
+                xb = "男";
+            }
+            if (xb.equals("1")){
+                xb = "女";
+            }
+            user_xb.setText(xb);
         }
     }
 
+    //更换账号
+    @OnClick(R.id.exit_account)
+    public void exitAccount(){
+        //loading.show();
+        Intent intent = new Intent();
+        intent.setClass(this, LoginInfoActivity.class);
+        startActivityForResult(intent, 1003);
+//        HomeAPI.logout(new JsonCallback<logoutBean>() {
+//            @Override
+//            public void onSuccess(Response<logoutBean> response) {
+//                loading.hide();
+//                UpdateUserDataEvent event = new UpdateUserDataEvent();
+//                EventBus.getDefault().post(event);
+//                finish();
+//            }
+//
+//            @Override
+//            public void onError(Response<logoutBean> response) {
+//                super.onError(response);
+//                ToastUtils.showShort("请检查网络连接");
+//                loading.hide();
+//            }
+//        });
+
+    }
+    //密码修改
+    @OnClick(R.id.change_password)
+    public void changePassword(){
+        if (ButtonUtils.isFastDoubleClick(R.id.change_password)){
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, LoginInfoActivity.class);
+        intent.putExtra("into", "forget");
+        startActivity(intent);
+    }
+    //名字修改
     @OnClick(R.id.edit_name)
     public void editName(){
+        if (ButtonUtils.isFastDoubleClick(R.id.edit_name)){
+            return;
+        }
         Intent intent = new Intent();
         intent.setClass(this, EditUserNameActivity.class);
+        intent.putExtra("xb", xb);
         startActivityForResult(intent, 1001);
+    }
+
+    //性别修改
+    @OnClick(R.id.user_xb)
+    public void editXb(){
+        if (ButtonUtils.isFastDoubleClick(R.id.edit_name)){
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, EditXbActivity.class);
+        intent.putExtra("username", nickName);
+        startActivityForResult(intent, 1002);
     }
 
     /*
@@ -191,13 +264,36 @@ public class PersonDataActivity extends BaseActivity {
                 }
             }
         }else if(requestCode == 1001){
-            if (data != null) {
-                //edit_name
+            if (data!=null){
+                String username = data.getStringExtra("userName");
+
+                edit_name.setText(username);
             }
+            //通知个人中心刷新
+            UpdateUserDataEvent event = new UpdateUserDataEvent();
+            EventBus.getDefault().post(event);
+        }else if(requestCode == 1002){
+            if (data!=null){
+               String xb = data.getStringExtra("xb");
+                if (xb.equals("0")){
+                    xb = "男";
+                }
+                if (xb.equals("1")){
+                    xb = "女";
+                }
+                user_xb.setText(xb);
+            }
+            //通知个人中心刷新
+            UpdateUserDataEvent event = new UpdateUserDataEvent();
+            EventBus.getDefault().post(event);
+        }else if(requestCode == 1003){
+            //通知个人中心刷新
+            UpdateUserDataEvent event = new UpdateUserDataEvent();
+            EventBus.getDefault().post(event);
+            finish();
         }
 
     }
-
 
     /**
      * 存储图像并将信息添加入媒体数据库
@@ -253,7 +349,6 @@ public class PersonDataActivity extends BaseActivity {
         mContentResolver.delete(uri, where, null);
 
     }
-
 
     /**
      * 图片的缩放方法

@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.ToastUtils;
@@ -20,11 +19,15 @@ import com.gl.education.R;
 import com.gl.education.camera.adapter.CameraSearchAdapter;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.OpenCameraEvent;
+import com.gl.education.home.event.OpenJFChannelEvent;
 import com.gl.education.home.utlis.MyViewPager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,12 +56,25 @@ public class CameraActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     MyViewPager mViewPager;
 
-    @BindView(R.id.camera_search_error)
-    TextView camera_search_error;
+    @BindView(R.id.camera_search_again)
+    ImageView camera_search_again;
+    @BindView(R.id.camera_search_in_jiaofu)
+    ImageView camera_search_in_jiaofu;
+
+    @BindView(R.id.layout_error)
+    RelativeLayout layout_error;
+
 
     private PhotographResultBean dataBean;
 
     ArrayList<String> mTitleDataList = new ArrayList<>();
+
+    private int[] tabIcons = {
+            R.drawable.select_tab1,
+            R.drawable.select_tab2,
+            R.drawable.select_tab3,
+            R.drawable.select_tab4
+    };
 
     @Override
     protected BasePresenter createPresenter() {
@@ -78,13 +94,11 @@ public class CameraActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-
         if (openCamera) {
             openCamera = false;
             Intent intent = new Intent(CameraActivity.this, CaptureActivity.class);
             startActivityForResult(intent, 0);
         }
-
     }
 
     @OnClick(R.id.c_result_close)
@@ -92,6 +106,7 @@ public class CameraActivity extends BaseActivity {
         onBackPressed();
         finish();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -129,10 +144,10 @@ public class CameraActivity extends BaseActivity {
                         if (bean != null) {
                             if (bean.getData() != null) {
                                 if (bean.getData().size() == 0) {
-                                    camera_search_error.setVisibility(View.VISIBLE);
+                                    layout_error.setVisibility(View.VISIBLE);
                                 }
                             } else {
-                                camera_search_error.setVisibility(View.VISIBLE);
+                                layout_error.setVisibility(View.VISIBLE);
                                 return;
                             }
 
@@ -148,7 +163,7 @@ public class CameraActivity extends BaseActivity {
                             }
 
                         } else {
-                            camera_search_error.setVisibility(View.VISIBLE);
+                            layout_error.setVisibility(View.VISIBLE);
                         }
 
                     } catch (JsonSyntaxException e) {
@@ -165,14 +180,15 @@ public class CameraActivity extends BaseActivity {
                         delFile(path);
                     }
 
-                    camera_search_error.setVisibility(View.VISIBLE);
+                    layout_error.setVisibility(View.VISIBLE);
                     Toast.makeText(CameraActivity.this, "搜索结果失败", Toast.LENGTH_LONG).show();
                 }
 
             }
         }
         else if(resultCode == SEARCHCOVER){//处理拍封面结果
-
+            layout_error.setVisibility(View.VISIBLE);
+            Toast.makeText(CameraActivity.this, "搜索结果失败", Toast.LENGTH_LONG).show();
         }
         else if(resultCode == SEARCHISBN){//扫ISBN结果
             //处理扫描结果（在界面上显示）
@@ -191,7 +207,7 @@ public class CameraActivity extends BaseActivity {
                     finish();
 
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                    camera_search_error.setVisibility(View.VISIBLE);
+                    layout_error.setVisibility(View.VISIBLE);
                     Toast.makeText(CameraActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
                 }
             }
@@ -206,7 +222,7 @@ public class CameraActivity extends BaseActivity {
                 }
                 if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
-
+                    ToastUtils.showShort(""+result);
                     Intent intent = new Intent();
                     intent.setClass(CameraActivity.this, CameraResultSMActivity.class);
                     intent.putExtra("id", result);
@@ -214,7 +230,7 @@ public class CameraActivity extends BaseActivity {
                     finish();
 
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                    camera_search_error.setVisibility(View.VISIBLE);
+                    layout_error.setVisibility(View.VISIBLE);
                     Toast.makeText(CameraActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
                 }
             }
@@ -222,31 +238,25 @@ public class CameraActivity extends BaseActivity {
     }
 
     public View getTabView(int position) {
-        View view = LayoutInflater.from(this).inflate(R.layout
-                .camera_result_layout, null);
-        ImageView iamge = view.findViewById(R.id.result_num);
-
-        switch (position) {
-            case 0:
-                iamge.setImageResource(R.drawable.result_1);
-                break;
-            case 1:
-                iamge.setImageResource(R.drawable.result_2);
-                break;
-            case 2:
-                iamge.setImageResource(R.drawable.result_3);
-                break;
-            case 3:
-                iamge.setImageResource(R.drawable.result_4);
-                break;
-            case 4:
-                iamge.setImageResource(R.drawable.result_5);
-                break;
-            default:
-                break;
-        }
-
+        View view = LayoutInflater.from(this).inflate(R.layout.camera_result_layout, null);
+        ImageView img_title = (ImageView) view.findViewById(R.id.result_num);
+        img_title.setImageResource(tabIcons[position]);
         return view;
+    }
+
+    @OnClick(R.id.camera_search_in_jiaofu)
+    public void openJF(){
+        OpenJFChannelEvent event = new OpenJFChannelEvent();
+        EventBus.getDefault().post(event);
+        finish();
+    }
+
+    @OnClick(R.id.camera_search_again)
+    public void cameraAgain(){
+        OpenCameraEvent event = new OpenCameraEvent();
+        EventBus.getDefault().post(event);
+        finish();
+
     }
 
 

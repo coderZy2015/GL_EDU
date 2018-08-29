@@ -1,5 +1,6 @@
 package com.gl.education.login;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -8,14 +9,26 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
+import com.gl.education.app.AppConstant;
+import com.gl.education.app.HomeAPI;
+import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.utlis.TimeButton;
 import com.gl.education.login.model.IdentifyBean;
+import com.gl.education.login.model.LoginBean;
 import com.gl.education.login.model.RegisterBean;
 import com.gl.education.login.presenter.RegisterPresenter;
 import com.gl.education.login.view.RegisterView;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
+import com.uuzuche.lib_zxing.view.Loading_view;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -46,12 +59,15 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
     @BindView(R.id.edit_identify)
     EditText edit_identify;
 
+    private Loading_view loading;
+
     private String username = "";
     private String password = "";
     private String identify_code = "";
 
-    boolean isSend = false;
     private boolean isAgree = true;
+
+    private boolean isClickRegister = false;
 
     public static RegisterFragment newInstance() {
         return new RegisterFragment();
@@ -98,6 +114,7 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
             ToastUtils.showShort("请查看协议");
             return;
         }
+        loading.show();
         mPresenter.toRegister(username, password, identify_code);
     }
 
@@ -130,24 +147,53 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
         } else {
             ToastUtils.showShort("长度不够11位数字");
         }
-
     }
 
     @Override
     public void initView(View rootView) {
         super.initView(rootView);
         register_get_code.setTextAfter("秒后重新获取").setTextBefore("点击发送验证码").setLenght(60 * 1000);
+        loading = new Loading_view(getActivity(), com.uuzuche.lib_zxing.R.style.CustomDialog);
     }
 
     @Override
     public void registerSuccess(RegisterBean bean) {
-        ToastUtils.showShort("注册成功");
-        _mActivity.finish();
+        HomeAPI.login(username, password, new JsonCallback<LoginBean>() {
+            @Override
+            public void onSuccess(Response<LoginBean> response) {
+                loading.dismiss();
+                LoginBean responseData = response.body();
+                if (responseData.getResult() == 1000){
+                    ToastUtils.showShort("注册成功");
+
+                    //通知个人中心刷新
+                    UpdateUserDataEvent event = new UpdateUserDataEvent();
+                    EventBus.getDefault().post(event);
+
+                    String token = responseData.getData().getToken();
+                    SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
+                    OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
+
+                    AppCommonData.isLogin = true;
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("token", responseData.getData().getToken());
+                    _mActivity.setResult(1000, resultIntent);
+                    _mActivity.finish();
+                }
+            }
+
+            @Override
+            public void onError(Response<LoginBean> response) {
+                super.onError(response);
+                loading.dismiss();
+            }
+        });
     }
 
     @Override
     public void registerFail(String msg) {
         ToastUtils.showShort(msg);
+        loading.dismiss();
     }
 
     @Override
@@ -161,8 +207,15 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
     }
 
     @Override
+    public void registerWXSuccess(RegisterBean bean) {
+    }
+    @Override
+    public void registerWXFail(String msg) {
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        register_get_code.onDestroy();
+        //register_get_code.onDestroy();
     }
 }

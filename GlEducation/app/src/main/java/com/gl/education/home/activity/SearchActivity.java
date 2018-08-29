@@ -2,8 +2,10 @@ package com.gl.education.home.activity;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -61,8 +63,6 @@ public class SearchActivity extends BaseActivity {
 
     private String searchStr = "";
 
-    private String url = "http://guanlin.gl.to3.cc/dist/#/searchJiaofu";
-
     private List<String> mVals = new ArrayList<>();
 
     @Override
@@ -83,14 +83,6 @@ public class SearchActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-
-        String token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
-        token = "?token="+token;
-        String grade = "&grade=2";
-        String name = "&name=二年级";
-        url = url + token + grade + name;
-        LogUtils.d("url = "+url);
-
         //获取热词列表
         HomeAPI.getHotKey(new JsonCallback<GetHotKeyBean>() {
             @Override
@@ -103,6 +95,19 @@ public class SearchActivity extends BaseActivity {
         });
 
         initHistory();
+
+
+        btn_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId,KeyEvent event)  {
+                if (actionId== EditorInfo.IME_ACTION_SEND ||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
+                {
+                    //do something;
+                    searchText();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     public void initFlowTablayout(){
@@ -160,8 +165,19 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
+    @OnClick(R.id.btn_back)
+    public void btn_back(){
+        onBackPressed();
+        finish();
+    }
+
+
     @OnClick(R.id.search)
     public void search(){
+        searchText();
+    }
+
+    public void searchText(){
         searchStr = btn_search.getText().toString();
         if (searchStr.equals("")){
             ToastUtils.showShort("搜索词不能为空");
@@ -175,9 +191,9 @@ public class SearchActivity extends BaseActivity {
             SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 4, hisList.get(3));
             SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 5, hisList.get(4));
             hisList.clear();
-             for (int i=1; i<6; i++){
-                 hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
-              }
+            for (int i=1; i<6; i++){
+                hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
+            }
             adapter.notifyDataSetChanged();
         }else{
             LogUtils.d(""+hisListNum);

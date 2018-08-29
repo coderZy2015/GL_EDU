@@ -14,6 +14,7 @@ import com.gl.education.login.model.ForgetPasswordBean;
 import com.gl.education.login.model.IdentifyBean;
 import com.gl.education.login.presenter.ForgetPasswordPresenter;
 import com.gl.education.login.view.ForgetPasswordView;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -43,6 +44,8 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
     @BindView(R.id.get_code)
     TimeButton get_code;
 
+    private Loading_view loading;
+
     String username = "";
     String password1 = "";
     String password2 = "";
@@ -71,6 +74,7 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
     public void initView(View rootView) {
         super.initView(rootView);
         get_code.setTextAfter("秒后重新获取").setTextBefore("点击发送验证码").setLenght(60 * 1000);
+        loading = new Loading_view(getActivity(), com.uuzuche.lib_zxing.R.style.CustomDialog);
     }
 
     @OnClick(R.id.btn_sure)
@@ -90,6 +94,7 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
         }else if(!password1.equals(password2)){
             ToastUtils.showShort("两次输入的密码不一样");
         }else {
+            loading.show();
             mPresenter.toSend(username, identify, password1, password2);
         }
 
@@ -101,7 +106,7 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
 
         if (username.length() == 11) {
             get_code.startTime();
-            mPresenter.getIdentifyCode(username, "regist");
+            mPresenter.getIdentifyCode(username, "resetpassword");
         } else if (TextUtils.isEmpty(username)) {
             ToastUtils.showShort("请输入手机号码！");
         } else {
@@ -117,6 +122,7 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
 
     @Override
     public void reviseSuccess(ForgetPasswordBean bean) {
+        loading.dismiss();
         ToastUtils.showShort("修改成功");
         _mActivity.onBackPressed();
     }
@@ -124,6 +130,7 @@ public class ForgetPasswordFragment extends BaseFragment<ForgetPasswordView,
     @Override
     public void reviseFail(String msg) {
         ToastUtils.showShort(msg);
+        loading.dismiss();
     }
 
     @Override

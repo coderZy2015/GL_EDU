@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.gl.education.R;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
-import com.gl.education.home.event.JSJFFragmentRefreshViewEvent;
 import com.gl.education.teachingassistant.event.JSJFBookShelfOpenWebViewEvent;
 import com.gl.education.teachingassistant.interactive.JFBookBuySuccessInteractive;
 import com.gl.education.teachingassistant.interactive.JFBookShelfInteractive;
@@ -21,6 +20,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 教辅频道我的书架
+ */
 public class JFBookShelfActivity extends BaseActivity {
 
     @BindView(R.id.web_container)
@@ -34,7 +36,6 @@ public class JFBookShelfActivity extends BaseActivity {
 
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
-
 
     @Override
     protected BasePresenter createPresenter() {
@@ -115,12 +116,6 @@ public class JFBookShelfActivity extends BaseActivity {
         intent.putExtra("title", event.getBean().getTitle());
         intent.setClass(this, JFBookMenuActivity.class);
         startActivity(intent);
-    }
-
-    //刷新我的书架
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void refreshView(JSJFFragmentRefreshViewEvent event) {
-        mAgentWeb.getWebCreator().getWebView().reload();
     }
 
 }

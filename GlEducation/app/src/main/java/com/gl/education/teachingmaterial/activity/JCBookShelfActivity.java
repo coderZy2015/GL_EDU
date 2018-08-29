@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.gl.education.R;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.JSJCFragmentRefreshViewEvent;
 import com.gl.education.teachingmaterial.event.JSJCBookShelfOpenWebViewEvent;
 import com.gl.education.teachingmaterial.interactive.JCBookShelfInteractive;
 import com.just.agentweb.AgentWeb;
@@ -108,6 +109,12 @@ public class JCBookShelfActivity extends BaseActivity {
         intent.putExtra("title", event.getBean().getTitle());
         intent.setClass(this, JCBookMenuActivity.class);
         startActivity(intent);
+    }
+
+    //刷新我的书架
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshView(JSJCFragmentRefreshViewEvent event) {
+        mAgentWeb.getWebCreator().getWebView().reload();
     }
 
 }

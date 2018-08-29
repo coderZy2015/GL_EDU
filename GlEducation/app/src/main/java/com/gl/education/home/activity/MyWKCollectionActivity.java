@@ -28,7 +28,7 @@ import butterknife.OnClick;
  */
 public class MyWKCollectionActivity extends BaseActivity {
 
-    private static final String url = "http://guanlin.gl.to3.cc/dist/#/tblist?gradeid=7&edu_id=1";
+    private static final String url = AppConstant.TH_BASE_URL+"#/tblist";
 
     @BindView(R.id.web_container)
     LinearLayout web_container;
@@ -77,7 +77,7 @@ public class MyWKCollectionActivity extends BaseActivity {
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 .createAgentWeb()
                 .ready()
-                .go(url+token+grade+gradeid+eduid);
+                .go(AppConstant.TH_MY_WEIKE + token + grade + gradeid + eduid);
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
@@ -85,6 +85,10 @@ public class MyWKCollectionActivity extends BaseActivity {
         mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new MyWKCollectionInteractive(mAgentWeb,
                 this));
+    }
+
+    public void getGradeid(){
+
     }
 
     @Override

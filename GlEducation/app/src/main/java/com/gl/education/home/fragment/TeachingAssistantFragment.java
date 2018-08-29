@@ -3,32 +3,35 @@ package com.gl.education.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Button;
+import android.view.View;
 import android.widget.LinearLayout;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.JSJFDropDownEvent;
 import com.gl.education.home.event.JSJFFragmentOpenWebViewEvent;
 import com.gl.education.home.event.JSJFFragmentRefreshViewEvent;
-import com.gl.education.home.event.UpdateChannelEvent;
+import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.interactive.JFFragInteractive;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.teachingassistant.activity.JFBookMenuActivity;
 import com.gl.education.teachingassistant.activity.JFBookShelfActivity;
 import com.gl.education.teachingassistant.interactive.JFBookBuySuccessInteractive;
 import com.just.agentweb.AgentWeb;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Created by zy on 2018/6/11.
@@ -40,14 +43,16 @@ public class TeachingAssistantFragment extends BaseFragment {
     @BindView(R.id.web_container)
     LinearLayout web_container;
 
-    @BindView(R.id.btn_angentWeb)
-    Button btn_angentWeb;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout refreshLayout;
 
     protected AgentWeb mAgentWeb;
 
     String url = "";
 
     String token = "";
+
+    private boolean isCanDropDown = false;
 
     private ChannelEntity channelEntity;
 
@@ -101,7 +106,9 @@ public class TeachingAssistantFragment extends BaseFragment {
 
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
-        LogUtils.d("token = "+token);
+
+        //url = "http://appstuweb.hebeijiaoyu.cn/#/wdjf";
+
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
@@ -113,43 +120,53 @@ public class TeachingAssistantFragment extends BaseFragment {
                 .ready()
                 .go(url+token);
 
+
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
         mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFFragInteractive(mAgentWeb,
                 getActivity()));
+
+        refreshLayout.setEnableLoadMore(false);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                isCanDropDown = false;
+            }
+        });
+
+        refreshLayout.setScrollBoundaryDecider(new ScrollBoundaryDecider() {
+            @Override
+            public boolean canRefresh(View content) {
+                if (isCanDropDown){
+                    isCanDropDown = false;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean canLoadMore(View content) {
+                return false;
+            }
+        });
+
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (mAgentWeb != null){
-//            mAgentWeb.getWebLifeCycle().onResume();
-//        }
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (mAgentWeb != null)
-//            mAgentWeb.getWebLifeCycle().onPause();
-//    }
-//
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        mAgentWeb.getWebLifeCycle().onDestroy();
-//    }
-
-    @OnClick(R.id.btn_angentWeb)
-    public void clickBtn(){
-        mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mAgentWeb.getWebLifeCycle().onDestroy();
     }
 
     @Override
     public boolean onBackPressedSupport() {
         boolean isBack = false;
-        isBack = mAgentWeb.back();
+
+        if (mAgentWeb!= null)
+            isBack = mAgentWeb.back();
 
         return isBack;
     }
@@ -186,7 +203,17 @@ public class TeachingAssistantFragment extends BaseFragment {
 
     //更新频道信息
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateChannelData(UpdateChannelEvent event) {
-        mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+    public void updateChannelData(ReloadChannelEvent event) {
+        //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+        token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
+        token = "?token="+token+"&grade="+ AppCommonData.userGrade;
+        mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
     }
+
+    //更新频道信息
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void dropDownEvent(JSJFDropDownEvent event) {
+        isCanDropDown = true;
+    }
+
 }

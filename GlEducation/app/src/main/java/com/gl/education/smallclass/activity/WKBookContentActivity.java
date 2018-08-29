@@ -109,7 +109,7 @@ public class WKBookContentActivity extends BaseActivity {
     public void toLogin(JSWKBookMenuLoginEvent event) {
         Intent intent = new Intent();
         intent.setClass(this, LoginInfoActivity.class);
-        startActivityForResult(intent, 102);
+        startActivityForResult(intent, 100);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -129,7 +129,7 @@ public class WKBookContentActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 102) {
+        if (requestCode == 100) {
 
             if (data != null) {
                 String token = data.getStringExtra("token");

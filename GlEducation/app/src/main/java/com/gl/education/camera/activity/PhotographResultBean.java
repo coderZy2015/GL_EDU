@@ -9,29 +9,14 @@ import java.util.List;
 
 public class PhotographResultBean implements Serializable {
 
+
     /**
      * result : 1000
-     * message : 成功！
-     * data : [{"ques_id":36614,"ques_body":["/upload/2017-08-25/7e7d479f-4f24-48d7-9be9
-     * -e03baea025f4/paper.files/34.jpg"],"ques_answer_txt":" C ","ques_answer_pic":[]},
-     * {"ques_id":41816,"ques_body":["/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1
-     * /paper.files/22.jpg","/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1/paper
-     * .files/23.jpg","/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1/paper
-     * .files/24.jpg","/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1/paper
-     * .files/25.jpg","/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1/paper
-     * .files/26.jpg","/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1/paper
-     * .files/27.jpg"],"ques_answer_txt":null,
-     * "ques_answer_pic":["/upload/2017-08-26/4ec10dc1-4093-4ac0-b011-a5cef5ebdcb1/paper
-     * .files/28.jpg"]},{"ques_id":42048,
-     * "ques_body":["/upload/2017-08-26/9ca505a9-8479-4fb6-8dd3-ab5fb7f0785d/paper
-     * .files/30.jpg"],"ques_answer_txt":" C ","ques_answer_pic":[]},{"ques_id":60091,
-     * "ques_body":["/upload/2017-08-14/3eebbe5d-0dc7-45a5-b483-4465af7b03d9/paper
-     * .files/12.jpg"],"ques_answer_txt":null,
-     * "ques_answer_pic":["/upload/2017-08-14/3eebbe5d-0dc7-45a5-b483-4465af7b03d9/paper
-     * .files/13.jpg"]},{"ques_id":61816,
-     * "ques_body":["/upload/2017-08-03/b87eb35d-8b3e-4129-9550-2387827bf508/paper.files/2.jpg"],
-     * "ques_answer_txt":null,"ques_answer_pic":["/upload/2017-08-03/b87eb35d-8b3e-4129-9550
-     * -2387827bf508/paper.files/3.jpg"]}]
+     * message : 操作成功
+     * data : [{"ques_id":397953,"ques_body":["/upload/2018-01-23/30003944-ae48-46ad-81b5
+     * -a75ac49cbb60/paper.files/image35.jpeg"],"ques_answer_txt":null,
+     * "ques_answer_pic":["/upload/2018-01-23/30003944-ae48-46ad-81b5-a75ac49cbb60/paper
+     * .files/image36.jpeg"],"video_num":"","catalog_id":53059}]
      */
 
     private int result;
@@ -64,15 +49,20 @@ public class PhotographResultBean implements Serializable {
 
     public static class DataBean implements Serializable{
         /**
-         * ques_id : 36614
-         * ques_body : ["/upload/2017-08-25/7e7d479f-4f24-48d7-9be9-e03baea025f4/paper
-         * .files/34.jpg"]
-         * ques_answer_txt :  C
-         * ques_answer_pic : []
+         * ques_id : 397953
+         * ques_body : ["/upload/2018-01-23/30003944-ae48-46ad-81b5-a75ac49cbb60/paper
+         * .files/image35.jpeg"]
+         * ques_answer_txt : null
+         * ques_answer_pic : ["/upload/2018-01-23/30003944-ae48-46ad-81b5-a75ac49cbb60/paper
+         * .files/image36.jpeg"]
+         * video_num :
+         * catalog_id : 53059
          */
 
         private int ques_id;
-        private String ques_answer_txt;
+        private Object ques_answer_txt;
+        private String video_num;
+        private String catalog_id;
         private List<String> ques_body;
         private List<String> ques_answer_pic;
 
@@ -84,12 +74,28 @@ public class PhotographResultBean implements Serializable {
             this.ques_id = ques_id;
         }
 
-        public String getQues_answer_txt() {
+        public Object getQues_answer_txt() {
             return ques_answer_txt;
         }
 
-        public void setQues_answer_txt(String ques_answer_txt) {
+        public void setQues_answer_txt(Object ques_answer_txt) {
             this.ques_answer_txt = ques_answer_txt;
+        }
+
+        public String getVideo_num() {
+            return video_num;
+        }
+
+        public void setVideo_num(String video_num) {
+            this.video_num = video_num;
+        }
+
+        public String getCatalog_id() {
+            return catalog_id;
+        }
+
+        public void setCatalog_id(String catalog_id) {
+            this.catalog_id = catalog_id;
         }
 
         public List<String> getQues_body() {

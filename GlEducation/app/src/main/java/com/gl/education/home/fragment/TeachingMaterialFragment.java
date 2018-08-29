@@ -3,6 +3,7 @@ package com.gl.education.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.SPUtils;
@@ -11,14 +12,19 @@ import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.JSJCDropDownEvent;
 import com.gl.education.home.event.JSJCFragmentOpenWebViewEvent;
 import com.gl.education.home.event.JSJCFragmentRefreshViewEvent;
-import com.gl.education.home.event.UpdateChannelEvent;
+import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.interactive.JCFragmentInteractive;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.teachingmaterial.activity.JCBookMenuActivity;
 import com.gl.education.teachingmaterial.activity.JCBookShelfActivity;
 import com.just.agentweb.AgentWeb;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,6 +41,11 @@ public class TeachingMaterialFragment extends BaseFragment{
 
     @BindView(R.id.web_container)
     LinearLayout web_container;
+
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout refreshLayout;
+
+    private boolean isCanDropDown = false;
 
     protected AgentWeb mAgentWeb;
     private ChannelEntity channelEntity;
@@ -93,6 +104,8 @@ public class TeachingMaterialFragment extends BaseFragment{
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
 
+        //url = "http://appstuweb.hebeijiaoyu.cn/#/wdjc";
+
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
@@ -112,14 +125,40 @@ public class TeachingMaterialFragment extends BaseFragment{
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JCFragmentInteractive(mAgentWeb,
                 getActivity()));
 
+        refreshLayout.setEnableLoadMore(false);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                isCanDropDown = false;
+            }
+        });
+
+        refreshLayout.setScrollBoundaryDecider(new ScrollBoundaryDecider() {
+            @Override
+            public boolean canRefresh(View content) {
+                if (isCanDropDown){
+                    isCanDropDown = false;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean canLoadMore(View content) {
+                return false;
+            }
+        });
     }
 
     @Override
     public boolean onBackPressedSupport() {
         boolean isBack = false;
-        if (mAgentWeb != null){
+
+        if (mAgentWeb!= null)
             isBack = mAgentWeb.back();
-        }
+
         return isBack;
     }
 
@@ -150,7 +189,15 @@ public class TeachingMaterialFragment extends BaseFragment{
 
     //更新频道信息
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateChannelData(UpdateChannelEvent event) {
-        mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+    public void updateChannelData(ReloadChannelEvent event) {
+        token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
+        token = "?token="+token+"&grade="+ AppCommonData.userGrade;
+        mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
+    }
+
+    //更新频道信息
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void dropDownEvent(JSJCDropDownEvent event) {
+        isCanDropDown = true;
     }
 }

@@ -7,10 +7,14 @@ import android.widget.RelativeLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gl.education.R;
+import com.gl.education.app.HomeAPI;
+import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.adapter.TransactionRecordAdapter;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
-import com.gl.education.login.model.LoginBean;
+import com.gl.education.home.model.GetOrderRecordBean;
+import com.lzy.okgo.model.Response;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +34,9 @@ public class TransactionActivity extends BaseActivity {
     RecyclerView recyclerView;
 
     TransactionRecordAdapter adapter;
-    List<LoginBean> mList = new ArrayList<>();
+    List<GetOrderRecordBean.DataBean.BuyOrderBean> mList = new ArrayList<>();
+
+    private Loading_view loading;
 
     @Override
     protected BasePresenter createPresenter() {
@@ -50,14 +56,12 @@ public class TransactionActivity extends BaseActivity {
     @Override
     public void initView() {
         super.initView();
-
+        loading = new Loading_view(this, com.uuzuche.lib_zxing.R.style.CustomDialog);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //适配器参数：item布局、列表数据源
         adapter = new TransactionRecordAdapter(R.layout.item_transaction_record, mList);
         //设置数据
         recyclerView.setAdapter(adapter);
-//        //动画
-//        adapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         //短按item子控件
         adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
@@ -65,6 +69,24 @@ public class TransactionActivity extends BaseActivity {
             }
         });
 
+        loading.show();
+        HomeAPI.getOrderRecord(new JsonCallback<GetOrderRecordBean>() {
+            @Override
+            public void onSuccess(Response<GetOrderRecordBean> response) {
+                loading.hide();
+                if (response.body().getResult() == 1000){
+                    mList.clear();
+                    mList.addAll(response.body().getData().getBuyOrder());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError(Response<GetOrderRecordBean> response) {
+                super.onError(response);
+                loading.hide();
+            }
+        });
     }
 
     @OnClick(R.id.btn_back)

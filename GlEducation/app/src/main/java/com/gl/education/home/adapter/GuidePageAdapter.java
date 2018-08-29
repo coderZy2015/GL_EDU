@@ -3,6 +3,7 @@ package com.gl.education.home.adapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -11,9 +12,9 @@ import java.util.List;
  */
 
 public class GuidePageAdapter extends PagerAdapter {
-    private List<View> datas;
+    private List<ImageView> datas;
 
-    public GuidePageAdapter(List<View> list) {
+    public GuidePageAdapter(List<ImageView> list) {
         datas = list;
     }
 

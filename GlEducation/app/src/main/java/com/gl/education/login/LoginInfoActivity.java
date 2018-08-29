@@ -11,12 +11,10 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 public class LoginInfoActivity extends BaseActivity{
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     protected int provideContentViewId() {
@@ -32,9 +30,21 @@ public class LoginInfoActivity extends BaseActivity{
     public void initView() {
         super.initView();
 
+        String into = getIntent().getStringExtra("into");
+
+        if (into != null){
+            if (into.equals("forget")){
+                if (findFragment(LoginFragment.class) == null) {
+                    loadRootFragment(R.id.login_container, ForgetPasswordFragment.newInstance());  // 加载根Fragment
+                }
+                return;
+            }
+        }
+
         if (findFragment(LoginFragment.class) == null) {
             loadRootFragment(R.id.login_container, LoginFragment.newInstance());  // 加载根Fragment
         }
+
     }
 
     @Override

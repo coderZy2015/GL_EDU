@@ -97,7 +97,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/btn_wallet_voucher"
+        android:id="@+id/btn_recharge_center"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:paddingLeft="35dp"

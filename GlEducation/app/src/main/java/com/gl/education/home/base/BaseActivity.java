@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.gl.education.R;
 import com.gl.education.widget.CustomDialog;
+import com.uuzuche.lib_zxing.view.Loading_view;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
 import butterknife.ButterKnife;
@@ -27,14 +28,12 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
     protected T mPresenter;
     private CustomDialog mDialogWaiting;
     private Unbinder unbinder;
-
     public String eventTAG = "";//当前类 event的标识 用于区分event发送的类
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //App.activities.add(this);
-
         initSystemBarTint();
         //判断是否使用MVP模式
         mPresenter = createPresenter();
@@ -47,6 +46,7 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
         setContentView(provideContentViewId());
         //ScreenAdapterTools.getInstance().reset(this);//如果希望android7.0分屏也适配的话,加上这句
         //在setContentView();后面加上适配语句
+
         ScreenAdapterTools.getInstance().loadView(getWindow().getDecorView());
 
         unbinder = ButterKnife.bind(this);

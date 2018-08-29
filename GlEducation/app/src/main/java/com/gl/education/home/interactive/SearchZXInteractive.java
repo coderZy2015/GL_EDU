@@ -25,7 +25,7 @@ public class SearchZXInteractive {
 
     //进入目录或者我的书架
     @JavascriptInterface
-    public void openWebview(String json){
+    public void getNewsData(String json){
         JSOpenWebViewBean bean = Convert.fromJson(json, JSOpenWebViewBean.class);
         JSSearchZXOpenWebViewEvent event = new JSSearchZXOpenWebViewEvent();
         event.setBean(bean);

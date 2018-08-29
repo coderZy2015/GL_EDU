@@ -10,6 +10,6 @@ public interface LoginView {
 
     void loginSuccess(LoginBean bean);
 
-    void loginFail(String msg);
+    void loginFail(LoginBean bean);
 
 }

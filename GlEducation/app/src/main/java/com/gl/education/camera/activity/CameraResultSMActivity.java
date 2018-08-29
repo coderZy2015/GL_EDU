@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.just.agentweb.AgentWeb;
@@ -26,8 +27,6 @@ public class CameraResultSMActivity extends BaseActivity {
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
 
-    private String baseURL = "http://apigl.gl.to3.cc/index.php/jiaofu/barcodeToJfVideo/barcode/";
-
     @Override
     protected BasePresenter createPresenter() {
         return null;
@@ -48,7 +47,7 @@ public class CameraResultSMActivity extends BaseActivity {
         super.initView();
 
         String id = getIntent().getStringExtra("id");
-        String url = baseURL + id;
+        String url = AppConstant.SAOMA_URL + id;
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.webkit.JavascriptInterface;
 
 import com.gl.education.helper.Convert;
+import com.gl.education.home.event.JSJCDropDownEvent;
 import com.gl.education.home.event.JSJCFragmentOpenWebViewEvent;
 import com.gl.education.home.model.JSOpenWebViewBean;
 import com.just.agentweb.AgentWeb;
@@ -40,5 +41,13 @@ public class JCFragmentInteractive {
         event.setBean(bean);
         EventBus.getDefault().post(event);
     }
+
+    //下拉刷新
+    @JavascriptInterface
+    public void dropDownRefresh(){
+        JSJCDropDownEvent event = new JSJCDropDownEvent();
+        EventBus.getDefault().post(event);
+    }
+
 
 }
