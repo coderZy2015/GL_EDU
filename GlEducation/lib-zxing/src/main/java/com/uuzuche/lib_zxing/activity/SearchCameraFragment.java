@@ -54,7 +54,10 @@ import java.io.OutputStream;
 public class SearchCameraFragment extends Fragment implements CameraPreview
         .OnCameraStatusListener {
 
-    public final String loadPicUrl = "http://appserbeta.hebeijiaoyu.cn/iclient/cliuser/uploadFile";
+    //调试网址
+    //public final String loadPicUrl = "http://appserbeta.hebeijiaoyu.cn/iclient/cliuser/uploadFile";
+    //正常网址
+    public final String loadPicUrl = "http://appser.hebeijiaoyu.cn/iclient/cliuser/uploadFile";
 
     private Loading_view loading;
 
@@ -381,11 +384,11 @@ public class SearchCameraFragment extends Fragment implements CameraPreview
                                 public void onError(Response<String> response) {
                                     super.onError(response);
                                     crop_hint.setText("查找超时，请重试");
+                                    loading.dismiss();
                                     if (response.body() != null) {
                                         if (photographCallback != null) {
                                             photographCallback.onPhotographFailed(PATH+filename);
                                         }
-                                        loading.dismiss();
                                     }
 
                                 }

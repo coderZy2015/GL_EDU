@@ -39,6 +39,7 @@ import com.uuzuche.lib_zxing.R;
 import com.uuzuche.lib_zxing.camear.CameraPreview;
 import com.uuzuche.lib_zxing.camear.FocusView;
 import com.uuzuche.lib_zxing.camear.Utils;
+import com.uuzuche.lib_zxing.view.Loading_view;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,8 +54,13 @@ import java.io.OutputStream;
 public class SearchCoverFragment extends Fragment implements CameraPreview
         .OnCameraStatusListener {
 
-    public final String loadPicUrl = "http://a1guanlin.eugames.cn/iclient/cliuser/searchCover";
-    
+    //调试网址
+    //public final String loadPicUrl = "http://appserbeta.hebeijiaoyu.cn/iclient/cliuser/searchCover";
+    //正常网址
+    public final String loadPicUrl = "http://appser.hebeijiaoyu.cn/iclient/cliuser/searchCover";
+
+    private Loading_view loading;
+
     private CodeUtils.PhotographCallback photographCallback;
 
     public static final Uri IMAGE_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -358,6 +364,8 @@ public class SearchCoverFragment extends Fragment implements CameraPreview
                             dateTaken, PATH, filename, bitmap, null);
 
                     crop_hint.setText("查找中，请稍后...");
+                    loading = new Loading_view(getActivity(), R.style.CustomDialog);
+                    loading.show();
 
                     OkGo.<String>post(loadPicUrl)
                             .params("a1_upload", new File(PATH + filename))
@@ -368,18 +376,19 @@ public class SearchCoverFragment extends Fragment implements CameraPreview
                                         photographCallback.onPotographSuccess(PATH+filename, response
                                                 .body());
                                     }
-                                    //Log.i("zy_code", "" + response.body());
+                                    loading.dismiss();
                                 }
 
                                 @Override
                                 public void onError(Response<String> response) {
                                     super.onError(response);
                                     crop_hint.setText("查找超时，请重试");
+                                    loading.dismiss();
                                     if (response.body() != null) {
                                         if (photographCallback != null) {
                                             photographCallback.onPhotographFailed(PATH+filename);
                                         }
-                                        //Log.i("zy_code", "" + response.body());
+
                                     }
 
                                 }
@@ -490,16 +499,24 @@ public class SearchCoverFragment extends Fragment implements CameraPreview
     private void showTakePhotoLayout() {
         mTakePhotoLayout.setVisibility(View.VISIBLE);
         mCropperLayout.setVisibility(View.GONE);
+        setCameraBottomShow();
     }
 
     private void showCropperLayout() {
         mTakePhotoLayout.setVisibility(View.GONE);
         mCropperLayout.setVisibility(View.VISIBLE);
         mCameraPreview.start();   //继续启动摄像头
+        setCameraBottomHide();
     }
 
     public void setAnalyzeCallback(CodeUtils.PhotographCallback analyzeCallback) {
         this.photographCallback = analyzeCallback;
     }
 
+    public void setCameraBottomHide() {
+        ((CaptureActivity)getActivity()).cameraHide();
+    }
+    public void setCameraBottomShow() {
+        ((CaptureActivity)getActivity()).cameraShow();
+    }
 }
