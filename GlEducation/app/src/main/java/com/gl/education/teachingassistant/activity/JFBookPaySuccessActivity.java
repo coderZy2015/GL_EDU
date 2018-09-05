@@ -88,7 +88,8 @@ public class JFBookPaySuccessActivity extends BaseActivity {
 
     @OnClick(R.id.btn_back)
     public void backPressed() {
-        onBackPressedSupport();
+        JSJFBookPaySuccessFinishEvent event = new JSJFBookPaySuccessFinishEvent();
+        EventBus.getDefault().post(event);
     }
 
     @Override

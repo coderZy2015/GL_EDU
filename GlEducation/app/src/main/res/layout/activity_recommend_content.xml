@@ -37,42 +37,53 @@
 
     </RelativeLayout>
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_weight="1">
+
+    </android.support.v4.view.ViewPager>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:background="@color/channel_title"
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="11dp"
-                android:layout_height="18dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/bottom_back"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_weight="5">
 
-            <ImageView
+            <EditText
+                android:id="@+id/comment_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:textSize="11dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:gravity="center_vertical"
+                android:hint="@string/recommend_hint"
+                android:textColorHint="@color/white"
                 android:background="@drawable/bottom_kuang"/>
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/bottom_pinlun"
+            android:id="@+id/bottom_pinglun"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/image_pinglun"
                 android:layout_width="23dp"
                 android:layout_height="22dp"
                 android:layout_centerInParent="true"
@@ -85,6 +96,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/image_dianzan"
                 android:layout_width="22dp"
                 android:layout_height="23dp"
                 android:layout_centerInParent="true"
@@ -97,6 +109,7 @@
             android:layout_weight="1">
 
             <ImageView
+                android:id="@+id/image_shoucang"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_centerInParent="true"
@@ -116,12 +129,5 @@
         </RelativeLayout>
 
     </LinearLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

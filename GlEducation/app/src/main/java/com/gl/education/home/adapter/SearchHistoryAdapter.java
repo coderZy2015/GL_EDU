@@ -21,6 +21,7 @@ public class SearchHistoryAdapter extends BaseQuickAdapter<String, BaseViewHolde
     @Override
     protected void convert(BaseViewHolder helper, String item) {
         helper.setText(R.id.contentTextView, item);
+
     }
 }
 

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,15 +13,6 @@ import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.JsonCallback;
-import com.gl.education.home.activity.InstallActivity;
-import com.gl.education.home.activity.MyJCCollectionActivity;
-import com.gl.education.home.activity.MyJFCollectionActivity;
-import com.gl.education.home.activity.MyMessageActivity;
-import com.gl.education.home.activity.MyWKCollectionActivity;
-import com.gl.education.home.activity.MyWalletActivity;
-import com.gl.education.home.activity.MyZXCollectionActivity;
-import com.gl.education.home.activity.PersonDataActivity;
-import com.gl.education.home.activity.WrongTopicBookActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.TransmitPersonDataEvent;
@@ -31,7 +21,15 @@ import com.gl.education.home.model.GetUserCenterDataBean;
 import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.home.utlis.ImageLoader;
 import com.gl.education.login.LoginInfoActivity;
-import com.gl.education.widget.RoundImageView;
+import com.gl.education.person.activity.InstallActivity;
+import com.gl.education.person.activity.MyJCCollectionActivity;
+import com.gl.education.person.activity.MyJFCollectionActivity;
+import com.gl.education.person.activity.MyMessageActivity;
+import com.gl.education.person.activity.MyWKCollectionActivity;
+import com.gl.education.person.activity.MyWalletActivity;
+import com.gl.education.person.activity.MyZXCollectionActivity;
+import com.gl.education.person.activity.PersonDataActivity;
+import com.gl.education.person.activity.WrongTopicBookActivity;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.uuzuche.lib_zxing.view.Loading_view;
@@ -42,6 +40,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by zy on 2018/6/7.
@@ -52,11 +51,8 @@ public class MineFragment extends BaseFragment {
 
     private final String downloadUrl = "http://gl-appres.oss-cn-qingdao.aliyuncs.com/";
 
-    @BindView(R.id.mine_person)
-    RoundImageView mine_person;
-
-    @BindView(R.id.imageView)
-    ImageView imageView;
+    @BindView(R.id.profile_image)
+    CircleImageView profile_image;
 
     @BindView(R.id.btn_mine_wallet)
     LinearLayout btn_mine_wallet;
@@ -123,10 +119,11 @@ public class MineFragment extends BaseFragment {
     @Override
     public void initView(View rootView) {
         super.initView(rootView);
-        mine_person.setType(RoundImageView.TYPE_CIRCLE);
+        //mine_person.setType(RoundImageView.TYPE_CIRCLE);
         loading = new Loading_view(getActivity(), com.uuzuche.lib_zxing.R.style.CustomDialog);
         // 注册订阅者
         EventBus.getDefault().register(this);
+
     }
 
     @Override
@@ -142,10 +139,10 @@ public class MineFragment extends BaseFragment {
     }
 
     //跳转到我的个人中心页面
-    @OnClick({ R.id.imageView, R.id.mine_person})
+    @OnClick({R.id.profile_image})
     public void intoPersonDataActivity(){
 
-        if (ButtonUtils.isFastDoubleClick(R.id.mine_person)){
+        if (ButtonUtils.isFastDoubleClick(R.id.profile_image)){
             return;
         }
         if (!AppCommonData.isLogin){
@@ -357,10 +354,10 @@ public class MineFragment extends BaseFragment {
                             mine_user_name.setText(""+bean.getNick_name());
                         }
                         if (bean.getAvatar() == null){
-                            Glide.with(getContext()).load(R.drawable.ic_photo).into(mine_person);
+                            Glide.with(getContext()).load(R.drawable.ic_photo).into(profile_image);
                             pic_url = "";
                         }else{
-                            ImageLoader.loadImage(getContext(), downloadUrl+bean.getAvatar(), mine_person);
+                            ImageLoader.loadImage(getContext(), downloadUrl+bean.getAvatar(), profile_image);
                             pic_url = bean.getAvatar();
                         }
                         if (bean.getXb() == null){

@@ -17,9 +17,9 @@ public class HomeAPI {
     //基础
     //public static final String BASE_URL = "http://a1guanlin.eugames.cn/";
     //beta版
-    public static final String BASE_URL = "http://appserbeta.hebeijiaoyu.cn/";
+    //public static final String BASE_URL = "http://appserbeta.hebeijiaoyu.cn/";
     //正式
-    //public static final String BASE_URL = "http://appser.hebeijiaoyu.cn/";
+    public static final String BASE_URL = "http://appser.hebeijiaoyu.cn/";
 
     //header
     public static String HTTP_HEADER = "GL-Token";
@@ -93,7 +93,7 @@ public class HomeAPI {
     //删除我的用户
     private static String DELETE_USER = BASE_URL + "iclient/clipublics/delUser";
 
-    //删除我的用户
+    //查看是否有权限看题目
     private static String HAS_QUES_DETAIL_AUTH	= BASE_URL + "iclient/cliuser/hasQuesDetailAuth";
 
 
@@ -236,7 +236,7 @@ public class HomeAPI {
 
         OkGo.<T>post(ALIPAY_UNIFIEDORDER_URL)
                 .params("orderPrice", orderPrice)
-                .params("content", "content")
+                .params("content", "支付宝支付")
                 .execute(callback);
     }
 
@@ -253,7 +253,7 @@ public class HomeAPI {
 
         OkGo.<T>post(WX_UNIFIEDORDER_URL)
                 .params("orderPrice", orderPrice)
-                .params("content", "content")
+                .params("content", "微信支付")
                 .execute(callback);
     }
 
@@ -375,11 +375,12 @@ public class HomeAPI {
      *  推荐页首页
      * @param callback
      */
-    public static <T>void getRecomHome(JsonCallback<T> callback) {
+    public static <T>void getRecomHome(String pageNum, JsonCallback<T> callback) {
 //        'channel_id' =>'频道id',
 //                'pageNum'=>'页码',
 //                'pageSize'=>'每页显示数量',
         OkGo.<T>get(GET_RECOMHOME_URL)
+                .params("pageNum", pageNum)
                 .execute(callback);
     }
 
@@ -395,6 +396,21 @@ public class HomeAPI {
     }
 
     /**
+     *  点赞/取消点赞某篇文章
+     *  isLike：0=取消点赞，1=点赞
+     * @param callback
+     */
+    public static <T>void setArticleLike(String channel_itemid, int isLike, JsonCallback<T> callback) {
+
+        OkGo.<T>post(GET_ARTICLE_LIKE_URL)
+                .params("channel_itemid", channel_itemid)
+                .params("isLike", isLike)
+                .execute(callback);
+    }
+
+
+
+    /**
      *  获取评论
      返回值里的total_amount：评论总数
      参数里channel_itemType：0=文章，1=教材，2=教辅，3=视频
@@ -406,6 +422,18 @@ public class HomeAPI {
                 .params("channel_itemType", channel_itemType)
                 .params("start", start)
                 .params("end", end)
+                .execute(callback);
+    }
+
+    /**
+     *  发表评论
+     */
+    public static <T>void setArticleComment(String channel_itemid, String channel_itemType, String cm_content, JsonCallback<T> callback) {
+
+        OkGo.<T>post(SET_ARTICLE_COMMENTS_URL)
+                .params("channel_itemid", channel_itemid)
+                .params("channel_itemType", channel_itemType)
+                .params("start", cm_content)
                 .execute(callback);
     }
 

@@ -121,7 +121,7 @@ public class JCBookRechargeAactivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra("url", event.getBean().getUrl());
                 intent.putExtra("title", event.getBean().getTitle());
-                intent.setClass(this, JCBookBuySuccessActivity.class);
+                intent.setClass(this, JCBookPaySuccessActivity.class);
                 startActivity(intent);
     }
 

@@ -192,7 +192,10 @@ public class TeachingMaterialFragment extends BaseFragment{
     public void updateChannelData(ReloadChannelEvent event) {
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
-        mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
+        if (mAgentWeb!=null){
+            mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
+            mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+        }
     }
 
     //更新频道信息

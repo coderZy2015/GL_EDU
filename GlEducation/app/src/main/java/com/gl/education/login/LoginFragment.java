@@ -18,6 +18,7 @@ import com.gl.education.app.HomeAPI;
 import com.gl.education.app.HomeThirdLogin;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.login.model.LoginBean;
@@ -160,10 +161,16 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
                         loading.dismiss();
                         if (response.body().getResult() == 1000){
                             loginSuccess(response.body());
+                            LogUtils.d("loginSuccess");
                         }else{
+                            LogUtils.d("loginFail");
                             start(RegisterWxFragment.newInstance(map.get("unionid")));
                         }
+                    }
 
+                    @Override
+                    public void onError(Response<LoginBean> response) {
+                        super.onError(response);
                     }
                 });
 
@@ -173,11 +180,13 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
             @Override
             public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
                 loading.dismiss();
+                LogUtils.d("onError   "+share_media);
             }
 
             @Override
             public void onCancel(SHARE_MEDIA share_media, int i) {
                 loading.dismiss();
+                LogUtils.d("onCancel   "+share_media);
             }
         });
     }
@@ -187,13 +196,17 @@ public class LoginFragment extends BaseFragment<LoginView, LoginPresenter> imple
         loading.dismiss();
         AppCommonData.isLogin = true;
 
-        //通知个人中心刷新
-        UpdateUserDataEvent event = new UpdateUserDataEvent();
-        EventBus.getDefault().post(event);
-
         String token = bean.getData().getToken();
         SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
         OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
+
+        //通知三频道更换token
+        ReloadChannelEvent event1 = new ReloadChannelEvent();
+        EventBus.getDefault().post(event1);
+
+        //通知个人中心刷新
+        UpdateUserDataEvent event = new UpdateUserDataEvent();
+        EventBus.getDefault().post(event);
 
         //通知web
         ToastUtils.showShort("登录成功！");

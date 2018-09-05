@@ -7,7 +7,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.alipay.sdk.app.PayTask;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.home.event.PayFinishEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,20 +68,20 @@ public class MyALipayUtils {
                     event.setMessage(eventTag);
                     event.setOrderId(orderId);
                     event.setResult(1);
-                    ToastUtils.showShort("支付结果  "+payResult.getResultStatus());
+                    //ToastUtils.showShort("支付结果  "+payResult.getResultStatus());
 
                     break;
                 case "6001":
                     event.setMessage(eventTag);
                     event.setOrderId(orderId);
                     event.setResult(0);
-                    ToastUtils.showShort("支付取消  "+payResult.getResultStatus());
+                    //ToastUtils.showShort("支付取消  "+payResult.getResultStatus());
                     break;
                 default:
                     event.setMessage(eventTag);
                     event.setOrderId(orderId);
                     event.setResult(1);
-                    ToastUtils.showShort("支付失败  "+payResult.getResultStatus());
+                    //ToastUtils.showShort("支付失败  "+payResult.getResultStatus());
                     break;
             }
             EventBus.getDefault().post(event);

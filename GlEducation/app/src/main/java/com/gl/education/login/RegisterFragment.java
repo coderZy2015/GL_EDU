@@ -17,6 +17,7 @@ import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.utlis.TimeButton;
 import com.gl.education.login.model.IdentifyBean;
@@ -158,6 +159,10 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
 
     @Override
     public void registerSuccess(RegisterBean bean) {
+        String token = bean.getData().getToken();
+        SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
+        OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
+
         HomeAPI.login(username, password, new JsonCallback<LoginBean>() {
             @Override
             public void onSuccess(Response<LoginBean> response) {
@@ -166,13 +171,17 @@ public class RegisterFragment extends BaseFragment<RegisterView, RegisterPresent
                 if (responseData.getResult() == 1000){
                     ToastUtils.showShort("注册成功");
 
-                    //通知个人中心刷新
-                    UpdateUserDataEvent event = new UpdateUserDataEvent();
-                    EventBus.getDefault().post(event);
-
                     String token = responseData.getData().getToken();
                     SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
                     OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
+
+                    //通知三频道更换token
+                    ReloadChannelEvent event1 = new ReloadChannelEvent();
+                    EventBus.getDefault().post(event1);
+
+                    //通知个人中心刷新
+                    UpdateUserDataEvent event = new UpdateUserDataEvent();
+                    EventBus.getDefault().post(event);
 
                     AppCommonData.isLogin = true;
                     Intent resultIntent = new Intent();

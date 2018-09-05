@@ -1,6 +1,7 @@
 package com.gl.education.home.activity;
 
 import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -87,7 +87,7 @@ public class SearchActivity extends BaseActivity {
         HomeAPI.getHotKey(new JsonCallback<GetHotKeyBean>() {
             @Override
             public void onSuccess(Response<GetHotKeyBean> response) {
-                if (response.body().getResult() == 1000){
+                if (response.body().getResult() == 1000) {
                     mVals = response.body().getData();
                     initFlowTablayout();
                 }
@@ -96,13 +96,13 @@ public class SearchActivity extends BaseActivity {
 
         initHistory();
 
-
         btn_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId,KeyEvent event)  {
-                if (actionId== EditorInfo.IME_ACTION_SEND ||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))
-                {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode
+                        () == KeyEvent.KEYCODE_ENTER)) {
                     //do something;
-                    searchText();
+                    searchStr = btn_search.getText().toString();
+                    searchText(searchStr);
                     return true;
                 }
                 return false;
@@ -110,14 +110,12 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    public void initFlowTablayout(){
+    public void initFlowTablayout() {
 
         mInflater = LayoutInflater.from(this);
-        flowlayout.setAdapter(new TagAdapter<String>(mVals)
-        {
+        flowlayout.setAdapter(new TagAdapter<String>(mVals) {
             @Override
-            public View getView(com.zhy.view.flowlayout.FlowLayout parent, int position, String s)
-            {
+            public View getView(com.zhy.view.flowlayout.FlowLayout parent, int position, String s) {
                 //将tv.xml文件填充到标签内.
                 TextView tv = (TextView) mInflater.inflate(R.layout.tv,
                         flowlayout, false);
@@ -125,20 +123,19 @@ public class SearchActivity extends BaseActivity {
                 tv.setText(s);
                 return tv;
             }
+
             //为标签设置预点击内容(就是一开始就处于点击状态的标签)
             @Override
-            public boolean setSelected(int position, String s)
-            {
+            public boolean setSelected(int position, String s) {
                 return false;
             }
         });
 
         // 为点击标签设置点击事件.
-        flowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener()
-        {
+        flowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
-            public boolean onTagClick(View view, int position, com.zhy.view.flowlayout.FlowLayout parent)
-            {
+            public boolean onTagClick(View view, int position, com.zhy.view.flowlayout.FlowLayout
+                    parent) {
                 Intent intent = new Intent();
                 intent.setClass(SearchActivity.this, SearchResultActivity.class);
                 intent.putExtra("name", mVals.get(position));
@@ -148,60 +145,74 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    public void initHistory(){
+    public void initHistory() {
         hisListNum = SPUtils.getInstance().getInt(AppConstant.SP_SEARCH_HISTORY_NUM, 0);
 
-        for (int i=0; i<hisListNum; i++){
+        for (int i = 0; i < hisListNum; i++) {
             hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
         }
-        LogUtils.d("hisList,size = "+hisList.size());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //适配器参数：item布局、列表数据源
         adapter = new SearchHistoryAdapter(R.layout.item_search_history, hisList);
         recyclerView.setAdapter(adapter);
+
         adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
+                searchStr = hisList.get(position);
+                searchText(searchStr);
             }
         });
     }
 
     @OnClick(R.id.btn_back)
-    public void btn_back(){
+    public void btn_back() {
         onBackPressed();
         finish();
     }
 
 
     @OnClick(R.id.search)
-    public void search(){
-        searchText();
+    public void search() {
+        searchStr = btn_search.getText().toString();
+        searchText(searchStr);
     }
 
-    public void searchText(){
-        searchStr = btn_search.getText().toString();
-        if (searchStr.equals("")){
+    public void searchText(String str) {
+        searchStr = str;
+        if (searchStr.equals("")) {
             ToastUtils.showShort("搜索词不能为空");
             return;
         }
-
-        if (hisListNum >5){
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 1, searchStr);
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 2, hisList.get(1));
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 3, hisList.get(2));
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 4, hisList.get(3));
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 5, hisList.get(4));
-            hisList.clear();
-            for (int i=1; i<6; i++){
-                hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
+        //检测重复
+        boolean repeat = false;
+        for (int i = 0; i < hisList.size(); i++) {
+            String oldHis = hisList.get(i);
+            if (oldHis.equals(searchStr)) {
+                repeat = true;
             }
-            adapter.notifyDataSetChanged();
-        }else{
-            LogUtils.d(""+hisListNum);
-            hisListNum = hisListNum + 1;
+        }
+
+        if (!repeat){
             SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + hisListNum, searchStr);
+            hisListNum = hisListNum + 1;
             SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY_NUM, hisListNum);
             hisList.add(SPUtils.getInstance().getString(searchStr));
             adapter.notifyDataSetChanged();
+
+            if (hisListNum > 5) {
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 0, searchStr);
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 1, hisList.get(1));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 2, hisList.get(2));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 3, hisList.get(3));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 4, hisList.get(4));
+                hisList.clear();
+                for (int i = 0; i < 5; i++) {
+                    hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
+                }
+                adapter.notifyDataSetChanged();
+            }
         }
 
         Intent intent = new Intent();

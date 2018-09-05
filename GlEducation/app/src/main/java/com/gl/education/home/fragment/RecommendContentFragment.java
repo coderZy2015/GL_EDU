@@ -11,6 +11,7 @@ import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.Convert;
 import com.gl.education.helper.JsonCallback;
+import com.gl.education.person.activity.RecommendContentActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.JSRecommentContentGetDataEvent;
@@ -121,6 +122,8 @@ public class RecommendContentFragment extends BaseFragment {
             @Override
             public void onSuccess(Response<GetArticleBean> response) {
                 GetArticleBean bean = response.body();
+                //初始化页面数据
+                ((RecommendContentActivity)_mActivity).initViewData(bean);
 
                 String json = Convert.toJson(bean.getData());
 

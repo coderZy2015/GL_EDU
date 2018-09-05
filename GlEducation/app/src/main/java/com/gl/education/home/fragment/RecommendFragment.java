@@ -2,28 +2,35 @@ package com.gl.education.home.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.Convert;
 import com.gl.education.helper.JsonCallback;
-import com.gl.education.home.activity.RecommendContentActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.JSRecommendDropDownEvent;
+import com.gl.education.home.event.JSRecommendLoadMoreEvent;
 import com.gl.education.home.event.JSRecommentOpenWebViewEvent;
 import com.gl.education.home.event.JSRecommentRequest;
 import com.gl.education.home.interactive.RecommendInteractive;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.model.RecommendRequestBean;
+import com.gl.education.person.activity.RecommendContentActivity;
 import com.just.agentweb.AgentWeb;
 import com.lzy.okgo.model.Response;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,6 +59,11 @@ public class RecommendFragment extends BaseFragment {
     String token = "";
 
     private ChannelEntity channelEntity;
+
+    private boolean isCanDropDown = false;
+    private boolean isCanLoadMore = false;
+
+    private int pageNum = 1;
 
     @Override
     protected BasePresenter createPresenter() {
@@ -107,7 +119,7 @@ public class RecommendFragment extends BaseFragment {
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token;
 
-        url = AppConstant.YY_WEB_RECOMMEND;
+        //url = AppConstant.YY_WEB_RECOMMEND;
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
@@ -129,14 +141,45 @@ public class RecommendFragment extends BaseFragment {
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new RecommendInteractive(mAgentWeb,
                 getActivity()));
 
-        refreshLayout.setEnableLoadMore(false);
         refreshLayout.setEnableRefresh(false);
+//        refreshLayout.setEnableLoadMore(false);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 mAgentWeb.getWebCreator().getWebView().reload();    //刷新
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-                //isCanDropDown = false;
+                refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
+                pageNum = 1;
+                isCanDropDown = false;
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishLoadMore(500);
+                isCanLoadMore = false;
+            }
+        });
+
+        refreshLayout.setScrollBoundaryDecider(new ScrollBoundaryDecider() {
+            @Override
+            public boolean canRefresh(View content) {
+                if (isCanDropDown){
+                    isCanDropDown = false;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean canLoadMore(View content) {
+                if (isCanLoadMore){
+                    isCanLoadMore = false;
+                    pageNum++;
+                    JSRecommentRequest event = new JSRecommentRequest();
+                    EventBus.getDefault().post(event);
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -153,23 +196,26 @@ public class RecommendFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookMenuEvent(JSRecommentOpenWebViewEvent event) {
         Intent intent = new Intent();
-        String url = AppConstant.YY_WEB_DETAIL;
-        intent.putExtra("url", event.getBean().getUrl());
-        intent.putExtra("url", url);
+        intent.putExtra("url",event.getBean().getUrl());
         intent.putExtra("title", event.getBean().getTitle());
-        intent.putExtra("channel_itemid", event.getBean().getChannel_itemid());
+        intent.putExtra("channel_itemid", ""+event.getBean().getChannel_itemid());
         intent.setClass(getActivity(), RecommendContentActivity.class);
         startActivity(intent);
     }
 
     //获取数据
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void toBookMenuEvent(JSRecommentRequest event) {
-        HomeAPI.getRecomHome(new JsonCallback<RecommendRequestBean>() {
+    public void getData(JSRecommentRequest event) {
+        HomeAPI.getRecomHome(""+pageNum, new JsonCallback<RecommendRequestBean>() {
             @Override
             public void onSuccess(Response<RecommendRequestBean> response) {
                 if (response.body().getResult() == 1000){
                     RecommendRequestBean.DataBean bean = response.body().getData();
+                    if (bean.getList().size() == 0){
+                        refreshLayout.setEnableLoadMore(false);
+                        ToastUtils.showShort("没有更多数据");
+                        return;
+                    }
 
                     String json = Convert.toJson(bean);
 
@@ -183,6 +229,18 @@ public class RecommendFragment extends BaseFragment {
                 super.onError(response);
             }
         });
+    }
+
+    //下拉刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void dropDown(JSRecommendDropDownEvent event) {
+        isCanDropDown = true;
+    }
+
+    //加载更多
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void loadMore(JSRecommendLoadMoreEvent event) {
+        isCanLoadMore = true;
     }
 
 }

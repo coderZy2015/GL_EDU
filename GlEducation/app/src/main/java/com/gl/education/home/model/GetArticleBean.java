@@ -9,8 +9,8 @@ public class GetArticleBean {
     /**
      * result : 1000
      * message : 操作成功
-     * data : {"channel_itemid":1,"article_id":1,"contentHtml":"我是内容","author":"我是作者",
-     * "editor":"我是编辑","visitors":0,"likes":0,"online_time":"时间戳"}
+     * data : {"channel_itemid":1,"article_id":1,"title":"我是标题","contentHtml":"我是html内容",
+     * "author":"我是作者","editor":"我是编辑","visitors":0,"likes":0,"online_time":"时间戳"}
      */
 
     private int result;
@@ -45,7 +45,8 @@ public class GetArticleBean {
         /**
          * channel_itemid : 1
          * article_id : 1
-         * contentHtml : 我是内容
+         * title : 我是标题
+         * contentHtml : 我是html内容
          * author : 我是作者
          * editor : 我是编辑
          * visitors : 0
@@ -55,6 +56,7 @@ public class GetArticleBean {
 
         private int channel_itemid;
         private int article_id;
+        private String title;
         private String contentHtml;
         private String author;
         private String editor;
@@ -76,6 +78,14 @@ public class GetArticleBean {
 
         public void setArticle_id(int article_id) {
             this.article_id = article_id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public String getContentHtml() {

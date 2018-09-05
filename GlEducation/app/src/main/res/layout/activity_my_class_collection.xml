@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.gl.education.home.activity.MyClassCollectionActivity">
+    tools:context="com.gl.education.person.activity.MyClassCollectionActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -40,6 +40,7 @@
     <string name="edit_xb_title">修改性别</string>
     <string name="mine_set">设置</string>
     <string name="mine_wrong_book">我的错题本</string>
+    <string name="recommend_hint">&#160;写评论...</string>
     <string name="mine_person_sex">&#160;&#160;性别</string>
     <string name="mine_person_sex1">&#160;&#160;妖怪</string>
     <string name="mine_person_phone">&#160;&#160;手机</string>
@@ -70,7 +71,7 @@
     <string name="search_result">搜索结果</string>
 
 
-    <string name="tip_drag">选择栏目及其顺序</string>
+    <string name="tip_drag">选择栏目</string>
     <string name="my_channel">我的频道</string>
     <string name="my_grade">我的年级</string>
     <string name="tip_grade">点击选择年级</string>
@@ -80,5 +81,7 @@
 
     <string name="permission_rationale_message">您拒绝了我们申请授权，请同意授权，否则该功能不能正常使用！</string>
     <string name="permission_denied_forever_message">我们需要一些您拒绝的权限。否则系统无法应用失败，请手动设置到页面授权，否则功能不能正常使用！</string>
+
+    <string name="umeng_qudao">官网</string>
 
 </resources>

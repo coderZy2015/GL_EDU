@@ -18,18 +18,27 @@
         android:gravity="center"
         android:orientation="horizontal" />
 
-    <TextView
+    <ImageView
         android:id="@+id/guide_btn"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="120dp"
+        android:layout_height="35dp"
         android:layout_above="@+id/main_linear"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:background="@drawable/lijitiyan"
-        android:text="立即体验"
-        android:textSize="18dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:background="@drawable/open_start"/>
+    <!--<TextView-->
+        <!--android:id="@+id/guide_btn"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:layout_above="@+id/main_linear"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:gravity="center"-->
+        <!--android:background="@drawable/lijitiyan"-->
+        <!--android:text="立即体验"-->
+        <!--android:textSize="18dp"-->
+        <!--android:visibility="gone" />-->
 
 
 </RelativeLayout>

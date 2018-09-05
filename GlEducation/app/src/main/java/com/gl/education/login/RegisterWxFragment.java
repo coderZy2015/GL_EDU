@@ -182,6 +182,11 @@ public class RegisterWxFragment extends BaseFragment<RegisterView, RegisterPrese
 
     @Override
     public void registerWXSuccess(RegisterBean bean) {
+
+        String token = bean.getData().getToken();
+        SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
+        OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
+
         HomeAPI.login(username, password, new JsonCallback<LoginBean>() {
             @Override
             public void onSuccess(Response<LoginBean> response) {
@@ -190,13 +195,13 @@ public class RegisterWxFragment extends BaseFragment<RegisterView, RegisterPrese
                 if (responseData.getResult() == 1000){
                     ToastUtils.showShort("注册成功");
 
-                    //通知个人中心刷新
-                    UpdateUserDataEvent event = new UpdateUserDataEvent();
-                    EventBus.getDefault().post(event);
-
                     String token = responseData.getData().getToken();
                     SPUtils.getInstance().put(AppConstant.SP_TOKEN, token);
                     OkGo.getInstance().getCommonHeaders().put("GL-Token", token);
+
+                    //通知个人中心刷新
+                    UpdateUserDataEvent event = new UpdateUserDataEvent();
+                    EventBus.getDefault().post(event);
 
                     AppCommonData.isLogin = true;
                     Intent resultIntent = new Intent();

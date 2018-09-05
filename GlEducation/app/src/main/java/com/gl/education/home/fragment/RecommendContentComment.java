@@ -124,6 +124,7 @@ public class RecommendContentComment extends BaseFragment {
 
                 String json = Convert.toJson(bean.getData());
 
+                //
                 mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
                         .callJs_setCommentsData,  json);
             }

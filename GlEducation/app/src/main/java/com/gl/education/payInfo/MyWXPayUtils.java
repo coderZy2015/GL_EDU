@@ -88,8 +88,9 @@ public class MyWXPayUtils {
                 request.nonceStr = builder.getNonceStr();
                 request.timeStamp = builder.getTimeStamp();
                 request.sign = builder.getSign();
-                Log.e("chx", "run: " + request.appId + request.nonceStr + request.sign);
-                iwxapi.sendReq(request);//发送调起微信的请求
+
+                boolean is = iwxapi.sendReq(request);//发送调起微信的请求
+
             }
         };
         Thread payThread = new Thread(payRunnable);

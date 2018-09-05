@@ -85,7 +85,8 @@ public class WKBookPaySuccessActivity extends BaseActivity {
 
     @OnClick(R.id.btn_back)
     public void backPressed() {
-        onBackPressedSupport();
+        JSWKBookPaySuccessFinishEvent event = new JSWKBookPaySuccessFinishEvent();
+        EventBus.getDefault().post(event);
     }
 
     @Override

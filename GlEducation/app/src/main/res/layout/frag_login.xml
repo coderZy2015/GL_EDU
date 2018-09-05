@@ -194,7 +194,7 @@
                     android:text="@string/login_other"
                     android:textColor="@color/black"
                     android:textSize="13dp"
-                    android:layout_marginBottom="30dp"/>
+                    android:layout_marginBottom="28dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -211,6 +211,7 @@
                             android:layout_width="19dp"
                             android:layout_height="21dp"
                             android:layout_marginLeft="25dp"
+                            android:visibility="gone"
                             android:src="@drawable/login_qq"/>
 
                     </RelativeLayout>
@@ -243,6 +244,7 @@
                             android:layout_height="20dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="25dp"
+                            android:visibility="gone"
                             android:src="@drawable/login_wb"/>
 
                     </RelativeLayout>

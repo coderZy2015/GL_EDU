@@ -93,12 +93,6 @@ public class TeachingAssistantFragment extends BaseFragment {
         url = channelEntity.getUrl();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 注册订阅者
-        EventBus.getDefault().unregister(this);
-    }
 
     @Override
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
@@ -156,15 +150,17 @@ public class TeachingAssistantFragment extends BaseFragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mAgentWeb.getWebLifeCycle().onDestroy();
+    public void onDestroy() {
+        super.onDestroy();
+        // 注册订阅者
+        EventBus.getDefault().unregister(this);
     }
+
+
 
     @Override
     public boolean onBackPressedSupport() {
         boolean isBack = false;
-
         if (mAgentWeb!= null)
             isBack = mAgentWeb.back();
 
@@ -207,7 +203,10 @@ public class TeachingAssistantFragment extends BaseFragment {
         //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
-        mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
+        if (mAgentWeb!=null){
+            mAgentWeb.getWebCreator().getWebView().loadUrl(url+token);
+            mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+        }
     }
 
     //更新频道信息

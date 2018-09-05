@@ -88,7 +88,8 @@ public class JCBookPaySuccessActivity extends BaseActivity {
 
     @OnClick(R.id.btn_back)
     public void backPressed() {
-        onBackPressedSupport();
+        JSJCBookPaySuccessFinishEvent event = new JSJCBookPaySuccessFinishEvent();
+        EventBus.getDefault().post(event);
     }
 
     @Override

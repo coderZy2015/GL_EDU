@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
 import com.blankj.utilcode.util.DeviceUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gl.education.R;
 import com.lzy.okgo.OkGo;
@@ -23,6 +24,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
@@ -81,11 +83,11 @@ public class App extends Application {
         //        builder.addInterceptor(new TokenInterceptor());
 
         //全局的读取超时时间
-        builder.readTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        builder.readTimeout(20000, TimeUnit.MILLISECONDS);
         //全局的写入超时时间
-        builder.writeTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        builder.writeTimeout(20000, TimeUnit.MILLISECONDS);
         //全局的连接超时时间
-        builder.connectTimeout(OkGo.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(20000, TimeUnit.MILLISECONDS);
 
         OkGo.getInstance()
                 .init(this)
@@ -94,10 +96,11 @@ public class App extends Application {
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
                 .setRetryCount(1);
 
-//        OkHttpClient client = OkGo.getInstance().getOkHttpClient();
-//        Log.i("zy_code", "write超时时间 == " +  client.writeTimeoutMillis());
-//        Log.i("zy_code", "read超时时间 == " +  client.readTimeoutMillis());
-//        Log.i("zy_code", "connect超时时间 == " +  client.connectTimeoutMillis());
+        OkHttpClient client = OkGo.getInstance().getOkHttpClient();
+        LogUtils.d(client.writeTimeoutMillis());
+        LogUtils.d(client.readTimeoutMillis());
+        LogUtils.d(client.connectTimeoutMillis());
+
     }
 
     public void initUM(){
@@ -110,11 +113,13 @@ public class App extends Application {
          * 参数5:Push推送业务的secret
          */
 
-        UMConfigure.init(this,"570f58cc67e58e0c58002195"
-                ,"test",UMConfigure.DEVICE_TYPE_PHONE,"");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
+        UMConfigure.init(this,"5b8df616b27b0a5659000020"
+                ,getResources().getString(R.string.umeng_qudao),UMConfigure.DEVICE_TYPE_PHONE,"");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
 
         PlatformConfig.setWeixin("wxc3d63044c63e0b27", "9a7afa803a0da2903ba135c298d8bd93");
-        PlatformConfig.setQQZone("1106391961", "lSbEuDwBMLrub94f");
+        //PlatformConfig.setQQZone("1106391961", "lSbEuDwBMLrub94f");
+
+        MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
 
 

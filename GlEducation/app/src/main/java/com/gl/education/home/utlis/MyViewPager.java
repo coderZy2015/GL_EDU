@@ -7,11 +7,9 @@ package com.gl.education.home.utlis;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import android.widget.RelativeLayout;
 
 /**
  * @ explain:这个 ViewPager是用来解决ScrollView里面嵌套ViewPager的 内部解决法的
@@ -20,45 +18,64 @@ import java.util.LinkedHashMap;
  */
 public class MyViewPager extends ViewPager {
 
-    private int position;
+    private int current;
+    private int height = 0;
 
-    private HashMap<Integer, Integer> maps = new LinkedHashMap<Integer, Integer>();
+    private boolean scrollble = true;
+
     public MyViewPager(Context context) {
         super(context);
     }
+
     public MyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = 0;
-        for (int i = 0; i < this.getChildCount(); i++) {
-            View child = getChildAt(i);
-            child.measure(widthMeasureSpec,
-                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+
+
+        if (getChildCount() > current) {
+            View child = getChildAt(current);
+            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
             int h = child.getMeasuredHeight();
-            maps.put(i, h);
+            height = h;
         }
-        if (getChildCount() > 0) {
-            height = getChildAt(position).getMeasuredHeight();
-        }
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height,
-                MeasureSpec.EXACTLY);
+
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-    /**
-     * 在切换tab的时候,重置viewPager的高度
-     */
-    public void resetHeight(int position) {
-        this.position = position;
-        if (maps.size() > position) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+
+    public void resetHeight(int current) {
+        this.current = current;
+        if (getChildCount() > current) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
             if (layoutParams == null) {
-                layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, maps.get(position));
+                layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, height);
             } else {
-                layoutParams.height = maps.get(position);
+                layoutParams.height = height;
             }
             setLayoutParams(layoutParams);
         }
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!scrollble) {
+            return true;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+
+    public boolean isScrollble() {
+        return scrollble;
+    }
+
+    public void setScrollble(boolean scrollble) {
+        this.scrollble = scrollble;
+    }
+
 }

@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface HomePageView {
     void getChannelGradeSuccess(int grade, List<ChannelEntity> mFragShowIdList);
-
+    void getChannelGradeFail();
 }

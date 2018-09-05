@@ -3,9 +3,11 @@ package com.gl.education.home.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.LogUtils;
@@ -19,6 +21,7 @@ import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.OpenCameraEvent;
+import com.gl.education.home.event.RequestNetWorkAgainEvent;
 import com.gl.education.home.event.UpdateUserDataEvent;
 import com.gl.education.home.fragment.HomePageFragment;
 import com.gl.education.home.fragment.MineFragment;
@@ -55,6 +58,15 @@ public class HomePageActivity extends BaseActivity {
     ImageView image_ic_page;
     @BindView(R.id.image_ic_person)
     ImageView image_ic_person;
+
+    @BindView(R.id.request_again)
+    TextView request_again;
+
+    @BindView(R.id.layout_network_error)
+    RelativeLayout layout_network_error;
+
+    private boolean isShowError = false;
+
 
     @Override
     protected int provideContentViewId() {
@@ -101,6 +113,9 @@ public class HomePageActivity extends BaseActivity {
             image_ic_page.setBackgroundResource(R.drawable.home_ic_page_s);
             image_ic_person.setBackgroundResource(R.drawable.home_ic_person);
             showHideFragment(mFragments[FIRST], mFragments[SECOND]);
+            if (isShowError){
+                layout_network_error.setVisibility(View.VISIBLE);
+            }
         }
         else if(btn.getId() == R.id.btn_home_mine){
 //            Intent intent = new Intent();
@@ -113,6 +128,9 @@ public class HomePageActivity extends BaseActivity {
 
             UpdateUserDataEvent event = new UpdateUserDataEvent();
             EventBus.getDefault().post(event);
+            if (isShowError){
+                layout_network_error.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -180,5 +198,23 @@ public class HomePageActivity extends BaseActivity {
     public void openCamera(OpenCameraEvent event) {
         Intent intent = new Intent(HomePageActivity.this, CameraActivity.class);
         startActivity(intent);
+    }
+
+
+    @OnClick(R.id.request_again)
+    public void requestAgain(){
+        RequestNetWorkAgainEvent event = new RequestNetWorkAgainEvent();
+        EventBus.getDefault().post(event);
+    }
+
+
+    public void showNoConnect(){
+        layout_network_error.setVisibility(View.VISIBLE);
+        isShowError = true;
+    }
+
+    public void hideNoConnect(){
+        layout_network_error.setVisibility(View.GONE);
+        isShowError = false;
     }
 }

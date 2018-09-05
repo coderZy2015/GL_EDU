@@ -46,16 +46,16 @@ public class AppConstant {
 
 
     //正式
-    //public static final String YY_WEB_BASE_URL = "http://appweb.hebeijiaoyu.cn/";
+    public static final String YY_WEB_BASE_URL = "http://appweb.hebeijiaoyu.cn/";
     //测试192.168.1.71:9999/detail.html
-    public static final String YY_WEB_BASE_URL = "http://192.168.1.71:9999/";
+    //public static final String YY_WEB_BASE_URL = "http://192.168.1.71:9999/";
     //推荐首页
     public static final String YY_WEB_RECOMMEND = YY_WEB_BASE_URL+"recommond.html";
     //推荐详情
     public static final String YY_WEB_DETAIL = YY_WEB_BASE_URL+"detail.html";
     //推荐详情评论
     public static final String YY_WEB_COMMENT = YY_WEB_BASE_URL+"comment.html";
-    //推荐详情评论
+    //推荐我的收藏
     public static final String YY_WEB_MY_FAVORITE = YY_WEB_BASE_URL+"myFavorite.html";
 
 
@@ -63,6 +63,8 @@ public class AppConstant {
     public static final String SP_FIRST_ENTER = "firstEnter"; //第一次登陆
     public static final String SP_SEARCH_HISTORY = "searchHistory";  //搜索历史
     public static final String SP_SEARCH_HISTORY_NUM = "searchHistoryNum";  //搜索历史数量
+    public static final String SP_RECOMMEND_ISLIKE = "recommend_channel_isLike_id";  //该频道是否点赞   1点赞0未点赞
+    public static final String SP_RECOMMEND_COLLECTION = "recommend_channel_isCollection_id";  //该频道是否收藏   1收藏0未收藏
 
     //天恒
     public static final String callJs_login = "toLogin";  //告诉js登录token

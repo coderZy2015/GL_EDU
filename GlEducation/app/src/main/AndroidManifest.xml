@@ -73,8 +73,12 @@
             android:name=".home.activity.HomePageActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:hardwareAccelerated="true" />
-        <activity android:name=".camera.activity.CameraActivity" />
-        <activity android:name=".login.LoginInfoActivity" />
+        <activity
+            android:name=".camera.activity.CameraActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity
+            android:name=".login.LoginInfoActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
             android:name=".home.activity.BookMenuActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
@@ -92,56 +96,65 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.activity.PersonDataActivity"
+            android:name=".person.activity.PersonDataActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyWalletActivity"
+            android:name=".person.activity.MyWalletActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.TransactionActivity"
+            android:name=".person.activity.TransactionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyCompositionActivity"
+            android:name=".person.activity.MyCompositionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
             android:name=".home.activity.SearchActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.EditUserNameActivity"
+            android:name=".person.activity.EditUserNameActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyClassCollectionActivity"
+            android:name=".person.activity.MyClassCollectionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
             android:name=".home.activity.BookDetailActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
             android:name=".teachingassistant.activity.JFBookMenuActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".teachingassistant.activity.JFBookShelfActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".teachingassistant.activity.JFBookContentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".teachingmaterial.activity.JCBookMenuActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".teachingmaterial.activity.JCBookShelfActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".teachingmaterial.activity.JCBookContentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".smallclass.activity.WKBookMenuActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".smallclass.activity.WKBookContentActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".smallclass.activity.WKBookShelfActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
         <activity
             android:name=".teachingassistant.activity.JFBookAnalysisActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
@@ -197,22 +210,22 @@
             android:name=".home.activity.SearchResultActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyMessageActivity"
+            android:name=".person.activity.MyMessageActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyJCCollectionActivity"
+            android:name=".person.activity.MyJCCollectionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyJFCollectionActivity"
+            android:name=".person.activity.MyJFCollectionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.MyWKCollectionActivity"
+            android:name=".person.activity.MyWKCollectionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.InstallActivity"
+            android:name=".person.activity.InstallActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
-            android:name=".home.activity.WrongTopicBookActivity"
+            android:name=".person.activity.WrongTopicBookActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
         <activity
             android:name=".camera.activity.CameraResultISBNActivity"
@@ -220,18 +233,26 @@
         <activity
             android:name=".camera.activity.CameraResultSMActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".home.activity.MyZXCollectionActivity"
+        <activity
+            android:name=".person.activity.MyZXCollectionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".home.activity.RecommendContentActivity"
+        <activity
+            android:name=".person.activity.RecommendContentActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".camera.activity.CameraFinishExplainActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".camera.activity.CameraFinishExplainActivity"
+        <activity
+            android:name=".person.activity.RechargeCenterActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".home.activity.RechargeCenterActivity"
+        <activity
+            android:name=".person.activity.RechargeRecordActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".home.activity.RechargeRecordActivity"
+        <activity
+            android:name=".person.activity.EditXbActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".home.activity.EditXbActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+        <activity android:name=".home.activity.SplashActivity"></activity>
     </application>
 
 </manifest>

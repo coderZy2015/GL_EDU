@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -37,7 +36,7 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
     ViewPager viewPager;
 
     @BindView(R.id.guide_btn)
-    TextView guide_start;
+    ImageView guide_start;
 
     @BindView(R.id.main_linear)
     LinearLayout mLinearLayout;
@@ -70,7 +69,7 @@ public class GuideActivity extends BaseActivity<GuideView, GuidePresenter> imple
         String token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN, "");
         if (!token.equals("")){
             Intent intent = new Intent();
-            intent.setClass(this, HomePageActivity.class);
+            intent.setClass(this, SplashActivity.class);
             startActivity(intent);
             finish();
 

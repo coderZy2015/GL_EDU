@@ -109,7 +109,7 @@ public class JFBookPackageBuyActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.putExtra("url", event.getBean().getUrl());
         intent.putExtra("title", event.getBean().getTitle());
-        intent.setClass(this, JFBookRechargeAactivity.class);
+        intent.setClass(this, JFBookBuySuccessActivity.class);
         startActivity(intent);
     }
 

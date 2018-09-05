@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -155,6 +156,18 @@ public class CameraActivity extends BaseActivity {
                                     getSupportFragmentManager(), bean.getData());
                             mViewPager.setAdapter(adapter);
                             mViewPager.setOffscreenPageLimit(3);
+                            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                                @Override
+                                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                }
+                                @Override
+                                public void onPageSelected(int position) {
+                                    mViewPager.resetHeight(position);
+                                }
+                                @Override
+                                public void onPageScrollStateChanged(int state) {
+                                }
+                            });
 
                             tabLayout.setupWithViewPager(mViewPager);
 

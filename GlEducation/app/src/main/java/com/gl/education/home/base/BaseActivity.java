@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.gl.education.R;
 import com.gl.education.widget.CustomDialog;
-import com.uuzuche.lib_zxing.view.Loading_view;
+import com.umeng.analytics.MobclickAgent;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
 import butterknife.ButterKnife;
@@ -63,6 +63,13 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends Suppor
     protected void onResume() {
         super.onResume();
         setEventTag();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     public void setEventTag(){

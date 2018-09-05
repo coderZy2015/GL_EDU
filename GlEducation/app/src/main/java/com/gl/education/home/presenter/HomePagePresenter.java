@@ -42,7 +42,7 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
                     }else{
                         SPUtils.getInstance().put(AppConstant.SP_TOKEN, "");
                         AppCommonData.loginBackground = false;
-
+                        getView().getChannelGradeFail();
                     }
                 }
 
@@ -50,6 +50,7 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
                 public void onError(Response<ApplyTokenBean> response) {
                     super.onError(response);
                     ToastUtils.showShort("失败");
+                    getView().getChannelGradeFail();
                 }
             });
         }
@@ -63,6 +64,8 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
                 if (response.body().getResult() == 1000) {
                     grade = response.body().getData().getGrade();
                     getView().getChannelGradeSuccess(grade, response.body().getData().getChannel_data());
+                }else{
+                    getView().getChannelGradeFail();
                 }
 
             }
@@ -70,6 +73,7 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
             @Override
             public void onError(Response<GetUserChannelGradeBean> response) {
                 super.onError(response);
+                getView().getChannelGradeFail();
             }
         });
     }

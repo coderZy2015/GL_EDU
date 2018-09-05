@@ -211,31 +211,31 @@ public class ChannelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 });
 
-                //长按 我的频道的item 进入编辑模式
-                myHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(final View v) {
-                        //排除2个头布局
-                        if (myHolder.getLayoutPosition() == COUNT_PRE_MY_HEADER){
-                            return false;
-                        }
-                        if (!isEditMode) {
-                            RecyclerView recyclerView = ((RecyclerView) parent);
-                            startEditMode(recyclerView);
-
-                            // header 按钮文字 改成 "完成"
-                            View view = recyclerView.getChildAt(1);
-                            if (view == recyclerView.getLayoutManager().findViewByPosition(0)) {
-                                TextView tvBtnEdit = (TextView) view.findViewById(R.id.tv_btn_edit);
-                                tvBtnEdit.setText(R.string.finish);
-                            }
-                        }
-
-                        //mItemTouchHelper.startDrag(myHolder);
-
-                        return true;
-                    }
-                });
+//                //长按 我的频道的item 进入编辑模式
+//                myHolder.textView.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(final View v) {
+//                        //排除2个头布局
+//                        if (myHolder.getLayoutPosition() == COUNT_PRE_MY_HEADER){
+//                            return false;
+//                        }
+//                        if (!isEditMode) {
+//                            RecyclerView recyclerView = ((RecyclerView) parent);
+//                            startEditMode(recyclerView);
+//
+//                            // header 按钮文字 改成 "完成"
+//                            View view = recyclerView.getChildAt(1);
+//                            if (view == recyclerView.getLayoutManager().findViewByPosition(0)) {
+//                                TextView tvBtnEdit = (TextView) view.findViewById(R.id.tv_btn_edit);
+//                                tvBtnEdit.setText(R.string.finish);
+//                            }
+//                        }
+//
+//                        //mItemTouchHelper.startDrag(myHolder);
+//
+//                        return true;
+//                    }
+//                });
 
 
 //                myHolder.textView.setOnTouchListener(new View.OnTouchListener() {

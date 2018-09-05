@@ -65,7 +65,7 @@
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:textSize="12dp"/>
-        
+
         <ImageView
             android:id="@+id/btn_into_content"
             android:layout_width="300dp"
@@ -74,8 +74,8 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/btn_into_explanation"
             android:layout_centerInParent="true"/>
-        
-        
+
+
     </RelativeLayout>
     
 </LinearLayout>
