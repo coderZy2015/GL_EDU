@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">冠林教育</string>
+
+    <string name="login_hint_password">输入密码</string>
+    <string name="login_hint_username">持卡用户/用户名/有线电视用户/移动用户/电信用户</string>
+    <string name="login_other">其他第三方登录方式</string>
+    <string name="login_register">注册账号</string>
+    <string name="login_forget_password">忘记密码</string>
+    <string name="register_username">请输入手机号</string>
+    <string name="register_code">请输入您获取的验证码</string>
+    <string name="register_password">请输入密码</string>
+    <string name="register_agree">同意</string>
+    <string name="register_agreement">相关注册协议</string>
+    <string name="forget_new_password">新密码</string>
+    <string name="forget_repeat_password">确认密码</string>
+    <string name="camera_search_title">搜索结果</string>
+    <string name="assistant_menu">教辅目录</string>
+    <string name="channel_title">兴趣选择</string>
+    <string name="channel_go_on">跳 过</string>
+    <string name="guide_go">立即体验</string>
+    <string name="mine_top">个人中心</string>
+    <string name="mine_teaching_material">教材</string>
+    <string name="mine_teaching_assistant">教辅</string>
+    <string name="mine_small_class">微课</string>
+    <string name="mine_skill">才艺</string>
+    <string name="mine_composition">作文</string>
+    <string name="mine_message">&#160;&#160;我的消息</string>
+    <string name="mine_relax_text">&#160;&#160;我的错题本</string>
+    <string name="mine_collection">&#160;&#160;我的收藏</string>
+    <string name="mine_wallet">&#160;&#160;我的钱包</string>
+    <string name="mine_install">&#160;&#160;设置</string>
+    <string name="mine_grade_set">&#160;&#160;年级频道设置</string>
+    <string name="mine_person_set">&#160;&#160;个人资料设置</string>
+    <string name="mine_person_about">&#160;&#160;关于</string>
+    <string name="mine_person_data">个人资料设置</string>
+    <string name="mine_person_change">点击编辑头像</string>
+    <string name="mine_person_name">&#160;&#160;昵称</string>
+    <string name="mine_person_xb">&#160;&#160;性别</string>
+    <string name="edit_person_name">请输入4-20个字符</string>
+    <string name="edit_user_title">修改昵称</string>
+    <string name="edit_xb_title">修改性别</string>
+    <string name="mine_set">设置</string>
+    <string name="mine_wrong_book">我的错题本</string>
+    <string name="recommend_hint">&#160;写评论...</string>
+    <string name="mine_person_sex">&#160;&#160;性别</string>
+    <string name="mine_person_sex1">&#160;&#160;妖怪</string>
+    <string name="mine_person_phone">&#160;&#160;手机</string>
+    <string name="mine_person_change_password">&#160;&#160;修改密码</string>
+    <string name="mine_my_wallet_title">我的钱包</string>
+    <string name="mine_my_composition_title">我的作文</string>
+    <string name="mine_my_message_title">我的消息</string>
+    <string name="mine_my_about">关于</string>
+    <string name="recharge_center_title">充值中心</string>
+    <string name="mine_transaction_record_title">交易记录</string>
+    <string name="mine_recharge_record_title">充值记录</string>
+    <string name="mine_my_wallet_bi">币</string>
+    <string name="mine_my_wallet_account">账户余额</string>
+    <string name="mine_my_wallet_voucher_center">&#160;&#160;充值中心</string>
+    <string name="mine_my_wallet_recharge_record">&#160;&#160;充值记录</string>
+    <string name="mine_my_wallet_transaction_record">&#160;&#160;交易记录</string>
+    <string name="mine_my_composition_check">查看</string>
+    <string name="mine_my_composition_teacher">指导老师：</string>
+    <string name="mine_my_composition_type">审批类型：</string>
+    <string name="camera_search_error">没有搜索到题目</string>
+    <string name="camera_search_ques_body">题目</string>
+    <string name="camera_search_ques_answer_txt">答案</string>
+    <string name="home_text1">首页</string>
+    <string name="home_text2">个人中心</string>
+    <string name="main_search">搜索想要的书籍</string>
+    <string name="search_ss">搜索</string>
+    <string name="search_hot_key">热点搜索</string>
+    <string name="search_history">历史记录</string>
+    <string name="search_result">搜索结果</string>
+
+
+    <string name="tip_drag">选择栏目</string>
+    <string name="my_channel">我的频道</string>
+    <string name="my_grade">我的年级</string>
+    <string name="tip_grade">点击选择年级</string>
+    <string name="other_channel">其他频道</string>
+    <string name="edit">编辑</string>
+    <string name="finish">完成</string>
+
+    <string name="permission_rationale_message">您拒绝了我们申请授权，请同意授权，否则该功能不能正常使用！</string>
+    <string name="permission_denied_forever_message">我们需要一些您拒绝的权限。否则系统无法应用失败，请手动设置到页面授权，否则功能不能正常使用！</string>
+
+    <string name="umeng_qudao">官网</string>
+
+</resources>

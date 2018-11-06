@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.gl.education.person.activity.InstallActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/home_detail_top">
+
+        <RelativeLayout
+            android:id="@+id/btn_back"
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/white_back"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/mine_set"
+            android:textColor="@color/white"
+            android:textSize="20dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_lanmu_set"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/layout_line"
+        android:paddingLeft="35dp"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/lanmuset"/>
+
+        <TextView
+            android:id="@+id/btn_lanmu_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textSize="16dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/mine_grade_set"
+            android:textColor="@color/black"/>
+
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mine_pointer"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_person_set"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/layout_line"
+        android:paddingLeft="35dp"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/persondata"/>
+
+        <TextView
+            android:id="@+id/btn_grade_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textSize="16dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/mine_person_set"
+            android:textColor="@color/black"/>
+
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mine_pointer"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/btn_person_about"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/layout_line"
+        android:paddingLeft="35dp"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/recharge_record"/>
+
+        <TextView
+            android:id="@+id/btn_grade_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textSize="16dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/mine_person_about"
+            android:textColor="@color/black"/>
+
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mine_pointer"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fl_zxing_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:id="@+id/camera_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/search_camera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/image_search"
+                android:layout_width="40dp"
+                android:layout_height="56dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/camera_search_s"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/cover_camera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/image_cover"
+                android:layout_width="32dp"
+                android:layout_height="56dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/camera_cover"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/search_isbn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/image_isbn"
+                android:layout_width="34dp"
+                android:layout_height="56dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/camera_isbn"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/Scanning_code"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/image_scan"
+                android:layout_width="32dp"
+                android:layout_height="56dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/camera_scan"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

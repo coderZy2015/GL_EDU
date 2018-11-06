@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="361dp"
+        android:layout_height="121dp"
+        android:background="@drawable/my_compostion_bg"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:background="@color/transparent"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5">
+
+            <ImageView
+                android:id="@+id/my_composition_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="45dp"
+                android:src="@drawable/my_compostion_logo" />
+
+            <TextView
+                android:id="@+id/my_composition_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/my_composition_logo"
+                android:text="《作文》"
+                android:maxEms="20"
+                android:ellipsize="end"
+                android:textColor="@color/black"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/my_composition_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="33dp"
+                android:text="@string/mine_my_composition_check"
+                android:textColor="@color/home_detail_top"
+                android:textSize="19dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/my_composition_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="45dp"
+                android:textColor="@color/my_composition_text"
+                android:text="@string/mine_my_composition_teacher"/>
+
+            <TextView
+                android:id="@+id/my_composition_teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/my_composition_t"
+                android:textColor="@color/my_composition_text"
+                android:text="郑老师"/>
+
+            <TextView
+                android:id="@+id/my_composition_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="33dp"
+                android:textColor="@color/my_composition_text"
+                android:text="详解"/>
+
+            <TextView
+                android:id="@+id/my_composition_s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dp"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/my_composition_type"
+                android:textColor="@color/my_composition_text"
+                android:text="@string/mine_my_composition_type"/>
+
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
