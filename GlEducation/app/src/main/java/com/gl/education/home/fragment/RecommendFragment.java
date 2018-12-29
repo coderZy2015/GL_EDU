@@ -11,10 +11,13 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
+import com.gl.education.app.UM_EVENT;
 import com.gl.education.helper.Convert;
 import com.gl.education.helper.JsonCallback;
+import com.gl.education.home.activity.RecommendContentActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.JSRecommendDropDownEvent;
@@ -24,7 +27,6 @@ import com.gl.education.home.event.JSRecommentRequest;
 import com.gl.education.home.interactive.RecommendInteractive;
 import com.gl.education.home.model.ChannelEntity;
 import com.gl.education.home.model.RecommendRequestBean;
-import com.gl.education.home.activity.RecommendContentActivity;
 import com.just.agentweb.AgentWeb;
 import com.lzy.okgo.model.Response;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -32,6 +34,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -114,6 +117,11 @@ public class RecommendFragment extends BaseFragment {
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
 
+        if (!AppCommonData.isClickTJ){
+            AppCommonData.isClickTJ = true;
+            MobclickAgent.onEvent(_mActivity, UM_EVENT.UM_click_channel_tj);
+        }
+
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token;
 
@@ -122,7 +130,7 @@ public class RecommendFragment extends BaseFragment {
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
+                .closeIndicator()// 使用默认进度条
                 //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
@@ -130,7 +138,6 @@ public class RecommendFragment extends BaseFragment {
                 .ready()
                 .go(url+token);
 
-        //LogUtils.d(url+token);
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
@@ -203,7 +210,7 @@ public class RecommendFragment extends BaseFragment {
     //获取数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getData(JSRecommentRequest event) {
-        HomeAPI.getRecomHomeByUserTag(""+pageNum, new JsonCallback<RecommendRequestBean>() {
+        HomeAPI.getRecomHomeByUserTag("1",""+pageNum, new JsonCallback<RecommendRequestBean>() {
             @Override
             public void onSuccess(Response<RecommendRequestBean> response) {
                 if (response.body().getResult() == 1000){
@@ -236,14 +243,12 @@ public class RecommendFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void dropDown(JSRecommendDropDownEvent event) {
         isCanDropDown = true;
-        LogUtils.d("dropDown");
     }
 
     //加载更多
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void loadMore(JSRecommendLoadMoreEvent event) {
         isCanLoadMore = true;
-        LogUtils.d("loadMore");
     }
 
 }

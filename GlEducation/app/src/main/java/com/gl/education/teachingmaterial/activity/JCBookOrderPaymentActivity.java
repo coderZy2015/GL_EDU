@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.teachingmaterial.event.JSJCBookBuySuccessFinishEvent;
@@ -22,7 +23,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * 订单支付
+ * 订单支付页面
  */
 public class JCBookOrderPaymentActivity extends BaseActivity {
 
@@ -107,13 +108,13 @@ public class JCBookOrderPaymentActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJCBookOrderPaymentOpenWebViewEvent event) {
 
-        if (event.getBean().getTitle().equals("充值")){
+        if (event.getBean().getParam().equals(THJsParamsData.intoRecharge)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JCBookRechargeAactivity.class);
             startActivity(intent);
-        }else{
+        }else if(event.getBean().getParam().equals(THJsParamsData.intoBuySuccess)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());

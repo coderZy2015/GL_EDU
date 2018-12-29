@@ -57,7 +57,7 @@ public class SearchCoverFragment extends Fragment implements CameraPreview
     //调试网址
     //public final String loadPicUrl = "http://appserbeta.hebeijiaoyu.cn/iclient/cliuser/searchCover";
     //正常网址
-    public final String loadPicUrl = "http://appser.hebeijiaoyu.cn/iclient/cliuser/searchCover";
+    public final String loadPicUrl = "http://appser.hebeijiaoyu.cn/iclient/cliuser/searchCoverNew";
 
     private Loading_view loading;
 
@@ -368,12 +368,12 @@ public class SearchCoverFragment extends Fragment implements CameraPreview
                     loading.show();
 
                     OkGo.<String>post(loadPicUrl)
-                            .params("a1_upload", new File(PATH + filename))
+                            .params("a1_jfcover", new File(PATH + filename))
                             .execute(new StringCallback() {
                                 @Override
                                 public void onSuccess(Response<String> response) {
                                     if (photographCallback != null) {
-                                        photographCallback.onPotographSuccess(PATH+filename, response
+                                        photographCallback.onPotographSuccess(PATH + filename, response
                                                 .body());
                                     }
                                     loading.dismiss();

@@ -306,7 +306,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             @Override
                             public void onError(Response<SetUserChannelGradeBean> response) {
                                 super.onError(response);
-                                ToastUtils.showShort("网络连接失败，请检查网络");
+                                ToastUtils.showShort("网络连接失败，请检查网络 ");
                             }
                         });
                     }
@@ -760,8 +760,9 @@ public class ChannelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         gradeDataStringList.add("七年级");
         gradeDataStringList.add("八年级");
         gradeDataStringList.add("九年级");
-        gradeDataStringList.add("高中必修");
-        gradeDataStringList.add("高中选修");
+        gradeDataStringList.add("高一");
+        gradeDataStringList.add("高二");
+        gradeDataStringList.add("高三");
 
         for (int i = 0; i < gradeDataStringList.size(); i++) {
             GradeData data = new GradeData();

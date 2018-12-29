@@ -95,6 +95,8 @@ public class MineFragment extends BaseFragment {
     private String phone = "";
     private String xb = "";
 
+    private String username = "";
+
     private Loading_view loading;
 
 
@@ -224,6 +226,7 @@ public class MineFragment extends BaseFragment {
         }
         Intent intent = new Intent();
         intent.setClass(getActivity(), WrongTopicBookActivity.class);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
     //我的收藏
@@ -349,6 +352,7 @@ public class MineFragment extends BaseFragment {
                         }else{
                             mine_user_name.setText(""+bean.getNick_name());
                         }
+                        username = ""+bean.getUsername();
                         if (bean.getAvatar() == null){
                             Glide.with(getContext()).load(R.drawable.ic_photo).into(profile_image);
                             pic_url = "";

@@ -1,12 +1,17 @@
 package com.gl.education.teachingassistant.interactive;
 
-import android.content.Context;
 import android.webkit.JavascriptInterface;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.gl.education.app.HomeShare;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.model.JSOpenWebViewBean;
+import com.gl.education.home.model.JSShareWebViewBean;
+import com.gl.education.teachingassistant.activity.JFBookAnalysisActivity;
 import com.gl.education.teachingassistant.event.JSJFBookAnalysisOpenWebViewEvent;
 import com.just.agentweb.AgentWeb;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,11 +22,11 @@ import org.greenrobot.eventbus.EventBus;
 public class JFBookAnalysisInteractive {
 
     private AgentWeb mAgentWeb;
-    private Context context;
+    private JFBookAnalysisActivity activity;
 
-    public JFBookAnalysisInteractive(AgentWeb agent, Context context) {
+    public JFBookAnalysisInteractive(AgentWeb agent, JFBookAnalysisActivity context) {
         this.mAgentWeb = agent;
-        this.context = context;
+        this.activity = context;
     }
 
     //进入详情页面
@@ -31,5 +36,34 @@ public class JFBookAnalysisInteractive {
         JSJFBookAnalysisOpenWebViewEvent event = new JSJFBookAnalysisOpenWebViewEvent();
         event.setBean(bean);
         EventBus.getDefault().post(event);
+    }
+
+    //分享页面
+    @JavascriptInterface
+    public void setShareData(String json){
+        JSShareWebViewBean bean = Convert.fromJson(json, JSShareWebViewBean.class);
+        if (bean == null){
+            ToastUtils.showShort("分享失败");
+            return;
+        }
+        HomeShare.shareWeb(activity, bean.getUrl(), bean.getTitle(), "河北教育资源云平台", new UMShareListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) {}
+
+            @Override
+            public void onResult(SHARE_MEDIA share_media) {
+
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                ToastUtils.showShort("分享失败");
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA share_media) {
+                ToastUtils.showShort("分享取消");
+            }
+        });
     }
 }

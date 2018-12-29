@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
@@ -112,11 +113,14 @@ public class WKBookMenuActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSWKBookMenuOpenWebViewEvent event) {
-        Intent intent = new Intent();
-        intent.putExtra("url", event.getBean().getUrl());
-        intent.putExtra("title", event.getBean().getTitle());
-        intent.setClass(this, WKBookContentActivity.class);
-        startActivity(intent);
+        if (event.getBean().getParam().equals(THJsParamsData.wk_intoBookContent)){
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, WKBookContentActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     @Override

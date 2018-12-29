@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.R;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.teachingassistant.event.JSJFBookBuySuccessFinishEvent;
@@ -107,19 +108,19 @@ public class JFBookOrderPaymentActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJFBookOrderPaymentOpenWebViewEvent event) {
-        if (event.getBean().getTitle().equals("充值")){
+        if (event.getBean().getParam().equals(THJsParamsData.intoRecharge)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookRechargeAactivity.class);
             startActivity(intent);
-        }else  if (event.getBean().getTitle().equals("打包购买")){
+        }else if (event.getBean().getParam().equals(THJsParamsData.jf_intoPackageBuy)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookPackageBuyActivity.class);
             startActivity(intent);
-        }else{
+        }else if (event.getBean().getParam().equals(THJsParamsData.intoBuySuccess)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());

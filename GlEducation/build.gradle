@@ -20,7 +20,7 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url 'https://github.com/StanWeedu/We_SpeakAndroidSDK/raw/master'}
+        //maven { url 'https://github.com/StanWeedu/We_SpeakAndroidSDK/raw/master'}
     }
 }
 

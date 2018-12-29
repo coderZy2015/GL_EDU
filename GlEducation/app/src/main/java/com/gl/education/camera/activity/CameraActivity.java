@@ -1,23 +1,33 @@
 package com.gl.education.camera.activity;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
+import com.gl.education.app.UM_EVENT;
+import com.gl.education.camera.PhotographResultBean;
 import com.gl.education.camera.adapter.CameraSearchAdapter;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
@@ -26,6 +36,7 @@ import com.gl.education.home.event.OpenJFChannelEvent;
 import com.gl.education.home.utlis.MyViewPager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.umeng.analytics.MobclickAgent;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -66,6 +77,9 @@ public class CameraActivity extends BaseActivity {
     @BindView(R.id.layout_error)
     RelativeLayout layout_error;
 
+    @BindView(R.id.c_no_find)
+    RelativeLayout layout_no_find;
+
 
     private PhotographResultBean dataBean;
 
@@ -98,6 +112,7 @@ public class CameraActivity extends BaseActivity {
         super.initView();
         if (openCamera) {
             openCamera = false;
+            MobclickAgent.onEvent(this, UM_EVENT.UM_camera_search, "打开相机");
             Intent intent = new Intent(CameraActivity.this, CaptureActivity.class);
             startActivityForResult(intent, 0);
         }
@@ -125,7 +140,7 @@ public class CameraActivity extends BaseActivity {
         }
 
         if (resultCode == PHOTOGRAPH) {//处理拍照搜题结果
-
+            MobclickAgent.onEvent(this, UM_EVENT.UM_camera_search, "完成拍照搜题");
             if (data != null) {
                 Bundle bundle = data.getExtras();
 
@@ -208,8 +223,19 @@ public class CameraActivity extends BaseActivity {
             }
         }
         else if(resultCode == SEARCHCOVER){//处理拍封面结果
-            layout_error.setVisibility(View.VISIBLE);
-            Toast.makeText(CameraActivity.this, "搜索结果失败", Toast.LENGTH_LONG).show();
+
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                String path = bundle.getString("path");
+                delFile(path);
+                String result = bundle.getString(CodeUtils.RESULT_STRING);
+
+                Intent intent = new Intent();
+                intent.setClass(CameraActivity.this, CameraCoverActivity.class);
+                intent.putExtra("result", result);
+                startActivity(intent);
+                finish();
+            }
         }
         else if(resultCode == SEARCHISBN){//扫ISBN结果
             //处理扫描结果（在界面上显示）
@@ -236,6 +262,7 @@ public class CameraActivity extends BaseActivity {
         }
         else if (resultCode == CAPTURE) {//扫码结果
             //处理扫描结果（在界面上显示）
+            MobclickAgent.onEvent(this, UM_EVENT.UM_camera_sm, "完成扫码码");
             if (null != data) {
                 Bundle bundle = data.getExtras();
                 if (bundle == null) {
@@ -263,6 +290,59 @@ public class CameraActivity extends BaseActivity {
         ImageView img_title = (ImageView) view.findViewById(R.id.result_num);
         img_title.setImageResource(tabIcons[position]);
         return view;
+    }
+
+    @OnClick(R.id.c_no_find)
+    public void clickNoFind(){
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View layout = inflater.inflate(R.layout.dialog_no_find, null);
+
+        AlertDialog costDialog = new AlertDialog.Builder(this, R.style.dialog_no_find).create();
+        costDialog.setCancelable(false);
+        costDialog.show();
+
+        Window window = costDialog.getWindow();
+        window.setGravity(Gravity.CENTER); // 此处可以设置dialog显示的位置为居中
+        costDialog.setContentView(layout);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = display.getWidth() * 5 / 6; // 设置dialog宽度为屏幕的4/5
+        window.setAttributes(lp);
+
+        TextView btn_again = layout.findViewById(R.id.try_again);
+        TextView btn_go_jiaofu = layout.findViewById(R.id.go_jiaofu);
+        TextView btn_cancel = layout.findViewById(R.id.cancel);
+
+        btn_again.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                costDialog.dismiss();
+                OpenCameraEvent event = new OpenCameraEvent();
+                EventBus.getDefault().post(event);
+                finish();
+            }
+        });
+
+        btn_go_jiaofu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                costDialog.dismiss();
+                OpenJFChannelEvent event = new OpenJFChannelEvent();
+                EventBus.getDefault().post(event);
+                finish();
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                costDialog.dismiss();
+            }
+        });
+
     }
 
     @OnClick(R.id.camera_search_in_jiaofu)

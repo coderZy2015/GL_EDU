@@ -36,6 +36,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 充值界面
+ */
 public class JCBookRechargeAactivity extends BaseActivity {
 
     @BindView(R.id.web_container)
@@ -74,8 +77,8 @@ public class JCBookRechargeAactivity extends BaseActivity {
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
         bookTitle = intent.getStringExtra("title");
-        if (bookTitle!=null)
-            top_title.setText(""+bookTitle);
+        if (bookTitle != null)
+            top_title.setText("" + bookTitle);
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
@@ -89,7 +92,8 @@ public class JCBookRechargeAactivity extends BaseActivity {
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
         //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
         //mAgentWeb.clearWebCache();
-        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JCBookRechargeInteractive(mAgentWeb,
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JCBookRechargeInteractive
+                (mAgentWeb,
                 this));
 
     }
@@ -118,11 +122,11 @@ public class JCBookRechargeAactivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJCBookRechargeOpenWebViewEvent event) {
-                Intent intent = new Intent();
-                intent.putExtra("url", event.getBean().getUrl());
-                intent.putExtra("title", event.getBean().getTitle());
-                intent.setClass(this, JCBookPaySuccessActivity.class);
-                startActivity(intent);
+        Intent intent = new Intent();
+        intent.putExtra("url", event.getBean().getUrl());
+        intent.putExtra("title", event.getBean().getTitle());
+        intent.setClass(this, JCBookPaySuccessActivity.class);
+        startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -215,7 +219,8 @@ public class JCBookRechargeAactivity extends BaseActivity {
                                     MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils
                                             .ALiPayBuilder();
                                     String orderId = responseData.getData().getOrderid();
-                                    builder.build(eventTAG, orderId).toALiPay(JCBookRechargeAactivity
+                                    builder.build(eventTAG, orderId).toALiPay
+                                            (JCBookRechargeAactivity
                                             .this, responseData.getData().getOrderStr());
                                 } else {
                                     ToastUtils.showShort("创建订单出现问题");

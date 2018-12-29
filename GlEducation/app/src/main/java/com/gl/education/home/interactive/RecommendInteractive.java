@@ -3,6 +3,7 @@ package com.gl.education.home.interactive;
 import android.content.Context;
 import android.webkit.JavascriptInterface;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.event.JSRecommendDropDownEvent;
 import com.gl.education.home.event.JSRecommendLoadMoreEvent;
@@ -48,7 +49,7 @@ public class RecommendInteractive {
     //下拉刷新
     @JavascriptInterface
     public void dropDownRefresh(){
-      //  LogUtils.d("dropDownRefresh");
+        LogUtils.d("dropDownRefresh");
         JSRecommendDropDownEvent event = new JSRecommendDropDownEvent();
         EventBus.getDefault().post(event);
     }
@@ -56,7 +57,7 @@ public class RecommendInteractive {
     //上拉加载
     @JavascriptInterface
     public void pullUpLoading(){
-      //  LogUtils.d("pullUpLoading");
+        LogUtils.d("pullUpLoading");
         JSRecommendLoadMoreEvent event = new JSRecommendLoadMoreEvent();
         EventBus.getDefault().post(event);
     }

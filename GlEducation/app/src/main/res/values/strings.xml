@@ -41,6 +41,7 @@
     <string name="edit_xb_title">修改性别</string>
     <string name="mine_set">设置</string>
     <string name="mine_wrong_book">我的错题本</string>
+    <string name="mine_act_detail">活动详情</string>
     <string name="recommend_hint">&#160;写评论...</string>
     <string name="mine_person_sex">&#160;&#160;性别</string>
     <string name="mine_person_sex1">&#160;&#160;妖怪</string>
@@ -49,6 +50,7 @@
     <string name="mine_my_wallet_title">我的钱包</string>
     <string name="mine_my_composition_title">我的作文</string>
     <string name="mine_my_message_title">我的消息</string>
+    <string name="mine_my_message_activity">活动</string>
     <string name="mine_my_about">关于</string>
     <string name="recharge_center_title">充值中心</string>
     <string name="mine_transaction_record_title">交易记录</string>
@@ -58,6 +60,7 @@
     <string name="mine_my_wallet_voucher_center">&#160;&#160;充值中心</string>
     <string name="mine_my_wallet_recharge_record">&#160;&#160;充值记录</string>
     <string name="mine_my_wallet_transaction_record">&#160;&#160;交易记录</string>
+    <string name="mine_my_wallet_transaction_youhui">&#160;&#160;优惠券</string>
     <string name="mine_my_composition_check">查看</string>
     <string name="mine_my_composition_teacher">指导老师：</string>
     <string name="mine_my_composition_type">审批类型：</string>
@@ -71,6 +74,7 @@
     <string name="search_hot_key">热点搜索</string>
     <string name="search_history">历史记录</string>
     <string name="search_result">搜索结果</string>
+    <string name="no_find">提示：拍摄识别错误有可能是因为拍摄识别不清晰，选中的范围不准确造成的，可以重新拍摄，或者直接去往教辅频道手动搜索对应的电子教辅。</string>
 
 
     <string name="tip_drag">选择栏目</string>
@@ -85,5 +89,6 @@
     <string name="permission_denied_forever_message">我们需要一些您拒绝的权限。否则系统无法应用失败，请手动设置到页面授权，否则功能不能正常使用！</string>
 
     <string name="umeng_qudao">官网</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>

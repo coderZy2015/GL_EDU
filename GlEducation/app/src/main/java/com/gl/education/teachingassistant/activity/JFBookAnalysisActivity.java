@@ -1,11 +1,15 @@
 package com.gl.education.teachingassistant.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
+import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.teachingassistant.event.JSJFBookAnalysisOpenWebViewEvent;
@@ -33,8 +37,13 @@ public class JFBookAnalysisActivity extends BaseActivity {
     @BindView(R.id.top_title)
     TextView top_title;
 
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
+
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
+
+    private String url;
 
     @Override
     protected BasePresenter createPresenter() {
@@ -58,7 +67,7 @@ public class JFBookAnalysisActivity extends BaseActivity {
         EventBus.getDefault().register(this);
 
         Intent intent = getIntent();
-        String url = intent.getStringExtra("url");
+        url = intent.getStringExtra("url");
         bookTitle = intent.getStringExtra("title");
         if (bookTitle!=null)
             top_title.setText(""+bookTitle);
@@ -77,6 +86,10 @@ public class JFBookAnalysisActivity extends BaseActivity {
         //mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFBookAnalysisInteractive(mAgentWeb,
                 this));
+
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -102,15 +115,21 @@ public class JFBookAnalysisActivity extends BaseActivity {
         super.onBackPressedSupport();
     }
 
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJFBookAnalysisOpenWebViewEvent event) {
-        if (event.getBean().getTitle().equals("微课")){
+        if (event.getBean().getParam().equals(THJsParamsData.jf_intoBookWK)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookWKActivity.class);
             startActivity(intent);
-        }else{
+        }else if (event.getBean().getParam().equals(THJsParamsData.jf_intoOtherMore)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());

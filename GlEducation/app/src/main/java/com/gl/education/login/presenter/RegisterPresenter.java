@@ -1,5 +1,6 @@
 package com.gl.education.login.presenter;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.app.HomeAPI;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.base.BasePresenter;
@@ -54,12 +55,18 @@ public class RegisterPresenter extends BasePresenter<RegisterView> {
         HomeAPI.registWechat(username, password, identifyCode, unid, new JsonCallback<RegisterBean>() {
             @Override
             public void onSuccess(Response<RegisterBean> response) {
-                RegisterBean responseData = response.body();
+                RegisterBean bean = response.body();
 
-                if (responseData.getResult() == 1000){
-                    getView().registerWXSuccess(responseData);
+                if (bean.getResult() == 1000){
+                    getView().registerWXSuccess(bean);
                 }else{
-                    getView().registerWXFail(responseData.getMessage());
+                    if (bean.getMessage() != null){
+                        getView().registerWXFail(bean.getMessage());
+                    }else{
+                        ToastUtils.showShort("注册失败");
+                    }
+
+
                 }
             }
         });

@@ -33,13 +33,14 @@ import java.util.List;
 
 public class HomePagePresenter extends BasePresenter<HomePageView> {
 
-    private int grade = 0;
+    private int grade = 1;
 
     private List<ChannelEntity> allList;
     private List<ChannelEntity> myList;
 
     int cn_rw = 0;
     int cn_wspk = 0;
+    int cn_tsg = 0;
 
     public void autoLogin() {
         //token存在  添加公共header  自动登录
@@ -107,13 +108,14 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
             public void onSuccess(Response<GetChannelFlagBean> response) {
                 if (response.body().getResult() == 1000) {
                     GetChannelFlagBean bean = response.body();
-                    //cn_rw = bean.getData().getCn_rw();
+                    cn_rw = bean.getData().getCn_rw();
                     cn_wspk = bean.getData().getCn_wspk();
-
-                    if (cn_wspk == 0) {
-                        LogUtils.d("准备新增加网上评课");
+                    cn_tsg = bean.getData().getCn_tsg();
+                    LogUtils.d("cn_rw = "+cn_rw+"cn_wspk = "+cn_wspk+"cn_tsg = "+cn_tsg);
+                    if (cn_rw == 0 || cn_wspk == 0 || cn_tsg == 0) {
+                        LogUtils.d("准备自动新增频道");
                         //请求全部频道列表
-                        HomeAPI.getAllChannel("25", new JsonCallback<GetAllChannelBean>() {
+                        HomeAPI.getAllChannel("302", new JsonCallback<GetAllChannelBean>() {
                             @Override
                             public void onSuccess(Response<GetAllChannelBean> response) {
                                 if (response.body().getResult() == 1000) {
@@ -168,6 +170,26 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
     }
 
     public void addNewChannel() {
+        if (cn_rw == 0) {
+            cn_rw = 1;
+            for (int i = 0; i < allList.size(); i++) {
+                if (allList.get(i).getId() == 5) {
+                    boolean isAdd = true;
+                    //检测是否已经添加阅读与写作
+                    for (int j = 0; j < myList.size(); j++) {
+                        if (myList.get(j).getId() == 5) {
+                            LogUtils.d("已经添加阅读与写作");
+                            isAdd = false;
+                        }
+                    }
+                    if (isAdd) {
+                        myList.add(allList.get(i));
+                    }
+
+                }
+            }
+        }
+
         if (cn_wspk == 0) {
             cn_wspk = 1;
             for (int i = 0; i < allList.size(); i++) {
@@ -186,15 +208,16 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
                 }
             }
         }
-        if (cn_rw == 0) {
-            cn_rw = 1;
+
+        if (cn_tsg == 0) {
+            cn_tsg = 1;
             for (int i = 0; i < allList.size(); i++) {
-                if (allList.get(i).getId() == 5) {
+                if (allList.get(i).getId() == 7) {
                     boolean isAdd = true;
-                    //检测是否已经添加阅读与写作
+                    //检测是否已经添加传统文化
                     for (int j = 0; j < myList.size(); j++) {
-                        if (myList.get(j).getId() == 5) {
-                            LogUtils.d("已经添加阅读与写作");
+                        if (myList.get(j).getId() == 7) {
+                            LogUtils.d("已经添加传统文化");
                             isAdd = false;
                         }
                     }
@@ -226,7 +249,7 @@ public class HomePagePresenter extends BasePresenter<HomePageView> {
             }
         });
 
-        HomeAPI.setChannelFlag(cn_rw, cn_wspk, new JsonCallback<setFlagBean>() {
+        HomeAPI.setChannelFlag(cn_rw, cn_wspk, cn_tsg, new JsonCallback<setFlagBean>() {
             @Override
             public void onSuccess(Response<setFlagBean> response) {
             }

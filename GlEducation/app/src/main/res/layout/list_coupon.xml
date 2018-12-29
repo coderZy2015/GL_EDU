@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/shape_corner"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp">
+
+        <com.gl.education.widget.RoundImageView
+            android:id="@+id/act_image"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/act_pc1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp">
+
+            <TextView
+                android:id="@+id/act_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:lineSpacingExtra="2dp"
+                android:textSize="18dp"
+                android:textColor="@color/black"
+                android:lines="1"
+                android:text="超级大排档"/>
+
+            <TextView
+                android:id="@+id/act_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_marginTop="5dp"
+                android:lineSpacingMultiplier="1.1"
+                android:lineSpacingExtra="2dp"
+                android:text="超级好吃的火锅现在正式上架啦，只需1块钱即可立享豪华版海鲜大餐！更有啤酒饮料不限量供应！快来试一试吧！"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

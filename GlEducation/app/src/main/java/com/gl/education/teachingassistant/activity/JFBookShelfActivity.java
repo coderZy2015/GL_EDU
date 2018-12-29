@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.teachingassistant.event.JSJFBookShelfOpenWebViewEvent;
@@ -111,11 +112,13 @@ public class JFBookShelfActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJFBookShelfOpenWebViewEvent event) {
-        Intent intent = new Intent();
-        intent.putExtra("url", event.getBean().getUrl());
-        intent.putExtra("title", event.getBean().getTitle());
-        intent.setClass(this, JFBookMenuActivity.class);
-        startActivity(intent);
+        if (event.getBean().getParam().equals(THJsParamsData.jf_intoBookMenu)){
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, JFBookMenuActivity.class);
+            startActivity(intent);
+        }
     }
 
 }

@@ -1,11 +1,15 @@
 package com.gl.education.teachingassistant.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
+import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.teachingassistant.event.JSJFBookContentOpenWebViewEvent;
@@ -30,8 +34,13 @@ public class JFBookContentActivity extends BaseActivity {
     @BindView(R.id.top_title)
     TextView top_title;
 
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
+
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
+
+    private String url;
 
     @Override
     protected BasePresenter createPresenter() {
@@ -55,7 +64,7 @@ public class JFBookContentActivity extends BaseActivity {
         EventBus.getDefault().register(this);
 
         Intent intent = getIntent();
-        String url = intent.getStringExtra("url");
+        url = intent.getStringExtra("url");
         bookTitle = intent.getStringExtra("title");
         if (bookTitle!=null)
             top_title.setText(""+bookTitle);
@@ -74,6 +83,10 @@ public class JFBookContentActivity extends BaseActivity {
         //mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFBookContentInteractive(mAgentWeb,
                 this));
+
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -99,13 +112,22 @@ public class JFBookContentActivity extends BaseActivity {
         super.onBackPressedSupport();
     }
 
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJFBookContentOpenWebViewEvent event) {
-        Intent intent = new Intent();
-        intent.putExtra("url", event.getBean().getUrl());
-        intent.putExtra("title", event.getBean().getTitle());
-        intent.setClass(this, JFBookAnalysisActivity.class);
-        startActivity(intent);
+        if (event.getBean().getParam().equals(THJsParamsData.jf_intoBookAnalysis)){
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, JFBookAnalysisActivity.class);
+            startActivity(intent);
+        }
+
     }
 
 }

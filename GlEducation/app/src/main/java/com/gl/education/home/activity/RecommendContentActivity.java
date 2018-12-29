@@ -3,6 +3,7 @@ package com.gl.education.home.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.adapter.RecommendContentAdapter;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.model.AarticleVisitorBean;
 import com.gl.education.home.model.GetArticlInfoBean;
 import com.gl.education.home.model.GetArticleBean;
 import com.gl.education.home.model.SetArticleLikeBean;
@@ -71,6 +73,8 @@ public class RecommendContentActivity extends BaseActivity {
 
     @BindView(R.id.zan_num)
     TextView zan_num;
+    @BindView(R.id.recommend_num)
+    TextView recommend_num;
 
     private GetArticleBean viewData = null;
 
@@ -115,6 +119,14 @@ public class RecommendContentActivity extends BaseActivity {
         Intent intent = getIntent();
         channel_itemid = intent.getStringExtra("channel_itemid");
 
+        //用户浏览记录，千人千面基于此。
+        HomeAPI.setArticleVisitors(channel_itemid, new JsonCallback<AarticleVisitorBean>() {
+            @Override
+            public void onSuccess(Response<AarticleVisitorBean> response) {
+                LogUtils.d("用户浏览了"+channel_itemid);
+            }
+        });
+
         if (bookTitle != null)
             top_title.setText("冠林教育");
 
@@ -124,6 +136,7 @@ public class RecommendContentActivity extends BaseActivity {
         viewpager.setOffscreenPageLimit(1);
 
         viewpager.setCurrentItem(0);  //初始化显示第一个页面
+
 
         //初始化点赞收藏按钮
         isCollection = SPUtils.getInstance().getInt(AppConstant.SP_RECOMMEND_COLLECTION +
@@ -148,9 +161,20 @@ public class RecommendContentActivity extends BaseActivity {
             public void onSuccess(Response<GetArticlInfoBean> response) {
                 if (response.body().getResult() == 1000){
                     int likes = response.body().getData().getLikes();
+                    int commentsTotal = response.body().getData().getCommentsTotal();
 
                     if (zan_num!=null)
                     zan_num.setText(""+likes);
+
+                    if (recommend_num!=null){
+                        if (commentsTotal != 0){
+                            recommend_num.setVisibility(View.VISIBLE);
+                            recommend_num.setText(""+commentsTotal);
+                        }else{
+                            recommend_num.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
                 }
             }
         });
@@ -223,8 +247,22 @@ public class RecommendContentActivity extends BaseActivity {
 
     @OnClick(R.id.btn_back)
     public void backPressed() {
+        if (viewpager.getCurrentItem() == 1){
+            viewpager.setCurrentItem(0);  //初始化显示第一个页面
+            return;
+        }
+
         onBackPressed();
         finish();
+    }
+
+    @Override
+    public void onBackPressedSupport() {
+        if (viewpager.getCurrentItem() == 1){
+            viewpager.setCurrentItem(0);  //初始化显示第一个页面
+            return;
+        }
+        super.onBackPressedSupport();
     }
 
     @OnClick(R.id.bottom_shoucang)

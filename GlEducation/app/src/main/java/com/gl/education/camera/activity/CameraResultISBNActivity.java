@@ -5,6 +5,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
 import com.gl.education.helper.Convert;
@@ -14,6 +15,7 @@ import com.gl.education.home.model.JSLoginSuccess;
 import com.gl.education.login.LoginInfoActivity;
 import com.gl.education.teachingassistant.activity.JFBookContentActivity;
 import com.gl.education.teachingassistant.activity.JFBookOrderPaymentActivity;
+import com.gl.education.teachingassistant.activity.JFBookOtherMoreActivity;
 import com.gl.education.teachingassistant.activity.JFBookPackageBuyActivity;
 import com.gl.education.teachingassistant.event.JSJFBookBuySuccessFinishEvent;
 import com.gl.education.teachingassistant.event.JSJFBookMenuLoginEvent;
@@ -67,7 +69,8 @@ public class CameraResultISBNActivity extends BaseActivity {
         String id = getIntent().getStringExtra("isbn");
 
         String url = AppConstant.ISBN_URL + id;
-
+        String token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN, "");
+        token = "?token="+token;
         // 注册订阅者
         EventBus.getDefault().register(this);
 
@@ -77,7 +80,7 @@ public class CameraResultISBNActivity extends BaseActivity {
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 .createAgentWeb()
                 .ready()
-                .go(url);
+                .go(url+token);
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
@@ -143,6 +146,12 @@ public class CameraResultISBNActivity extends BaseActivity {
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookPackageBuyActivity.class);
+            startActivity(intent);
+        } else{//举一反三
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, JFBookOtherMoreActivity.class);
             startActivity(intent);
         }
 

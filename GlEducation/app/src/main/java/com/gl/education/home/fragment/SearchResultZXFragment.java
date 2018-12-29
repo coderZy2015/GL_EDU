@@ -92,7 +92,7 @@ public class SearchResultZXFragment extends BaseFragment {
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
+                .closeIndicator()// 使用默认进度条
                 //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调

@@ -7,8 +7,9 @@
         android:id="@+id/contentTextView"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:paddingLeft="10dp"
+        android:paddingLeft="20dp"
         android:gravity="center_vertical"
+        android:layout_marginTop="1dp"
         android:background="@drawable/list_item_selector"
         android:textSize="14dp"
         android:textColor="@color/my_composition_text"/>

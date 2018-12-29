@@ -88,6 +88,11 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (loading != null){
+            loading.dismiss();
+            loading = null;
+        }
+
         if (countDownTimer != null)
             countDownTimer.cancel();
     }
@@ -116,7 +121,7 @@ public class SplashActivity extends BaseActivity {
                         AppCommonData.loginBackground = true;
 
 //                        //测试自动添加频道功能
-//                        HomeAPI.setChannelFlag(0, 0, new JsonCallback<setFlagBean>() {
+//                        HomeAPI.setChannelFlag(0, 0, 0, new JsonCallback<setFlagBean>() {
 //                            @Override
 //                            public void onSuccess(Response<setFlagBean> response) {
 //                            }

@@ -1,12 +1,15 @@
 package com.gl.education.teachingmaterial.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
@@ -38,6 +41,9 @@ public class JCBookMenuActivity extends BaseActivity {
 
     @BindView(R.id.top_title)
     TextView top_title;
+
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
 
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
@@ -84,6 +90,9 @@ public class JCBookMenuActivity extends BaseActivity {
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JCBookMenuInteractive(mAgentWeb,
                 this));
 
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -92,6 +101,13 @@ public class JCBookMenuActivity extends BaseActivity {
         // 注册订阅者
         EventBus.getDefault().unregister(this);
     }
+
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
+    }
+
 
     @OnClick(R.id.btn_back)
     public void backPressed() {
@@ -118,13 +134,13 @@ public class JCBookMenuActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJCBookMenuOpenWebViewEvent event) {
 
-        if (event.getBean().getTitle().equals("教材内容")){
+        if (event.getBean().getParam().equals(THJsParamsData.jc_intoBookContent)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JCBookContentActivity.class);
             startActivity(intent);
-        }else if(event.getBean().getTitle().equals("订单支付")){
+        }else if(event.getBean().getParam().equals(THJsParamsData.jc_intoOrderPayment)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());

@@ -1,4 +1,4 @@
-package com.gl.education.camera.activity;
+package com.gl.education.camera;
 
 import java.io.Serializable;
 import java.util.List;

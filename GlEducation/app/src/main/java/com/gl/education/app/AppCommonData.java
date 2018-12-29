@@ -20,7 +20,15 @@ public class AppCommonData {
     public static int versionCode = 1;
     public static String versionName = "";
 
-    public static boolean isShowTelephone = true;
+    //控制是否显示教材、教辅、微课的分享按钮
+    public static boolean th_isShare = true;
 
-    public static boolean isShowWeSpeak = true;
+
+    public static boolean isClickTJ = false;
+    public static boolean isClickJC = false;
+    public static boolean isClickJF = false;
+    public static boolean isClickWK = false;
+    public static boolean isClickZW = false;
+    public static boolean isClickZXPK = false;
+    public static boolean isClickCTWH = false;
 }

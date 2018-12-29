@@ -11,6 +11,8 @@ import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
+import com.gl.education.app.UM_EVENT;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
@@ -26,13 +28,13 @@ import com.gl.education.smallclass.activity.WKBookBetterClassActivity;
 import com.gl.education.smallclass.activity.WKBookContentActivity;
 import com.gl.education.smallclass.activity.WKBookMenuActivity;
 import com.gl.education.smallclass.activity.WKBookOrderPaymentActivity;
-import com.gl.education.smallclass.activity.WKBookShelfActivity;
 import com.gl.education.smallclass.event.JSWKBookBuySuccessFinishEvent;
 import com.just.agentweb.AgentWeb;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -112,15 +114,21 @@ public class SmallClassFragment extends BaseFragment {
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
 
+        if (!AppCommonData.isClickWK){
+            AppCommonData.isClickWK = true;
+            MobclickAgent.onEvent(_mActivity, UM_EVENT.UM_click_channel_wk);
+        }
+
+
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
 
-        //url = "http://appstuweb.hebeijiaoyu.cn/#/weike";
+        //url = "http://192.168.199.37:8080/#/weike";
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
+                .closeIndicator()// 使用默认进度条
                 //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
@@ -140,7 +148,7 @@ public class SmallClassFragment extends BaseFragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 mAgentWeb.getWebCreator().getWebView().reload();    //刷新
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
                 isCanDropDown = false;
             }
         });
@@ -175,37 +183,38 @@ public class SmallClassFragment extends BaseFragment {
     //跳转到详情页面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookMenuEvent(JSWKFragmentOpenWebViewEvent event) {
-        if (event.getBean().getTitle().equals("同步课程目录")){
+        if (event.getBean().getParam().equals(THJsParamsData.wk_intoBookMenu)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(getActivity(), WKBookMenuActivity.class);
             startActivity(intent);
-        }else if (event.getBean().getTitle().equals("同步课程内容")){
+        }else if (event.getBean().getParam().equals(THJsParamsData.wk_intoBookContent)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(getActivity(), WKBookContentActivity.class);
             startActivity(intent);
-        }else if (event.getBean().getTitle().equals("订单支付")){
+        }else if (event.getBean().getParam().equals(THJsParamsData.wk_intoOrderPayment)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(getActivity(), WKBookOrderPaymentActivity.class);
             startActivity(intent);
-        }else if (event.getBean().getTitle().equals("精品课程")){
+        }else if (event.getBean().getParam().equals(THJsParamsData.wk_intoBetterClass)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(getActivity(), WKBookBetterClassActivity.class);
             startActivity(intent);
-        }else{
-            Intent intent = new Intent();
-            intent.putExtra("url", event.getBean().getUrl());
-            intent.putExtra("title", event.getBean().getTitle());
-            intent.setClass(getActivity(), WKBookShelfActivity.class);
-            startActivity(intent);
         }
+//        else{
+//            Intent intent = new Intent();
+//            intent.putExtra("url", event.getBean().getUrl());
+//            intent.putExtra("title", event.getBean().getTitle());
+//            intent.setClass(getActivity(), WKBookShelfActivity.class);
+//            startActivity(intent);
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

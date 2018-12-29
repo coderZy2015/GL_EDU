@@ -1,12 +1,18 @@
 package com.gl.education.smallclass.interactive;
 
-import android.content.Context;
 import android.webkit.JavascriptInterface;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.gl.education.app.HomeShare;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.model.JSOpenWebViewBean;
+import com.gl.education.home.model.JSShareWebViewBean;
+import com.gl.education.smallclass.activity.WKBookBetterClassActivity;
 import com.gl.education.smallclass.event.JSWKBookBetterClassOpenWebViewEvent;
+import com.gl.education.smallclass.event.JSWKLoginEvent;
 import com.just.agentweb.AgentWeb;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -16,11 +22,11 @@ import org.greenrobot.eventbus.EventBus;
 
 public class WKBookBetterClassInteractive {
     private AgentWeb mAgentWeb;
-    private Context context;
+    private WKBookBetterClassActivity activity;
 
-    public WKBookBetterClassInteractive(AgentWeb agent, Context context) {
+    public WKBookBetterClassInteractive(AgentWeb agent, WKBookBetterClassActivity context) {
         this.mAgentWeb = agent;
-        this.context = context;
+        this.activity = context;
     }
 
     //进入详情页面
@@ -30,5 +36,41 @@ public class WKBookBetterClassInteractive {
         JSWKBookBetterClassOpenWebViewEvent event = new JSWKBookBetterClassOpenWebViewEvent();
         event.setBean(bean);
         EventBus.getDefault().post(event);
+    }
+
+    //需要登录
+    @JavascriptInterface
+    public void toLogin(){
+        JSWKLoginEvent event = new JSWKLoginEvent();
+        EventBus.getDefault().post(event);
+    }
+
+    //分享页面
+    @JavascriptInterface
+    public void setShareData(String json){
+        JSShareWebViewBean bean = Convert.fromJson(json, JSShareWebViewBean.class);
+        if (bean == null){
+            ToastUtils.showShort("分享失败");
+            return;
+        }
+        HomeShare.shareWeb(activity, bean.getUrl(), bean.getTitle(), "河北教育资源云平台", new UMShareListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) {}
+
+            @Override
+            public void onResult(SHARE_MEDIA share_media) {
+
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                ToastUtils.showShort("分享失败");
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA share_media) {
+                ToastUtils.showShort("分享取消");
+            }
+        });
     }
 }

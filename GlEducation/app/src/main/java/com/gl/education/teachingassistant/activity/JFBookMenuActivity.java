@@ -1,12 +1,16 @@
 package com.gl.education.teachingassistant.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
@@ -38,6 +42,9 @@ public class JFBookMenuActivity extends BaseActivity {
 
     @BindView(R.id.top_title)
     TextView top_title;
+
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
 
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
@@ -82,7 +89,11 @@ public class JFBookMenuActivity extends BaseActivity {
         //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
         //mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFBookMenuInteractive(mAgentWeb,
-                this));
+                this, 1));
+
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -124,25 +135,25 @@ public class JFBookMenuActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJFBookMenuOpenWebViewEvent event) {
-        if (event.getBean().getTitle().equals("教辅内容")){
+        if (event.getBean().getParam().equals(THJsParamsData.jf_intoBookContent)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookContentActivity.class);
             startActivity(intent);
-        }else if(event.getBean().getTitle().equals("订单支付")){
+        }else if (event.getBean().getParam().equals(THJsParamsData.jf_intoOrderPayment)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookOrderPaymentActivity.class);
             startActivity(intent);
-        }else if(event.getBean().getTitle().equals("打包购买")){
+        }else if (event.getBean().getParam().equals(THJsParamsData.jf_intoPackageBuy)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(this, JFBookPackageBuyActivity.class);
             startActivity(intent);
-        } else{//举一反三
+        } else if (event.getBean().getParam().equals(THJsParamsData.jf_intoOtherMore)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
@@ -169,4 +180,12 @@ public class JFBookMenuActivity extends BaseActivity {
 
         }
     }
+
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
+        LogUtils.d("shareContent");
+    }
+
 }

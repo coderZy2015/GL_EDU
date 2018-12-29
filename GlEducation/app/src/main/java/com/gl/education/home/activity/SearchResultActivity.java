@@ -55,7 +55,6 @@ public class SearchResultActivity extends BaseActivity {
 
         String searchName = getIntent().getStringExtra("name");
 
-
         adapter = new SearchResultAdapter(SearchResultActivity.this, getSupportFragmentManager(), searchName);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);

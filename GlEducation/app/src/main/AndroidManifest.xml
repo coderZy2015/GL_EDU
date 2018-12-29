@@ -65,6 +65,15 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5b8df616b27b0a5659000020" />
+        <!-- <meta-data android:value="官网" android:name="UMENG_CHANNEL"/> -->
+        <!-- 自动升级类型  self、_360、baidu -->
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${CHANNEL_VALUE}" />
+
         <!-- 支付宝B -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
@@ -324,8 +333,24 @@
         <activity
             android:name=".person.activity.MyCompositionNextActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
-        <activity android:name=".person.activity.AboutActivity"
+        <activity
+            android:name=".person.activity.AboutActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize" />
+
+        <activity android:name=".person.activity.CouponActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
+
+        <activity
+            android:name=".person.activity.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
+
+        <activity android:name=".home.activity.OrderPayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
+
+        <activity android:name=".camera.activity.CameraCoverActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"/>
     </application>
 
 </manifest>

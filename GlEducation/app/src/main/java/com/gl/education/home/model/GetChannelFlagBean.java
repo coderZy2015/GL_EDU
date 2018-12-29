@@ -48,6 +48,15 @@ public class GetChannelFlagBean {
 
         private int cn_rw;
         private int cn_wspk;
+        private int cn_tsg;
+
+        public int getCn_tsg() {
+            return cn_tsg;
+        }
+
+        public void setCn_tsg(int cn_tsg) {
+            this.cn_tsg = cn_tsg;
+        }
 
         public int getCn_rw() {
             return cn_rw;

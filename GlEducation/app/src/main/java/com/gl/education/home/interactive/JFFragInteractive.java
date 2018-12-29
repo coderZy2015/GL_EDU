@@ -41,6 +41,7 @@ public class JFFragInteractive {
         event.setBean(bean);
         EventBus.getDefault().post(event);
     }
+
     //下拉刷新
     @JavascriptInterface
     public void dropDownRefresh(){

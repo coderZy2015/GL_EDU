@@ -29,7 +29,7 @@
     <color name="home_top">#268286</color>
     <color name="home_top2">#278287</color>
     <color name="home_tab_bg">#669bb3</color>
-    <color name="home_tab_select">#ffabbe</color>
+    <color name="home_tab_select">#ee0000</color>
     <color name="home_detail_top">#4badb1</color>
     <color name="black_transparent">#8000</color>
     <color name="mine_top">#4badb1</color>
@@ -59,6 +59,6 @@
 
     <!--TabLayout-->
     <color name="TabTextColor">#FFFFFF</color>
-    <color name="TabSelectColor">#FAFAFA</color>
+    <color name="TabSelectColor">#ee0000</color>
     <color name="TabIndicatorColor">#FFFFFF</color>
 </resources>

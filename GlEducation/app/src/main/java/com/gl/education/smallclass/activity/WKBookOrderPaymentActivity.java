@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.smallclass.event.JSWKBookBuySuccessFinishEvent;
@@ -105,7 +106,7 @@ public class WKBookOrderPaymentActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSWKBookOrderPaymentOpenWebViewEvent event) {
-        if (event.getBean().getTitle().equals("充值")){
+        if (event.getBean().getParam().equals(THJsParamsData.intoRecharge)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());

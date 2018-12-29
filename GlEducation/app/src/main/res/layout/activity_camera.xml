@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.gl.education.camera.activity.CameraActivity">
 
     <RelativeLayout
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/camera_top">
@@ -28,15 +28,37 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:gravity="center"
+            android:text="@string/camera_search_title"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            android:text="@string/camera_search_title"/>
+            android:textSize="20dp" />
+
+        <RelativeLayout
+            android:id="@+id/c_no_find"
+            android:layout_width="70dp"
+            android:layout_alignParentRight="true"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/no_find"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="未找到?"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:gravity="center"
+                />
+        </RelativeLayout>
+
 
     </RelativeLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
+        android:layout_below="@+id/top_bar"
         android:layout_width="wrap_content"
         android:layout_height="27dp"
         android:layout_gravity="center_horizontal"
@@ -55,6 +77,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/re_camera_photo"
+        android:layout_below="@+id/tabLayout"
         android:layout_height="150dp">
 
         <ImageView
@@ -67,11 +91,30 @@
 
     </RelativeLayout>
 
+    <!--<LinearLayout-->
+        <!--android:id="@+id/bottom_bar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="@color/white">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="分享"-->
+            <!--android:gravity="center"/>-->
+
+
+    <!--</LinearLayout>-->
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:layout_below="@+id/re_camera_photo"
+        android:layout_above="@+id/bottom_bar"
         android:scrollbars="none">
 
         <RelativeLayout
@@ -122,4 +165,5 @@
     </ScrollView>
 
 
-</LinearLayout>
+
+</RelativeLayout>

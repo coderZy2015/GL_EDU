@@ -62,21 +62,6 @@
             android:focusableInTouchMode="true"
             android:layout_weight="5">
 
-            <!--<EditText-->
-                <!--android:id="@+id/comment_content"-->
-                <!--android:visibility="gone"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:textColor="@color/white"-->
-                <!--android:textSize="11dp"-->
-                <!--android:paddingLeft="10dp"-->
-                <!--android:paddingRight="10dp"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:imeOptions="actionSend"-->
-                <!--android:hint="@string/recommend_hint"-->
-                <!--android:textColorHint="@color/white"-->
-                <!--android:background="@drawable/bottom_kuang"/>-->
             <TextView
                 android:id="@+id/send_comment"
                 android:layout_width="wrap_content"
@@ -92,6 +77,7 @@
                 android:textColorHint="@color/white"
                 android:background="@drawable/bottom_kuang"/>
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/bottom_pinglun"
             android:layout_width="0dp"
@@ -104,7 +90,23 @@
                 android:layout_height="22dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/bottom_pinglun"/>
+
+            <TextView
+                android:id="@+id/recommend_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="7dp"
+                android:paddingRight="1dp"
+                android:paddingLeft="1dp"
+                android:textColor="@color/white"
+                android:layout_marginTop="8dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="7dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:background="@drawable/red_corner"/>
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/bottom_dianzan"
             android:layout_width="0dp"
@@ -123,13 +125,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1000"
-                android:textSize="6dp"
+                android:textSize="7dp"
                 android:paddingRight="1dp"
                 android:paddingLeft="1dp"
                 android:textColor="@color/white"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="3dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
                 android:background="@drawable/red_corner"/>
         </RelativeLayout>
 
@@ -146,6 +149,7 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/bottom_shoucang"/>
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/bottom_share"
             android:layout_width="0dp"

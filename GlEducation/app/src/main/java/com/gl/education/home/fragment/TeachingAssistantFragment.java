@@ -6,10 +6,13 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
+import com.gl.education.app.UM_EVENT;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.event.JSJFDropDownEvent;
@@ -26,6 +29,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -98,15 +102,20 @@ public class TeachingAssistantFragment extends BaseFragment {
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
 
+        if (!AppCommonData.isClickJF){
+            AppCommonData.isClickJF = true;
+            MobclickAgent.onEvent(_mActivity, UM_EVENT.UM_click_channel_jf);
+        }
+
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
 
-        //url = "http://appstuweb.hebeijiaoyu.cn/#/wdjf";
+        //url = "http://192.168.199.37:8080/#/wdjf";
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
+                .closeIndicator()// 使用默认进度条
                 //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
@@ -114,6 +123,8 @@ public class TeachingAssistantFragment extends BaseFragment {
                 .ready()
                 .go(url+token);
 
+
+        LogUtils.d("教辅");
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
@@ -126,7 +137,7 @@ public class TeachingAssistantFragment extends BaseFragment {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 mAgentWeb.getWebCreator().getWebView().reload();    //刷新
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
                 isCanDropDown = false;
             }
         });
@@ -170,13 +181,13 @@ public class TeachingAssistantFragment extends BaseFragment {
     //跳转到我的书架和详情页面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookMenuEvent(JSJFFragmentOpenWebViewEvent event) {
-       if (event.getBean().getTitle().equals("我的书架")){
+       if (event.getBean().getParam().equals(THJsParamsData.jf_intoBookShelf)){
             Intent intent = new Intent();
             intent.putExtra("url", event.getBean().getUrl());
             intent.putExtra("title", event.getBean().getTitle());
             intent.setClass(getActivity(), JFBookShelfActivity.class);
             startActivity(intent);
-        }else{
+        }else if(event.getBean().getParam().equals(THJsParamsData.jf_intoBookMenu)){
            Intent intent = new Intent();
            intent.putExtra("url", event.getBean().getUrl());
            intent.putExtra("title", event.getBean().getTitle());

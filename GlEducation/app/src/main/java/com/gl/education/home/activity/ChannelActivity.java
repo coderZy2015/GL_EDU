@@ -37,7 +37,6 @@ public class ChannelActivity extends BaseActivity<ChannelView, ChannelPresenter>
     @BindView(R.id.channel_title)
     TextView channel_title;
 
-    public List<ChannelEntity> allChannelList = new ArrayList<>();
     public List<ChannelEntity> myChannelList = new ArrayList<>();
     public List<ChannelEntity> otherChannelList = new ArrayList<>();
     private ChannelAdapter adapter;

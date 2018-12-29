@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/home_detail_top">
+        android:background="@color/home_tab_bg">
 
         <RelativeLayout
             android:id="@+id/btn_back"
@@ -79,7 +79,6 @@
         android:id="@+id/btn_person_set"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_below="@+id/layout_line"
         android:paddingLeft="35dp"
         android:layout_marginTop="15dp">
 
@@ -119,15 +118,19 @@
         android:id="@+id/btn_person_about"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_below="@+id/layout_line"
         android:paddingLeft="35dp"
         android:layout_marginTop="15dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/recharge_record"/>
+        <RelativeLayout
+            android:layout_width="20dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/recharge_record"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/btn_grade_about"

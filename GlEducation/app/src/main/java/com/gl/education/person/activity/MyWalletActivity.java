@@ -12,9 +12,6 @@ import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.model.GetDbCountBean;
 import com.gl.education.home.utlis.ButtonUtils;
-import com.gl.education.person.activity.RechargeCenterActivity;
-import com.gl.education.person.activity.RechargeRecordActivity;
-import com.gl.education.person.activity.TransactionActivity;
 import com.gl.education.teachingassistant.event.JSJFBookRechargeOpenWebViewEvent;
 import com.gl.education.widget.RoundImageView;
 import com.lzy.okgo.model.Response;
@@ -48,6 +45,9 @@ public class MyWalletActivity extends BaseActivity {
 
     @BindView(R.id.btn_wallet_recharge)
     LinearLayout btn_wallet_recharge;//充值记录
+
+    @BindView(R.id.btn_wallet_coupon)
+    LinearLayout btn_wallet_coupon;//活动
 
     private Loading_view loading;
 
@@ -120,6 +120,17 @@ public class MyWalletActivity extends BaseActivity {
         intent.setClass(this, RechargeCenterActivity.class);
         startActivity(intent);
     }
+
+    @OnClick(R.id.btn_wallet_coupon)
+    public void intoYOU(){
+        if ( ButtonUtils.isFastDoubleClick(R.id.btn_wallet_coupon)){
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setClass(this, CouponActivity.class);
+        startActivity(intent);
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void paySuccess(JSJFBookRechargeOpenWebViewEvent event) {

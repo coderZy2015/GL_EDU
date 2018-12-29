@@ -1,13 +1,17 @@
 package com.gl.education.teachingassistant.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
+import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.teachingassistant.interactive.JFBookWKInteractive;
 import com.just.agentweb.AgentWeb;
 
 import butterknife.BindView;
@@ -23,6 +27,9 @@ public class JFBookWKActivity extends BaseActivity {
 
     @BindView(R.id.top_title)
     TextView top_title;
+
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
 
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
@@ -61,10 +68,11 @@ public class JFBookWKActivity extends BaseActivity {
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
-        //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
-        //mAgentWeb.clearWebCache();
-//        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFBookWKInteractive(mAgentWeb,
-//                this));
+        mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFBookWKInteractive(mAgentWeb,
+                this));
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -89,4 +97,9 @@ public class JFBookWKActivity extends BaseActivity {
         super.onBackPressedSupport();
     }
 
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
+    }
 }

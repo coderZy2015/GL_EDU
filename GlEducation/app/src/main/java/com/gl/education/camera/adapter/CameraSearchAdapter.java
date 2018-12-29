@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.gl.education.camera.activity.PhotographResultBean;
+import com.gl.education.camera.PhotographResultBean;
 import com.gl.education.camera.frag.ShowResultFragment;
 
 import java.util.ArrayList;

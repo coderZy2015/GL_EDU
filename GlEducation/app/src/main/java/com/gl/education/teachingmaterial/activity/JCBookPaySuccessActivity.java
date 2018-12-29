@@ -21,6 +21,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 支付成功
+ */
 public class JCBookPaySuccessActivity extends BaseActivity {
 
     @BindView(R.id.web_container)

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -58,7 +59,7 @@ public class SearchActivity extends BaseActivity {
     private LayoutInflater mInflater;
 
     private SearchHistoryAdapter adapter;
-    List<String> hisList = new ArrayList<>();
+    private List<String> hisList = new ArrayList<>();
     private int hisListNum = 0;
 
     private String searchStr = "";
@@ -148,9 +149,16 @@ public class SearchActivity extends BaseActivity {
     public void initHistory() {
         hisListNum = SPUtils.getInstance().getInt(AppConstant.SP_SEARCH_HISTORY_NUM, 0);
 
-        for (int i = 0; i < hisListNum; i++) {
-            hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
+        if (hisListNum >= 5){
+            for (int i = 0; i < hisListNum; i++) {
+                hisList.add(0, SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
+            }
+        }else {
+            for (int i = 0; i < hisListNum; i++) {
+                hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
+            }
         }
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //适配器参数：item布局、列表数据源
         adapter = new SearchHistoryAdapter(R.layout.item_search_history, hisList);
@@ -190,26 +198,28 @@ public class SearchActivity extends BaseActivity {
             String oldHis = hisList.get(i);
             if (oldHis.equals(searchStr)) {
                 repeat = true;
+                LogUtils.d("搜索词重复");
             }
         }
 
         if (!repeat){
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + hisListNum, searchStr);
-            hisListNum = hisListNum + 1;
-            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY_NUM, hisListNum);
-            hisList.add(SPUtils.getInstance().getString(searchStr));
-            adapter.notifyDataSetChanged();
 
-            if (hisListNum > 5) {
+            if (hisListNum >= 5) {
                 SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 0, searchStr);
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 1, hisList.get(1));
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 2, hisList.get(2));
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 3, hisList.get(3));
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 4, hisList.get(4));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 1, hisList.get(4));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 2, hisList.get(3));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 3, hisList.get(2));
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 4, hisList.get(1));
                 hisList.clear();
                 for (int i = 0; i < 5; i++) {
                     hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
                 }
+                adapter.notifyDataSetChanged();
+            }else{
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + hisListNum, searchStr);
+                hisListNum = hisListNum + 1;//1 2 3 4 5
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY_NUM, hisListNum);
+                hisList.add(SPUtils.getInstance().getString(searchStr));
                 adapter.notifyDataSetChanged();
             }
         }

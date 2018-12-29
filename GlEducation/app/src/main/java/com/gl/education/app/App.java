@@ -27,7 +27,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
-import com.we.wonderenglishsdk.WeApplication;
 import com.yatoooon.screenadaptation.ScreenAdapterTools;
 
 import java.util.LinkedList;
@@ -66,9 +65,7 @@ public class App extends Application {
         initScreenTools();
         initUM();
 
-        if (AppCommonData.isShowWeSpeak){
-            WeApplication.initialize(this);
-        }
+        //WeApplication.initialize(this);
 
         //Log总开关
         //LogUtils.getConfig().setLogSwitch(false);
@@ -86,9 +83,9 @@ public class App extends Application {
         loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY);
         //log颜色级别，决定了log在控制台显示的颜色
         loggingInterceptor.setColorLevel(Level.INFO);
-        //builder.addInterceptor(loggingInterceptor);
+        builder.addInterceptor(loggingInterceptor);
 
-                //builder.addInterceptor(new TokenInterceptor());
+        //builder.addInterceptor(new TokenInterceptor());
 
         //全局的读取超时时间
         builder.readTimeout(40000, TimeUnit.MILLISECONDS);
@@ -121,9 +118,9 @@ public class App extends Application {
          * 参数5:Push推送业务的secret
          */
 
-        UMConfigure.init(this,"5b8df616b27b0a5659000020"
-                ,getResources().getString(R.string.umeng_qudao),UMConfigure.DEVICE_TYPE_PHONE,"");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
-
+//        UMConfigure.init(this,"5b8df616b27b0a5659000020"
+//                ,getResources().getString(R.string.umeng_qudao),UMConfigure.DEVICE_TYPE_PHONE,"");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "");
         PlatformConfig.setWeixin("wxc3d63044c63e0b27", "9a7afa803a0da2903ba135c298d8bd93");
         //PlatformConfig.setQQZone("1106391961", "lSbEuDwBMLrub94f");
 
@@ -226,7 +223,8 @@ public class App extends Application {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
             @Override
             public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-                layout.setPrimaryColorsId(R.color.colorPrimary, android.R.color.white);//全局设置主题颜色
+                layout.setPrimaryColorsId(R.color.white, R.color.my_composition_text);//全局设置主题颜色
+
                 return new ClassicsHeader(context);//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
             }
         });

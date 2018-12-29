@@ -29,6 +29,7 @@ import com.gl.education.home.activity.SearchActivity;
 import com.gl.education.home.activity.WEShopActivity;
 import com.gl.education.home.adapter.FragPagerAdapter;
 import com.gl.education.home.base.BaseFragment;
+import com.gl.education.home.event.OpenJCChannelEvent;
 import com.gl.education.home.event.OpenJFChannelEvent;
 import com.gl.education.home.event.ReloadChannelEvent;
 import com.gl.education.home.event.RequestNetWorkAgainEvent;
@@ -41,7 +42,6 @@ import com.gl.education.home.view.HomePageView;
 import com.gl.education.login.LoginInfoActivity;
 import com.lzy.okgo.model.Response;
 import com.uuzuche.lib_zxing.view.Loading_view;
-import com.we.wonderenglishsdk.WeApplication;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -124,6 +124,8 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
         viewPager.setOffscreenPageLimit(3);
         mTab.setupWithViewPager(viewPager);
 
+        //MobclickAgent.onEvent(_mActivity, UM_EVENT.UM_click_channel_ctwh);
+
         String token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
 
         HomeAPI.tokenIdentifyUrl(token, new JsonCallback<TokenIdentifyBean>() {
@@ -147,8 +149,8 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
 //
 //            }
 //        });
-
-        mPresenter.checkVersion(getActivity());
+//
+//        mPresenter.checkVersion(getActivity());
     }
 
     //获取当前版本号
@@ -200,7 +202,6 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
         intent.putExtra("position",viewPager.getCurrentItem());
         intent.putExtra("title","");
         startActivityForResult(intent, 1);
-
     }
 
     @OnClick(R.id.btn_search)
@@ -219,20 +220,16 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
             return;
         }
 
-        if (AppCommonData.isShowWeSpeak){
-            WeApplication.startWonderEnglish(_mActivity, "");
-        }else{
-            if (!AppCommonData.isLogin){
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), LoginInfoActivity.class);
-                startActivity(intent);
-                return;
-            }
+        //WeApplication.startWonderEnglish(_mActivity, "");
+        if (!AppCommonData.isLogin){
             Intent intent = new Intent();
-            intent.setClass(getActivity(), WEShopActivity.class);
+            intent.setClass(getActivity(), LoginInfoActivity.class);
             startActivity(intent);
+            return;
         }
-
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), WEShopActivity.class);
+        startActivity(intent);
 
     }
 
@@ -249,6 +246,18 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
             @Override
             public void run() {
                 mTab.getTabAt(2).select();
+            }
+        }, 100);
+    }
+
+    //打开教材频道
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void openJC(OpenJCChannelEvent event) {
+
+        mTab.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTab.getTabAt(1).select();
             }
         }, 100);
     }

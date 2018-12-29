@@ -143,6 +143,11 @@ public class HomeAPI {
     //作文订单支付完成回调
     private static String AFTER_PAY_CALLBACK = BASE_URL + "iclient/clirw/afterPayCallback";
 
+    //拍照搜题鉴权接口
+    private static String GET_QUESACCESS_INFO = BASE_URL + "iclient/cliuser/getQuesAccessInfo";
+
+    //获取封面的isbn
+    private static String GET_COVER_ISBN = BASE_URL + "iclient/cliuser/getCoverISBN";
 
 
 
@@ -157,7 +162,6 @@ public class HomeAPI {
     private static String REMOVE_LIVE_CACHE = BASE_URL + "iclient/clilive/removeLiveCache";
     //记录某个活动的人次信息
     private static String ADD_COUNT_BY_ID = BASE_URL + "iclient/clilive/addCountByID";
-
 
 
     //获取当前版本号
@@ -404,11 +408,12 @@ public class HomeAPI {
      * @param <T>
      * cn_rw 指的作文与写作  'cn_rw' (作文与写作频道)=> 0(数字)
      */
-    public static <T> void setChannelFlag(int cn_rw, int cn_wspk, JsonCallback<T> callback) {
+    public static <T> void setChannelFlag(int cn_rw, int cn_wspk, int cn_tsg, JsonCallback<T> callback) {
 
         OkGo.<T>post(SET_CHANNEL_FLAG)
                 .params("cn_rw", cn_rw)
                 .params("cn_wspk", cn_wspk)
+                .params("cn_tsg", cn_tsg)
                 .execute(callback);
     }
 
@@ -514,11 +519,12 @@ public class HomeAPI {
      */
     public static <T> void getRecomHome(String channel_id, String pageNum, JsonCallback<T> callback) {
         //        'channel_id' =>'频道id',
-        //                'pageNum'=>'页码',
-        //                'pageSize'=>'每页显示数量',
+        //        'pageNum'=>'页码',
+        //        'pageSize'=>'每页显示数量',
         OkGo.<T>get(GET_RECOMHOME_URL)
                 .params("channel_id", channel_id)
                 .params("pageNum", pageNum)
+                .params("pageSize", 20)
                 .execute(callback);
     }
 
@@ -527,12 +533,13 @@ public class HomeAPI {
      *
      * @param callback
      */
-    public static <T> void getRecomHomeByUserTag(String pageNum, JsonCallback<T> callback) {
+    public static <T> void getRecomHomeByUserTag(String channel_id, String pageNum, JsonCallback<T> callback) {
         //                'pageNum'=>'页码',
         //                'pageSize'=>'每页显示数量',
         OkGo.<T>get(GET_RECOM_BY_USER_TAG_URL)
+                .params("channel_id", channel_id)
                 .params("pageNum", pageNum)
-                .params("pageSize", 15)
+                .params("pageSize", 20)
                 .execute(callback);
     }
 
@@ -619,6 +626,21 @@ public class HomeAPI {
                 .params("isFavor", isFavor)
                 .execute(callback);
     }
+
+
+    /**
+     * 浏览的某篇文章
+     *
+     * @param callback
+     */
+    public static <T> void setArticleVisitors(String channel_itemid, JsonCallback<T>
+            callback) {
+
+        OkGo.<T>post(GET_ARTICLE_VISITOR_URL)
+                .params("channel_itemid", channel_itemid)
+                .execute(callback);
+    }
+
 
 
 
@@ -915,8 +937,34 @@ public class HomeAPI {
                 .params("rw_orderid", rw_orderid)
                 .params("isPay", 1)
                 .execute(callback);
-
     }
+
+
+    /**
+     * 拍照搜题鉴权接口
+     * queid，catalogid，token
+     */
+    public static <T> void getQuesaccessInfo(int queid, String catalogid, String token, JsonCallback<T>
+            callback) {
+
+        OkGo.<T>post(GET_QUESACCESS_INFO)
+                .params("queid", queid)
+                .params("catalogid", catalogid)
+                .params("token", token)
+                .execute(callback);
+    }
+
+    /**
+     * 获取封面的isbn
+     */
+    public static <T> void getCoverISBN(String guid, JsonCallback<T>
+            callback) {
+
+        OkGo.<T>post(GET_COVER_ISBN)
+                .params("guid", guid)
+                .execute(callback);
+    }
+
 
 
     /**

@@ -1,20 +1,22 @@
 package com.gl.education.teachingmaterial.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
 import com.gl.education.helper.Convert;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
 import com.gl.education.home.model.JSLoginSuccess;
+import com.gl.education.login.LoginInfoActivity;
 import com.gl.education.teachingmaterial.event.JSJCBookContentLoginEvent;
 import com.gl.education.teachingmaterial.event.JSJCBookContentOpenWebViewEvent;
 import com.gl.education.teachingmaterial.interactive.JCBookContentInteractive;
-import com.gl.education.login.LoginInfoActivity;
 import com.just.agentweb.AgentWeb;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,6 +36,9 @@ public class JCBookContentActivity extends BaseActivity {
 
     @BindView(R.id.top_title)
     TextView top_title;
+
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
 
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
@@ -80,6 +85,9 @@ public class JCBookContentActivity extends BaseActivity {
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JCBookContentInteractive(mAgentWeb,
                 this));
 
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -87,6 +95,12 @@ public class JCBookContentActivity extends BaseActivity {
         super.onDestroy();
         // 注册订阅者
         EventBus.getDefault().unregister(this);
+    }
+
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
     }
 
     @OnClick(R.id.btn_back)
@@ -113,11 +127,11 @@ public class JCBookContentActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toBookDetailEvent(JSJCBookContentOpenWebViewEvent event) {
-//        Intent intent = new Intent();
-//        intent.putExtra("url", event.getBean().getUrl());
-//        intent.putExtra("title", event.getBean().getTitle());
-//        intent.setClass(this, JCBookContentActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent();
+        intent.putExtra("url", event.getBean().getUrl());
+        intent.putExtra("title", event.getBean().getTitle());
+        intent.setClass(this, JCBookOrderPaymentActivity.class);
+        startActivity(intent);
     }
 
     @Override

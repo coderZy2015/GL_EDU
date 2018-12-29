@@ -97,7 +97,7 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
         } else if (v.getId() == R.id.cover_camera) {
             selectId = 1;
             SearchCoverFragment searchCoverFragment = SearchCoverFragment.newInstance();
-            searchCoverFragment.setAnalyzeCallback(photographCallback);
+            searchCoverFragment.setAnalyzeCallback(coverCallback);
             transaction.replace(R.id.fl_zxing_container, searchCoverFragment);
 
             transaction.commit();
@@ -154,6 +154,7 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    //拍照搜题callback
     CodeUtils.PhotographCallback photographCallback = new CodeUtils.PhotographCallback(){
 
         @Override
@@ -189,6 +190,47 @@ public class CaptureActivity extends AppCompatActivity implements View.OnClickLi
             bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_CANCLE);
             bundle.putString(CodeUtils.RESULT_STRING, "");
             CaptureActivity.this.setResult(1001, resultIntent);
+            CaptureActivity.this.finish();
+        }
+    };
+
+
+    //拍封面 callback
+    CodeUtils.PhotographCallback coverCallback = new CodeUtils.PhotographCallback(){
+
+        @Override
+        public void onPotographSuccess(String path, String result) {
+
+            Intent resultIntent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
+            bundle.putString(CodeUtils.RESULT_STRING, result);
+            bundle.putString("path", path);
+            resultIntent.putExtras(bundle);
+            CaptureActivity.this.setResult(1002, resultIntent);
+            CaptureActivity.this.finish();
+        }
+
+        @Override
+        public void onPhotographFailed(String path) {
+
+            Intent resultIntent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_FAILED);
+            bundle.putString(CodeUtils.RESULT_STRING, "");
+            bundle.putString("path", path);
+            resultIntent.putExtras(bundle);
+            CaptureActivity.this.setResult(1002, resultIntent);
+            CaptureActivity.this.finish();
+        }
+
+        @Override
+        public void cancle() {
+            Intent resultIntent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_CANCLE);
+            bundle.putString(CodeUtils.RESULT_STRING, "");
+            CaptureActivity.this.setResult(1002, resultIntent);
             CaptureActivity.this.finish();
         }
     };

@@ -5,11 +5,13 @@ import android.support.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 
 import java.util.List;
 
 /**
  * Created by zy on 2018/7/27.
+ * 全部年级的adapter
  */
 
 public class ChannelGradeAdapter extends BaseQuickAdapter<ChannelAdapter.GradeData, BaseViewHolder>{
@@ -18,6 +20,7 @@ public class ChannelGradeAdapter extends BaseQuickAdapter<ChannelAdapter.GradeDa
 
     public ChannelGradeAdapter(int layoutResId, @Nullable List<ChannelAdapter.GradeData> data) {
         super(layoutResId, data);
+        selectPostion =  AppCommonData.userGrade -1;
     }
 
     @Override

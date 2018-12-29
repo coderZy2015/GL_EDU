@@ -30,6 +30,8 @@ public class AppConstant {
     //个人中心 - 我的微课
     public static final String TH_MY_WEIKE = "http://appstuweb.hebeijiaoyu.cn/#/tblist";
 
+    //拍封面
+    public static final String YY_WEB_CAMERA_COVER = YY_WEB_BASE_URL+"searchCoverpage.html";
     //扫ISBN访问地址
     public static final String ISBN_URL = "http://appapi.hebeijiaoyu.cn/index.php/jiaofu/isbnToJiaofu/isbn/";
     //扫码访问地址
@@ -99,7 +101,13 @@ public class AppConstant {
     public static final String YY_WEB_WSPK_ANNOUNCE = YY_WEB_BASE_URL+"wspk/WSPK_Announce.html";
 
 
+    //传统文化首页
+    public static final String YY_WEB_CTWH_MAIN = YY_WEB_BASE_URL+"tsg/TSG_Main.html";
 
+
+
+
+    //SP指本地存储
     public static final String SP_TOKEN = "token";  //存储的token
     public static final String SP_FIRST_ENTER = "firstEnter"; //第一次登陆
     public static final String SP_SEARCH_HISTORY = "searchHistory";  //搜索历史
@@ -110,6 +118,7 @@ public class AppConstant {
     //天恒
     public static final String callJs_login = "toLogin";  //告诉js登录token
     public static final String callJs_payInfo = "payStatus";  //传递支付结果
+    public static final String callJs_getShareData = "getShareData";  //获取分享数据
 
     //易游
     public static final String callJs_setNewsData = "setNewsData";  //告诉js推荐详情数据
@@ -130,6 +139,8 @@ public class AppConstant {
     public static final String callJs_setPayParam = "setPayParam";  //阅读与写作 告诉js支付数据
 
     public static final String callJs_setCommentData = "setCommentData";  //阅读与写作 个人中心
+
+    public static final String callJs_setCoverListData = "setCoverListData";  //拍封面的数据
 
 
     public static final String callJs_setCompositionData = "setCompositionData";  //阅读与写作 作文数据

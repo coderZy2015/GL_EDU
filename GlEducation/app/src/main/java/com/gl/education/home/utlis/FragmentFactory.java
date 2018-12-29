@@ -7,6 +7,7 @@ import com.gl.education.home.fragment.RecommendFragment;
 import com.gl.education.home.fragment.SmallClassFragment;
 import com.gl.education.home.fragment.TeachingAssistantFragment;
 import com.gl.education.home.fragment.TeachingMaterialFragment;
+import com.gl.education.home.fragment.TraditionalCultureFragment;
 import com.gl.education.home.model.ChannelEntity;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class FragmentFactory {
     public static final int FRAG_SMALL_CLASS = 4;    //微课
     public static final int FRAG_COMPOSITION = 5;    //阅读与写作
     public static final int FRAG_EVALUATION = 6;    //在线评课
+    public static final int FRAG_TRADITIONAL_CULTURE = 7;    //传统文化
 
 
     private static HashMap<Integer, BaseFragment> mBaseFragments = new HashMap<Integer, 
@@ -50,6 +52,9 @@ public class FragmentFactory {
                 break;
             case FRAG_EVALUATION:
                 baseFragment = ClassEvaluationFragment.newInstance(entity);//在线评课
+                break;
+            case FRAG_TRADITIONAL_CULTURE:
+                baseFragment = TraditionalCultureFragment.newInstance(entity);//传统文化
                 break;
         }
         return baseFragment;

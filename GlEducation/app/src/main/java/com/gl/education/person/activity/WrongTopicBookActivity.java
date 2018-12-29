@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
 import com.gl.education.home.base.BaseActivity;
@@ -76,8 +75,8 @@ public class WrongTopicBookActivity extends BaseActivity {
 
     @OnClick(R.id.btn_back)
     public void backPressed() {
-        onBackPressedSupport();
-        LogUtils.d("backPressed");
+        setResult(1);
+        finish();
     }
 
     @Override

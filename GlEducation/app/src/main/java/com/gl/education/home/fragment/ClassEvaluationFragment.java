@@ -8,8 +8,10 @@ import android.widget.LinearLayout;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
+import com.gl.education.app.UM_EVENT;
 import com.gl.education.evaluation.activity.WSPKLessonListActivity;
 import com.gl.education.evaluation.activity.WSPKLivingActivity;
 import com.gl.education.evaluation.event.JSGetAllActivityListEvent;
@@ -26,6 +28,7 @@ import com.gl.education.home.model.ChannelEntity;
 import com.just.agentweb.AgentWeb;
 import com.lzy.okgo.model.Response;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -112,6 +115,11 @@ public class ClassEvaluationFragment extends BaseFragment {
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
 
+        if (!AppCommonData.isClickZXPK){
+            AppCommonData.isClickZXPK = true;
+            MobclickAgent.onEvent(_mActivity, UM_EVENT.UM_click_channel_pk);
+        }
+
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token;
 
@@ -120,7 +128,7 @@ public class ClassEvaluationFragment extends BaseFragment {
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
+                .closeIndicator()// 使用默认进度条
                 //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调

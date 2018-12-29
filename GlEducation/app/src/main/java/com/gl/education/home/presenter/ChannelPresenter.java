@@ -32,7 +32,7 @@ public class ChannelPresenter extends BasePresenter<ChannelView> {
     public void getAllChannel(int _from) {
         from = _from;
         //请求全部频道列表
-        HomeAPI.getAllChannel("25", new JsonCallback<GetAllChannelBean>() {
+        HomeAPI.getAllChannel("302", new JsonCallback<GetAllChannelBean>() {
             @Override
             public void onSuccess(Response<GetAllChannelBean> response) {
                 if (response.body() == null) {
@@ -98,7 +98,7 @@ public class ChannelPresenter extends BasePresenter<ChannelView> {
     public void initData(){
         myChannelList.clear();
          for (int i=0; i<allChannelList.size(); i++){
-             if (allChannelList.get(i).getId() <= 6){
+             if (allChannelList.get(i).getId() <= 7){
                  myChannelList.add( allChannelList.get(i));
              }
           }

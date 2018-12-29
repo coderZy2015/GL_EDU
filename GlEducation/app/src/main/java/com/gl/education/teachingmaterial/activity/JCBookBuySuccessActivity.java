@@ -19,6 +19,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * 购买成功
+ */
 public class JCBookBuySuccessActivity extends BaseActivity {
 
     @BindView(R.id.web_container)

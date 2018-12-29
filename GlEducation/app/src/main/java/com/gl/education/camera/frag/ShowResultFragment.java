@@ -1,27 +1,50 @@
 package com.gl.education.camera.frag;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
+import com.gl.education.app.HomeAPI;
 import com.gl.education.camera.activity.CameraFinishExplainActivity;
-import com.gl.education.camera.activity.PhotographResultBean;
+import com.gl.education.camera.PhotographResultBean;
+import com.gl.education.helper.JsonCallback;
+import com.gl.education.home.activity.OrderPayActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.OpenCameraEvent;
+import com.gl.education.home.event.OpenJFChannelEvent;
+import com.gl.education.home.model.CameraIntoContentBean;
+import com.gl.education.home.model.GetDbCountBean;
 import com.gl.education.home.utlis.ButtonUtils;
 import com.gl.education.home.utlis.CustomViewPager;
 import com.gl.education.home.utlis.ImageLoader;
+import com.gl.education.home.utlis.OnePriceDialog;
+import com.gl.education.person.activity.RechargeCenterActivity;
+import com.gl.education.teachingassistant.activity.JFBookMenuActivity;
+import com.lzy.okgo.model.Response;
 import com.zzhoujay.richtext.RichText;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,7 +53,7 @@ import butterknife.OnClick;
  * Created by zy on 2018/6/29.
  */
 
-public class ShowResultFragment extends BaseFragment {
+public class ShowResultFragment extends BaseFragment implements OnePriceDialog.SelectListener{
 
     @BindView(R.id.ques_container)
     LinearLayout ques_container;
@@ -50,8 +73,15 @@ public class ShowResultFragment extends BaseFragment {
     @BindView(R.id.text_introduce)
     TextView text_introduce;
 
+    @BindView(R.id.fankui)
+    TextView fankui;
+
     PhotographResultBean.DataBean dataBean;
     private boolean isLast = false;
+
+    private OnePriceDialog onePriceDialog;
+
+    public CameraIntoContentBean cameraInfo;//存储对应题目的数据
 
     CustomViewPager vp;
     private int fragmentID = 0;
@@ -83,6 +113,21 @@ public class ShowResultFragment extends BaseFragment {
             setData();
     }
 
+    @Override
+    protected BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    protected int provideContentViewId() {
+        return R.layout.frag_show_result;
+    }
+
+    @Override
+    protected String setIdentifier() {
+        return null;
+    }
+
     public void setData() {
         //题目
         for (int i = 0; i < dataBean.getQues_body().size(); i++) {
@@ -108,7 +153,6 @@ public class ShowResultFragment extends BaseFragment {
 
         String vedio_num = dataBean.getVideo_num();
 
-
         if (StringUtils.isEmpty(vedio_num)) {
             text_introduce.setText("");
             btn_into_content.setVisibility(View.GONE);
@@ -119,33 +163,91 @@ public class ShowResultFragment extends BaseFragment {
 
     }
 
+    //进入精讲
     @OnClick(R.id.btn_into_content)
     public void intoJJ() {
         if (ButtonUtils.isFastDoubleClick(R.id.btn_into_content)) {
             return;
         }
+        String token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN, "");
+        HomeAPI.getQuesaccessInfo(dataBean.getQues_id(), dataBean.getCatalog_id(), token, new JsonCallback<CameraIntoContentBean>() {
+            @Override
+            public void onSuccess(Response<CameraIntoContentBean> response) {
+                boolean isBuy = response.body().getData().isIsbuy();
+                cameraInfo = response.body();
+                if (isBuy == false){
+                    if (onePriceDialog == null) {
+                        onePriceDialog = new OnePriceDialog(getActivity());
+                        onePriceDialog.setSelectListener(ShowResultFragment.this);
+                    }
+                    if (!onePriceDialog.isShowing()) {
+                        onePriceDialog.show();
+                    }
+                }else{
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), CameraFinishExplainActivity.class);
+                    intent.putExtra("qesid", "" + dataBean.getQues_id());
+                    intent.putExtra("catalogid", dataBean.getCatalog_id());
+                    startActivity(intent);
+                }
+            }
+        });
 
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), CameraFinishExplainActivity.class);
-        intent.putExtra("qesid", "" + dataBean.getQues_id());
-        intent.putExtra("catalogid", dataBean.getCatalog_id());
-        startActivity(intent);
+
     }
 
-    @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    @OnClick(R.id.fankui)
+    public void fankui(){
+        LayoutInflater inflater = LayoutInflater.from(_mActivity);
+        View layout = inflater.inflate(R.layout.dialog_no_find, null);
+
+        AlertDialog costDialog = new AlertDialog.Builder(_mActivity, R.style.dialog_no_find).create();
+        costDialog.setCancelable(false);
+        costDialog.show();
+
+        Window window = costDialog.getWindow();
+        window.setGravity(Gravity.CENTER); // 此处可以设置dialog显示的位置为居中
+        costDialog.setContentView(layout);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager windowManager = _mActivity.getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = display.getWidth() * 5 / 6; // 设置dialog宽度为屏幕的4/5
+        window.setAttributes(lp);
+
+        TextView btn_again = layout.findViewById(R.id.try_again);
+        TextView btn_go_jiaofu = layout.findViewById(R.id.go_jiaofu);
+        TextView btn_cancel = layout.findViewById(R.id.cancel);
+
+        btn_again.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                costDialog.dismiss();
+                OpenCameraEvent event = new OpenCameraEvent();
+                EventBus.getDefault().post(event);
+                _mActivity.finish();
+            }
+        });
+
+        btn_go_jiaofu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                costDialog.dismiss();
+                OpenJFChannelEvent event = new OpenJFChannelEvent();
+                EventBus.getDefault().post(event);
+                _mActivity.finish();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                costDialog.dismiss();
+            }
+        });
     }
 
-    @Override
-    protected int provideContentViewId() {
-        return R.layout.frag_show_result;
-    }
 
-    @Override
-    protected String setIdentifier() {
-        return null;
-    }
 
     public void addImg(LinearLayout container, String url) {
 
@@ -178,12 +280,60 @@ public class ShowResultFragment extends BaseFragment {
 
         //addView(View child)，默认往已有的view后面添加，后插入，不设置布局params,默认wrap_content
         container.addView(newImg);
+    }
 
-        //        //addView(View child, LayoutParams params)，往已有的view后面添加，后插入,并设置布局
-        //        contentLlayout.addView(newImg,params1);
-        //
-        //        //addView(View view,int index, LayoutParams params),在某个index处插入
-        //        contentLlayout.addView(newImg, 0, params1);
+    @Override
+    public void onePrice() {
+
+        HomeAPI.dbAmount(new JsonCallback<GetDbCountBean>() {
+            @Override
+            public void onSuccess(Response<GetDbCountBean> response) {
+
+                if (response.body().getResult() == 1000){
+                    double count = response.body().getData().getDbcount();
+                    LogUtils.d("count = "+count);
+                    if (count>= 1){//大于1  则进入支付界面
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), OrderPayActivity.class);
+                        intent.putExtra("price", "" + cameraInfo.getData().getOrderInfo().getPrice());
+                        intent.putExtra("guid", "" + cameraInfo.getData().getOrderInfo().getGuid());
+                        intent.putExtra("grade_id", "" + cameraInfo.getData().getOrderInfo().getGrade_id());
+                        intent.putExtra("count", "" + count);
+                        startActivityForResult(intent, 1000);
+                    }else{
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), RechargeCenterActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            }
+            @Override
+            public void onError(Response<GetDbCountBean> response) {
+                super.onError(response);
+            }
+        });
+    }
+
+    @Override
+    public void intoJF() {
+
+        Intent intent = new Intent();
+        intent.putExtra("url", cameraInfo.getData().getCatalogUrl());
+        intent.putExtra("title", "教辅目录");
+        intent.setClass(getActivity(), JFBookMenuActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1000){
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), CameraFinishExplainActivity.class);
+            intent.putExtra("qesid", "" + dataBean.getQues_id());
+            intent.putExtra("catalogid", dataBean.getCatalog_id());
+            startActivity(intent);
+        }
 
     }
 }

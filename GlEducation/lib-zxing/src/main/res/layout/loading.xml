@@ -7,6 +7,8 @@
     android:background="@drawable/shape_dialog_bg"
     android:orientation="vertical">
 
+    <!--android:background="@drawable/shape_dialog_bg"-->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,6 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="加载中..."
-        android:textColor="#9a9b98"
+        android:textColor="#ccffffff"
         android:textSize="12sp" />
 </LinearLayout>

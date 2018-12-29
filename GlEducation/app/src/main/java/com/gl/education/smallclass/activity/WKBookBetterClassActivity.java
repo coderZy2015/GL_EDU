@@ -1,15 +1,21 @@
 package com.gl.education.smallclass.activity;
 
 import android.content.Intent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gl.education.R;
+import com.gl.education.app.AppCommonData;
+import com.gl.education.app.AppConstant;
+import com.gl.education.app.THJsParamsData;
 import com.gl.education.home.base.BaseActivity;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.login.LoginInfoActivity;
 import com.gl.education.smallclass.event.JSWKBookBetterClassOpenWebViewEvent;
 import com.gl.education.smallclass.event.JSWKBookBuySuccessFinishEvent;
+import com.gl.education.smallclass.event.JSWKLoginEvent;
 import com.gl.education.smallclass.interactive.WKBookBetterClassInteractive;
 import com.just.agentweb.AgentWeb;
 
@@ -30,6 +36,9 @@ public class WKBookBetterClassActivity extends BaseActivity {
 
     @BindView(R.id.top_title)
     TextView top_title;
+
+    @BindView(R.id.content_share)
+    RelativeLayout content_share;
 
     protected AgentWeb mAgentWeb;
     public String bookTitle = "";
@@ -75,6 +84,10 @@ public class WKBookBetterClassActivity extends BaseActivity {
         //mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new WKBookBetterClassInteractive(mAgentWeb,
                 this));
+
+        if(AppCommonData.th_isShare == false){
+            content_share.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -101,15 +114,34 @@ public class WKBookBetterClassActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void openWebView(JSWKBookBetterClassOpenWebViewEvent event) {
+        if (event.getBean().getParam().equals(THJsParamsData.wk_intoOrderPayment)){
+            Intent intent = new Intent();
+            intent.putExtra("url", event.getBean().getUrl());
+            intent.putExtra("title", event.getBean().getTitle());
+            intent.setClass(this, WKBookOrderPaymentActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
+    @OnClick(R.id.content_share)
+    public void shareContent(){
+        mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                .callJs_getShareData, "");
+    }
+
+    //跳转到登录页面
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void toLogin(JSWKLoginEvent event) {
         Intent intent = new Intent();
-        intent.putExtra("url", event.getBean().getUrl());
-        intent.putExtra("title", event.getBean().getTitle());
-        intent.setClass(this, WKBookOrderPaymentActivity.class);
-        startActivity(intent);
+        intent.setClass(this, LoginInfoActivity.class);
+        startActivityForResult(intent, 100);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void payFinish(JSWKBookBuySuccessFinishEvent event) {
         mAgentWeb.getWebCreator().getWebView().reload();    //刷新
     }
+
+
 }

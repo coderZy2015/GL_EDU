@@ -1,6 +1,6 @@
 package com.gl.education.home.utlis;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +20,7 @@ import com.gl.education.R;
  * Created by zy on 2018/10/30.
  */
 
-public class CommentDialog extends AlertDialog implements View.OnClickListener {
+public class CommentDialog extends Dialog implements View.OnClickListener {
 
     public String sendStr;
     public EditText editText;
@@ -48,6 +48,7 @@ public class CommentDialog extends AlertDialog implements View.OnClickListener {
      * 加载视图
      */
     private void initView() {
+
         View rootView = View.inflate(getContext(), R.layout.dialog_comment, null);
         rootView.findViewById(R.id.comment_btn).setOnClickListener(this);
         editText = rootView.findViewById(R.id.comment_edit);
@@ -87,10 +88,14 @@ public class CommentDialog extends AlertDialog implements View.OnClickListener {
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         layoutParams.width = getPhoneSize().widthPixels ;
         layoutParams.y = 40;
+
+        getWindow().getDecorView().setPadding(0, 0, 0, 0);
+
         this.setCanceledOnTouchOutside(true);
         this.getWindow().setAttributes(layoutParams);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
+        //取消弹窗默认背景边框
+        this.getWindow().setBackgroundDrawable(null);
     }
 
     @Override

@@ -7,13 +7,13 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
+import com.gl.education.app.UM_EVENT;
 import com.gl.education.composition.activity.RAWCaseColumnActivity;
 import com.gl.education.composition.activity.RAWFullScoreColumnActivity;
 import com.gl.education.composition.activity.RAWHotColumnActivity;
@@ -45,6 +45,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.api.ScrollBoundaryDecider;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -132,6 +133,11 @@ public class CompositionFragment extends BaseFragment {
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
 
+        if (!AppCommonData.isClickZW){
+            AppCommonData.isClickZW = true;
+            MobclickAgent.onEvent(_mActivity, UM_EVENT.UM_click_channel_zw);
+        }
+
         token = SPUtils.getInstance().getString(AppConstant.SP_TOKEN);
         token = "?token="+token;
 
@@ -140,7 +146,7 @@ public class CompositionFragment extends BaseFragment {
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
+                .closeIndicator()// 使用默认进度条
                 //.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，
                 .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 //.setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
@@ -173,7 +179,6 @@ public class CompositionFragment extends BaseFragment {
                 pageNum++;
                 JSComGetTeacherNewsListData event = new JSComGetTeacherNewsListData();
                 EventBus.getDefault().post(event);
-                LogUtils.d("1111111111111111111111111");
                 isCanLoadMore = false;
             }
         });
@@ -222,7 +227,7 @@ public class CompositionFragment extends BaseFragment {
     //获取教师最新消息列表
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void requestListData(JSComGetTeacherNewsListData event) {
-        HomeAPI.getRecomHome("5", ""+pageNum, new JsonCallback<GetTeacherNewsListBean>() {
+        HomeAPI.getRecomHomeByUserTag("5", ""+pageNum, new JsonCallback<GetTeacherNewsListBean>() {
             @Override
             public void onSuccess(Response<GetTeacherNewsListBean> response) {
                 if (response.body().getResult() == 1000){

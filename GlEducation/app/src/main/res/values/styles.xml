@@ -6,6 +6,7 @@
         <!-- Customize your theme here. -->
 
     </style>
+
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -46,13 +47,20 @@
     <!--评论框Dialog-->
     <style name="Comment_Dialog" parent="@style/AppTheme">
         <item name="android:windowFrame">@android:color/transparent</item><!-- 边框 -->
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowNoTitle">true</item><!-- 无标题 -->
-        <item name="android:windowSoftInputMode">stateAlwaysVisible</item><!--显示软件盘-->
-        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.2</item>
+
     </style>
 
+    <style name="dialog_no_find" parent="@style/MyDialog">
+        <item name="android:backgroundDimAmount">0.2</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

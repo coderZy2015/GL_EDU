@@ -29,7 +29,7 @@ public class Loading_view extends ProgressDialog {
     private void init(Context context) {
         setCancelable(false);
         setCanceledOnTouchOutside(false);
-        setContentView(R.layout.loading);//loading的xml文件
+        setContentView(R.layout.loading); //loading的xml文件
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
