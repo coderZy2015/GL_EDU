@@ -97,7 +97,6 @@ public class TeachingAssistantFragment extends BaseFragment {
         url = channelEntity.getUrl();
     }
 
-
     @Override
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
@@ -112,6 +111,8 @@ public class TeachingAssistantFragment extends BaseFragment {
 
         //url = "http://192.168.199.37:8080/#/wdjf";
 
+        //url = "http://code.byepub.cn/abc.html";//H5调用相机测试
+
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))
                 //传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
@@ -122,12 +123,14 @@ public class TeachingAssistantFragment extends BaseFragment {
                 .createAgentWeb()//
                 .ready()
                 .go(url+token);
-
+                //.go(url);
 
         LogUtils.d("教辅");
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
+
+
         //mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new JFFragInteractive(mAgentWeb,
                 getActivity()));
@@ -166,8 +169,6 @@ public class TeachingAssistantFragment extends BaseFragment {
         // 注册订阅者
         EventBus.getDefault().unregister(this);
     }
-
-
 
     @Override
     public boolean onBackPressedSupport() {

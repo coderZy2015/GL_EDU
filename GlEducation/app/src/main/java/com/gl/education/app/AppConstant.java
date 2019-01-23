@@ -123,7 +123,8 @@ public class AppConstant {
     //易游
     public static final String callJs_setNewsData = "setNewsData";  //告诉js推荐详情数据
     public static final String callJs_loadData = "loadData";  //告诉js推荐首页数据
-    public static final String callJs_setCommentsData = "setCommentsData";  //告诉js推荐评论数据
+    public static final String callJs_setCommentsData = "setCommentsData";  //告诉js推荐评论页面里数据
+    public static final String callJs_setCommentListData = "setCommentListData";  //告诉js推荐页面里评论数据
     public static final String callJs_CollectionData = "loadData";  //告诉js推荐评论数据
     public static final String callJs_moreCommentsData = "setNewsRecommondData";  //告诉js五条相关数据
 

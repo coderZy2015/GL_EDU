@@ -8,8 +8,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         multiDexEnabled true
-        versionCode 13
-        versionName "1.1.2"
+        versionCode 15
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions "versionCode"
     }
@@ -51,7 +51,10 @@ android {
         }
     }
 
-
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 
 
@@ -62,53 +65,53 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:cardview-v7:26.1.0'
-    //compile 'com.lzy.net:okgo:3.0.4'
-    compile 'com.lzy.net:okrx2:2.0.2'
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.lzy.net:okgo:3.0.4'
+    implementation 'com.lzy.net:okrx2:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     //utils
     implementation 'com.blankj:utilcode:1.16.4'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     //图片
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
     //recyclerViewHelper
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
     //fragment
-    compile 'me.yokeyword:fragmentation:1.3.3'
+    implementation 'me.yokeyword:fragmentation:1.3.3'
     //EventBus
-    compile 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
     //html-textview
-    compile 'com.zzhoujay.richtext:richtext:3.0.7'
+    implementation 'com.zzhoujay.richtext:richtext:3.0.7'
     //轮播图
-    compile 'com.youth.banner:banner:1.4.10'
+    implementation 'com.youth.banner:banner:1.4.10'
     //webview
-    compile 'com.just.agentweb:agentweb:4.0.2'
+    implementation 'com.just.agentweb:agentweb:4.0.2'
     //compile 'cn.yipianfengye.android:zxing-library:2.2'
     implementation project(':lib-zxing')
     //支付宝
     implementation files('libs/alipaySdk-20180601.jar')
     //微信支付
-    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     //屏幕适配
     implementation 'me.yatoooon:screenadaptation:1.1.1'
     //圆形图片
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     //tabLayout
-    compile 'me.weyye.ColorTrackTabLayout:library:1.0.1'
+    implementation 'me.weyye.ColorTrackTabLayout:library:1.0.1'
     //适配器
     //compile 'com.github.hackware1993:MagicIndicator:1.5.0'
     //APP更新
     implementation 'com.azhon:appupdate:1.6.0'
     //html-textview
-    compile 'com.zzhoujay.richtext:richtext:3.0.7'
+    implementation 'com.zzhoujay.richtext:richtext:3.0.7'
     //下拉刷新
-    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
 
     //Android流式布局，支持单选、多选等，适合用于产品标签等。
-    compile 'com.hyman:flowlayout-lib:1.1.2'
+    implementation 'com.hyman:flowlayout-lib:1.1.2'
     //友盟相关sdk
     implementation files('libs/umeng-common-1.5.3.jar')
     implementation files('libs/umeng-share-core-6.9.3.jar')
@@ -119,14 +122,14 @@ dependencies {
     implementation files('libs/umeng-sharetool-6.9.3.jar')
     implementation files('libs/umeng-analytics-7.5.3.jar')
 
-    compile 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.5'
     //we speak
-//    api 'com.we:wespeak:1.0.1'
-//    api('com.github.bumptech.glide:okhttp3-integration:1.4.0') {
+//    implementation 'com.we:wespeak:1.0.1'
+//    implementation('com.github.bumptech.glide:okhttp3-integration:1.4.0') {
 //        exclude group: 'glide-parent'
 //    }
-//    api 'com.squareup.okhttp3:okhttp:3.8.1'
-//    api 'com.squareup.okio:okio:1.13.0'
+//    implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+//    implementation 'com.squareup.okio:okio:1.13.0'
 
 }
 //Gradle强制依赖

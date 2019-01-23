@@ -8,14 +8,15 @@ import java.util.List;
 
 public class GetArticleCommentBean {
 
+
     /**
      * result : 1000
      * message : 操作成功
-     * data : {"channel_itemid":1,"channel_itemType":0,"total_amount":2,"comments":[{"id":2,
-     * "item_id":1,"item_type":0,"content":"评论2","aid":"9aea87a0-866e-11e8-881d-7200073c8a50",
-     * "create_time":"1970-01-01 08:00:00","username":"helloly"},{"id":1,"item_id":1,
-     * "item_type":0,"content":"我是评论","aid":"9aea87a0-866e-11e8-881d-7200073c8a50",
-     * "create_time":"1970-01-01 08:00:00","username":"helloly"}]}
+     * data : {"channel_itemid":"2496","channel_itemType":"0","total_amount":1,
+     * "comments":[{"id":2822,"item_id":"2496","item_type":0,
+     * "content":"人事有代谢，往来成古今。这一句很熟悉，但原来不知道是哪首诗里的，学习了！",
+     * "aid":"2da443dd-e346-11e8-8028-6c92bf3ab703","create_time":"2019-01-11 06:58:19",
+     * "username":"体育老师","avatar":null,"create_time_intVal":1547161099}]}
      */
 
     private int result;
@@ -48,34 +49,33 @@ public class GetArticleCommentBean {
 
     public static class DataBean {
         /**
-         * channel_itemid : 1
+         * channel_itemid : 2496
          * channel_itemType : 0
-         * total_amount : 2
-         * comments : [{"id":2,"item_id":1,"item_type":0,"content":"评论2",
-         * "aid":"9aea87a0-866e-11e8-881d-7200073c8a50","create_time":"1970-01-01 08:00:00",
-         * "username":"helloly"},{"id":1,"item_id":1,"item_type":0,"content":"我是评论",
-         * "aid":"9aea87a0-866e-11e8-881d-7200073c8a50","create_time":"1970-01-01 08:00:00",
-         * "username":"helloly"}]
+         * total_amount : 1
+         * comments : [{"id":2822,"item_id":"2496","item_type":0,
+         * "content":"人事有代谢，往来成古今。这一句很熟悉，但原来不知道是哪首诗里的，学习了！",
+         * "aid":"2da443dd-e346-11e8-8028-6c92bf3ab703","create_time":"2019-01-11 06:58:19",
+         * "username":"体育老师","avatar":null,"create_time_intVal":1547161099}]
          */
 
-        private int channel_itemid;
-        private int channel_itemType;
+        private String channel_itemid;
+        private String channel_itemType;
         private int total_amount;
         private List<CommentsBean> comments;
 
-        public int getChannel_itemid() {
+        public String getChannel_itemid() {
             return channel_itemid;
         }
 
-        public void setChannel_itemid(int channel_itemid) {
+        public void setChannel_itemid(String channel_itemid) {
             this.channel_itemid = channel_itemid;
         }
 
-        public int getChannel_itemType() {
+        public String getChannel_itemType() {
             return channel_itemType;
         }
 
-        public void setChannel_itemType(int channel_itemType) {
+        public void setChannel_itemType(String channel_itemType) {
             this.channel_itemType = channel_itemType;
         }
 
@@ -97,22 +97,26 @@ public class GetArticleCommentBean {
 
         public static class CommentsBean {
             /**
-             * id : 2
-             * item_id : 1
+             * id : 2822
+             * item_id : 2496
              * item_type : 0
-             * content : 评论2
-             * aid : 9aea87a0-866e-11e8-881d-7200073c8a50
-             * create_time : 1970-01-01 08:00:00
-             * username : helloly
+             * content : 人事有代谢，往来成古今。这一句很熟悉，但原来不知道是哪首诗里的，学习了！
+             * aid : 2da443dd-e346-11e8-8028-6c92bf3ab703
+             * create_time : 2019-01-11 06:58:19
+             * username : 体育老师
+             * avatar : null
+             * create_time_intVal : 1547161099
              */
 
             private int id;
-            private int item_id;
+            private String item_id;
             private int item_type;
             private String content;
             private String aid;
             private String create_time;
             private String username;
+            private String avatar;
+            private int create_time_intVal;
 
             public int getId() {
                 return id;
@@ -122,11 +126,11 @@ public class GetArticleCommentBean {
                 this.id = id;
             }
 
-            public int getItem_id() {
+            public String getItem_id() {
                 return item_id;
             }
 
-            public void setItem_id(int item_id) {
+            public void setItem_id(String item_id) {
                 this.item_id = item_id;
             }
 
@@ -168,6 +172,22 @@ public class GetArticleCommentBean {
 
             public void setUsername(String username) {
                 this.username = username;
+            }
+
+            public String getAvatar() {
+                return avatar;
+            }
+
+            public void setAvatar(String avatar) {
+                this.avatar = avatar;
+            }
+
+            public int getCreate_time_intVal() {
+                return create_time_intVal;
+            }
+
+            public void setCreate_time_intVal(int create_time_intVal) {
+                this.create_time_intVal = create_time_intVal;
             }
         }
     }

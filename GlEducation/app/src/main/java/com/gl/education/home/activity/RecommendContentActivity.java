@@ -413,4 +413,7 @@ public class RecommendContentActivity extends BaseActivity {
         viewData = _bean;
     }
 
+    public void gotoComment(){
+        viewpager.setCurrentItem(1);  //初始化显示第一个页面
+    }
 }

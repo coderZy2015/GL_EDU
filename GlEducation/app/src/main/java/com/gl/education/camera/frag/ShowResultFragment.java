@@ -25,8 +25,8 @@ import com.blankj.utilcode.util.StringUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
-import com.gl.education.camera.activity.CameraFinishExplainActivity;
 import com.gl.education.camera.PhotographResultBean;
+import com.gl.education.camera.activity.CameraFinishExplainActivity;
 import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.activity.OrderPayActivity;
 import com.gl.education.home.base.BaseFragment;
@@ -36,7 +36,6 @@ import com.gl.education.home.event.OpenJFChannelEvent;
 import com.gl.education.home.model.CameraIntoContentBean;
 import com.gl.education.home.model.GetDbCountBean;
 import com.gl.education.home.utlis.ButtonUtils;
-import com.gl.education.home.utlis.CustomViewPager;
 import com.gl.education.home.utlis.ImageLoader;
 import com.gl.education.home.utlis.OnePriceDialog;
 import com.gl.education.person.activity.RechargeCenterActivity;
@@ -82,9 +81,6 @@ public class ShowResultFragment extends BaseFragment implements OnePriceDialog.S
     private OnePriceDialog onePriceDialog;
 
     public CameraIntoContentBean cameraInfo;//存储对应题目的数据
-
-    CustomViewPager vp;
-    private int fragmentID = 0;
 
 
     public static ShowResultFragment newInstance(PhotographResultBean.DataBean parentCategory) {

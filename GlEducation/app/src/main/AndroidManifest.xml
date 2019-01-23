@@ -101,7 +101,7 @@
         <!-- 微信E -->
 
         <activity
-            android:name=".home.activity.GuideActivity"
+            android:name="com.gl.education.home.activity.GuideActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

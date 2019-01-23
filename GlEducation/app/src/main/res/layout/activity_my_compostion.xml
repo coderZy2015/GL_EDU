@@ -32,7 +32,7 @@
             android:gravity="center"
             android:text="@string/mine_my_composition_title"
             android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
 
     </RelativeLayout>
 

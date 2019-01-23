@@ -6,4 +6,7 @@
     <dimen name="bottom_bar_text">14sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <!--顶部标题大小-->
+    <dimen name="dp_18">18dp</dimen>
+
 </resources>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.gl.education.camera.activity.CameraActivity">
 
     <RelativeLayout
@@ -14,7 +15,7 @@
 
         <RelativeLayout
             android:id="@+id/c_result_close"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -34,97 +35,222 @@
             android:gravity="center"
             android:text="@string/camera_search_title"
             android:textColor="@color/white"
-            android:textSize="20dp" />
-
-        <RelativeLayout
-            android:id="@+id/c_no_find"
-            android:layout_width="70dp"
-            android:layout_alignParentRight="true"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/no_find"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="未找到?"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:gravity="center"
-                />
-        </RelativeLayout>
-
+            android:textSize="18dp" />
 
     </RelativeLayout>
 
+    <!--间隔线-->
+    <LinearLayout
+        android:id="@+id/division_t"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/top_bar">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line1"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line2"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line3"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line4"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line5"/>
+
+    </LinearLayout>
+    
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
-        android:layout_below="@+id/top_bar"
+        android:layout_below="@+id/division_t"
         android:layout_width="wrap_content"
-        android:layout_height="27dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="26dp"
+        android:layout_centerHorizontal="true"
         app:tabMode="scrollable"
         app:tabGravity="center"
         app:tabPaddingStart="20dp"
         app:tabPaddingEnd="20dp"
         app:tabMaxWidth="200dp"
         app:tabMinWidth="50dp"
-        android:background="@color/transparent"
-        app:tabIndicatorColor="@color/transparent"
-        app:tabIndicatorHeight="2dp"
-        app:tabSelectedTextColor="@color/TabSelectColor"
-        app:tabTextAppearance="@style/TabLayoutTextStyle"
-        app:tabTextColor="@color/TabTextColor" />
+        android:background="@color/white"
+        app:tabIndicatorColor="@color/white" />
 
-    <RelativeLayout
+    <!--间隔线-->
+    <LinearLayout
+        android:id="@+id/division"
         android:layout_width="match_parent"
-        android:id="@+id/re_camera_photo"
-        android:layout_below="@+id/tabLayout"
-        android:layout_height="150dp">
+        android:layout_height="2dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/tabLayout">
 
         <ImageView
-            android:id="@+id/camera_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_margin="15dp"
-            android:scaleType="fitXY" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line1"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line2"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line3"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line4"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line5"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/bottom_bar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/white">-->
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white">
 
-        <!--<TextView-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="分享"-->
-            <!--android:gravity="center"/>-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text=""
+            android:gravity="center"/>
 
+        <RelativeLayout
+            android:id="@+id/c_no_find"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8">
 
-    <!--</LinearLayout>-->
+            <TextView
+                android:id="@+id/no_find"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="结果不对"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textSize="13dp"
+                android:textColor="#4badb1"
+                android:padding="5dp"
+                android:background="@drawable/blue_corner10_dis"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/try_again"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="再拍一题"
+                android:layout_centerInParent="true"
+                android:textSize="13dp"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:background="@drawable/blue_corner10_change"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--间隔线-->
+    <LinearLayout
+        android:id="@+id/division_b"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:orientation="vertical"
+        android:layout_above="@+id/bottom_bar">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_bottom_line1"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_bottom_line2"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_bottom_line3"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_bottom_line4"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_bottom_line5"/>
+
+    </LinearLayout>
+   
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:layout_below="@+id/re_camera_photo"
-        android:layout_above="@+id/bottom_bar"
+        android:layout_below="@+id/division"
+        android:layout_above="@+id/division_b"
         android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <!--拍摄图片-->
+            <RelativeLayout
+                android:id="@+id/re_camera_photo"
+                android:layout_width="match_parent"
+                android:layout_height="150dp">
+
+                <ImageView
+                    android:id="@+id/camera_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:scaleType="fitXY" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/layout_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/re_camera_photo"
                 android:visibility="gone">
 
                 <TextView
@@ -159,11 +285,10 @@
             <com.gl.education.home.utlis.MyViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_below="@+id/re_camera_photo"/>
 
         </RelativeLayout>
     </ScrollView>
-
-
 
 </RelativeLayout>

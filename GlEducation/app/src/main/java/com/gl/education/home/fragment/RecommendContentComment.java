@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
@@ -42,6 +43,9 @@ public class RecommendContentComment extends BaseFragment {
     private String channel_itemid = "";
 
     int type = 0;
+
+    private String iconUrl = "http://appweb.hebeijiaoyu.cn/img/icon.png ";
+    private String url_oss = "http://gl-appres.oss-cn-qingdao.aliyuncs.com/";
 
     @Override
     protected BasePresenter createPresenter() {
@@ -122,11 +126,23 @@ public class RecommendContentComment extends BaseFragment {
         if (type != AppCommonData.moreRecommendcontentID){
             return;
         }
-        HomeAPI.getArticleComment(event.getBean().getChannel_itemid(), "0", "0", "50", new JsonCallback<GetArticleCommentBean>() {
+        HomeAPI.getArticleComment(event.getBean().getChannel_itemid(), "0", "0", "100", new JsonCallback<GetArticleCommentBean>() {
 
             @Override
             public void onSuccess(Response<GetArticleCommentBean> response) {
                 GetArticleCommentBean bean = response.body();
+
+                if (bean.getData().getComments() != null){
+                    for (int i=0; i<bean.getData().getComments().size(); i++){
+
+                        if (StringUtils.isEmpty(bean.getData().getComments().get(i).getAvatar())){
+                            bean.getData().getComments().get(i).setAvatar(iconUrl);
+                        }else{
+                            String avstar =  bean.getData().getComments().get(i).getAvatar();
+                            bean.getData().getComments().get(i).setAvatar(url_oss + avstar);
+                        }
+                    }
+                }
 
                 String json = Convert.toJson(bean.getData());
 

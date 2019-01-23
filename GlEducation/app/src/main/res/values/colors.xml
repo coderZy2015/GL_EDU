@@ -23,6 +23,21 @@
     <color name="red_500">#ef4836</color>
     <color name="guide_go">#ef4836</color>
 
+
+    <color name="division_top_line1">#fcfcfc</color>
+    <color name="division_top_line2">#ebebeb</color>
+    <color name="division_top_line3">#fdfdfd</color>
+    <color name="division_top_line4">#ffffff</color>
+    <color name="division_top_line5">#f7f7f7</color>
+
+
+    <color name="division_bottom_line1">#e7e7e7</color>
+    <color name="division_bottom_line2">#f8f8f8</color>
+    <color name="division_bottom_line3">#ffffff</color>
+    <color name="division_bottom_line4">#ffffff</color>
+    <color name="division_bottom_line5">#f8f8f8</color>
+
+
     <color name="login_register">#7f7f7f</color>
     <color name="register_agreement">#4da9af</color>
     <color name="camera_top">#4bacb2</color>

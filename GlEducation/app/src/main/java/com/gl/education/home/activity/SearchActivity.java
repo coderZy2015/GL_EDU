@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gl.education.R;
 import com.gl.education.app.AppConstant;
 import com.gl.education.app.HomeAPI;
@@ -114,6 +113,7 @@ public class SearchActivity extends BaseActivity {
     public void initFlowTablayout() {
 
         mInflater = LayoutInflater.from(this);
+
         flowlayout.setAdapter(new TagAdapter<String>(mVals) {
             @Override
             public View getView(com.zhy.view.flowlayout.FlowLayout parent, int position, String s) {
@@ -149,28 +149,24 @@ public class SearchActivity extends BaseActivity {
     public void initHistory() {
         hisListNum = SPUtils.getInstance().getInt(AppConstant.SP_SEARCH_HISTORY_NUM, 0);
 
-        if (hisListNum >= 5){
-            for (int i = 0; i < hisListNum; i++) {
-                hisList.add(0, SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
-            }
-        }else {
-            for (int i = 0; i < hisListNum; i++) {
-                hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
-            }
+        for (int i = 0; i < hisListNum; i++) {
+            hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //适配器参数：item布局、列表数据源
-        adapter = new SearchHistoryAdapter(R.layout.item_search_history, hisList);
+        adapter = new SearchHistoryAdapter(recyclerView);
         recyclerView.setAdapter(adapter);
+        adapter.setData(hisList);
 
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        adapter.setItemListener(new SearchHistoryAdapter.onRecyclerItemClickerListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            public void onRecyclerItemClick(View view, String data, int position) {
                 searchStr = hisList.get(position);
                 searchText(searchStr);
             }
         });
+
     }
 
     @OnClick(R.id.btn_back)
@@ -202,26 +198,31 @@ public class SearchActivity extends BaseActivity {
             }
         }
 
-        if (!repeat){
-
-            if (hisListNum >= 5) {
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 0, searchStr);
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 1, hisList.get(4));
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 2, hisList.get(3));
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 3, hisList.get(2));
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + 4, hisList.get(1));
-                hisList.clear();
-                for (int i = 0; i < 5; i++) {
-                    hisList.add(SPUtils.getInstance().getString(AppConstant.SP_SEARCH_HISTORY + i));
-                }
-                adapter.notifyDataSetChanged();
-            }else{
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + hisListNum, searchStr);
-                hisListNum = hisListNum + 1;//1 2 3 4 5
-                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY_NUM, hisListNum);
-                hisList.add(SPUtils.getInstance().getString(searchStr));
-                adapter.notifyDataSetChanged();
+        if (hisListNum >= 5) {
+            if (repeat){
+                hisList.remove(searchStr);
+            }else {
+                hisList.remove(4);
             }
+            hisList.add(0, searchStr);
+
+            for (int i = 0; i < 5; i++) {
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + i, hisList.get(i));
+            }
+            adapter.setData(hisList);
+        }else{
+            if (repeat){
+                hisList.remove(searchStr);
+            }else{
+                hisListNum = hisListNum + 1;
+            }
+            SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY_NUM, hisListNum);
+
+            hisList.add(0, searchStr);
+            for (int i=0; i<hisListNum; i++){
+                SPUtils.getInstance().put(AppConstant.SP_SEARCH_HISTORY + i, hisList.get(i));
+            }
+            adapter.setData(hisList);
         }
 
         Intent intent = new Intent();

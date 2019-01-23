@@ -16,6 +16,45 @@
         android:textColor="@color/black"
         android:textSize="20dp"/>
 
+    <!--间隔线-->
+    <LinearLayout
+        android:id="@+id/division"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/tabLayout">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line1"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line2"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line3"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line4"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line5"/>
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ques_container"
         android:layout_width="match_parent"
@@ -33,6 +72,45 @@
         android:textColor="@color/black"
         android:textSize="20dp"
         android:text="@string/camera_search_ques_answer_txt"/>
+
+    <!--间隔线-->
+    <LinearLayout
+        android:id="@+id/division2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/tabLayout">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line1"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line2"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line3"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line4"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/division_top_line5"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/answer_text"
@@ -54,7 +132,7 @@
     
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="30dp">
 
         <TextView
             android:id="@+id/fankui"
@@ -62,12 +140,11 @@
             android:layout_height="wrap_content"
             android:text="  反馈  "
             android:padding="3dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/blue_corner_dis"
             android:textColor="@color/home_detail_top"
-            android:textSize="14dp"/>
+            android:textSize="13dp"/>
 
     </RelativeLayout>
 

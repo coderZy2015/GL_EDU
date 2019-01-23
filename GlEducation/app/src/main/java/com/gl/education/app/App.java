@@ -127,7 +127,6 @@ public class App extends Application {
         MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
 
-
     public String getDeviceId(){
         String deviceId = "";
 
@@ -170,8 +169,7 @@ public class App extends Application {
         super.onConfigurationChanged(newConfig);
         ScreenAdapterTools.getInstance().reset(this);
     }
-
-
+    
     /**
      * 重置屏幕密度
      */

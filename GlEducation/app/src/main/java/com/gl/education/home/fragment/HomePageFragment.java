@@ -139,6 +139,10 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
             }
         });
 
+        //检测是否更新版本
+        mPresenter.checkVersion(getActivity());
+
+
 //        //更新服务器上的版本
 //        HomeAPI.setCRTVersion(AppCommonData.versionCode, new JsonCallback<logoutBean>() {
 //            @Override
@@ -149,8 +153,7 @@ public class HomePageFragment extends BaseFragment<HomePageView, HomePagePresent
 //
 //            }
 //        });
-//
-//        mPresenter.checkVersion(getActivity());
+
     }
 
     //获取当前版本号

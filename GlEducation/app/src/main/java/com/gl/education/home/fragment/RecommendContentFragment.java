@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gl.education.R;
 import com.gl.education.app.AppCommonData;
 import com.gl.education.app.AppConstant;
@@ -15,11 +16,14 @@ import com.gl.education.helper.JsonCallback;
 import com.gl.education.home.activity.RecommendContentActivity;
 import com.gl.education.home.base.BaseFragment;
 import com.gl.education.home.base.BasePresenter;
+import com.gl.education.home.event.JSGotoCommentEvent;
 import com.gl.education.home.event.JSOpenOtherNewsViewEvent;
 import com.gl.education.home.event.JSRecommentContentGetDataEvent;
+import com.gl.education.home.event.JSRequestCommentListDataEvent;
 import com.gl.education.home.event.JSRequestNewsRecommondDataEvent;
 import com.gl.education.home.interactive.RecommendContentInteracitve;
 import com.gl.education.home.model.GetArticleBean;
+import com.gl.education.home.model.GetArticleCommentBean;
 import com.gl.education.home.model.RecommendContentLoadMoreBean;
 import com.just.agentweb.AgentWeb;
 import com.lzy.okgo.model.Response;
@@ -46,6 +50,10 @@ public class RecommendContentFragment extends BaseFragment {
     private String channel_itemid = "";
 
     int type = 0;
+
+    private String iconUrl = "http://appweb.hebeijiaoyu.cn/img/icon.png ";
+    private String url_oss = "http://gl-appres.oss-cn-qingdao.aliyuncs.com/";
+
 
     @Override
     protected BasePresenter createPresenter() {
@@ -145,7 +153,7 @@ public class RecommendContentFragment extends BaseFragment {
                 String json = Convert.toJson(bean.getData());
 
                 mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
-                        .callJs_setNewsData,  json);
+                        .callJs_setNewsData, json);
             }
         });
 
@@ -171,6 +179,50 @@ public class RecommendContentFragment extends BaseFragment {
         });
 
     }
+
+    //获取更多资讯内容
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void gotoComment(JSGotoCommentEvent event) {
+        if (type != AppCommonData.moreRecommendcontentID){
+            return;
+        }
+        ((RecommendContentActivity)_mActivity).gotoComment();
+    }
+
+
+    //获取更多资讯内容
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMoreWebData(JSRequestCommentListDataEvent event) {
+        if (type != AppCommonData.moreRecommendcontentID){
+            return;
+        }
+        HomeAPI.getArticleComment(event.getBean().getChannel_itemid(), "0", "0", "100", new JsonCallback<GetArticleCommentBean>() {
+
+            @Override
+            public void onSuccess(Response<GetArticleCommentBean> response) {
+                GetArticleCommentBean bean = response.body();
+
+                if (bean.getData().getComments() != null){
+                    for (int i=0; i<bean.getData().getComments().size(); i++){
+
+                        if (StringUtils.isEmpty(bean.getData().getComments().get(i).getAvatar())){
+                            bean.getData().getComments().get(i).setAvatar(iconUrl);
+                        }else{
+                            String avstar =  bean.getData().getComments().get(i).getAvatar();
+                            bean.getData().getComments().get(i).setAvatar(url_oss + avstar);
+                        }
+                    }
+                }
+
+                String json = Convert.toJson(bean.getData());
+
+                mAgentWeb.getJsAccessEntrace().quickCallJs(AppConstant
+                        .callJs_setCommentListData,  json);
+            }
+        });
+
+    }
+
 
     //打开其他资讯
     @Subscribe(threadMode = ThreadMode.MAIN)

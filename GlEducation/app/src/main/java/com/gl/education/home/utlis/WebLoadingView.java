@@ -16,7 +16,7 @@ public class WebLoadingView extends BaseIndicatorView {
 
     public WebLoadingView(Context context) {
         super(context);
-        View rootView = View.inflate(getContext(), R.layout.dialog_one_price, null);
+        View rootView = View.inflate(context, R.layout.dialog_no_find, null);
         addView(rootView);
     }
 

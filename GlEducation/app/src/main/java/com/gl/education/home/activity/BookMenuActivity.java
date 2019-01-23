@@ -103,7 +103,7 @@ public class BookMenuActivity extends BaseActivity {
 
         mAgentWeb.getWebCreator().getWebView().setHorizontalScrollBarEnabled(false); //水平不显示
         mAgentWeb.getWebCreator().getWebView().setVerticalScrollBarEnabled(false);   //垂直不显示
-        //mAgentWeb.getWebCreator().getWebView().reload();    //刷新
+        //mAgentWeb.getWebCreator().getWebView().reload();     //刷新
         mAgentWeb.clearWebCache();
         mAgentWeb.getJsInterfaceHolder().addJavaObject("android", new AndroidInteractive(mAgentWeb,
                 this, eventTAG, classType));

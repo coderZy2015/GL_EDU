@@ -80,6 +80,9 @@ public class CameraActivity extends BaseActivity {
     @BindView(R.id.c_no_find)
     RelativeLayout layout_no_find;
 
+    @BindView(R.id.try_again)
+    TextView try_again;
+
 
     private PhotographResultBean dataBean;
 
@@ -357,7 +360,13 @@ public class CameraActivity extends BaseActivity {
         OpenCameraEvent event = new OpenCameraEvent();
         EventBus.getDefault().post(event);
         finish();
+    }
 
+    @OnClick(R.id.try_again)
+    public void tryAgain(){
+        OpenCameraEvent event = new OpenCameraEvent();
+        EventBus.getDefault().post(event);
+        finish();
     }
 
 

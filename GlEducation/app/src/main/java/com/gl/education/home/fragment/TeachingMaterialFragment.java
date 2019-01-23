@@ -20,7 +20,6 @@ import com.gl.education.home.event.JSJCFragmentRefreshViewEvent;
 import com.gl.education.home.event.UpdateChannelDataEvent;
 import com.gl.education.home.interactive.JCFragmentInteractive;
 import com.gl.education.home.model.ChannelEntity;
-import com.gl.education.home.utlis.WebLoadingView;
 import com.gl.education.teachingmaterial.activity.JCBookMenuActivity;
 import com.gl.education.teachingmaterial.activity.JCBookShelfActivity;
 import com.just.agentweb.AgentWeb;
@@ -114,7 +113,6 @@ public class TeachingMaterialFragment extends BaseFragment{
         token = "?token="+token+"&grade="+ AppCommonData.userGrade;
 
         //url = "http://192.168.199.37:8080/#/wdjc";
-        WebLoadingView view = new WebLoadingView(_mActivity);
 
         mAgentWeb = AgentWeb.with(this)//传入Activity
                 .setAgentWebParent(web_container, new LinearLayout.LayoutParams(-1, -1))

@@ -50,6 +50,12 @@ public class SearchResultActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressedSupport() {
+        super.onBackPressedSupport();
+        finish();
+    }
+
+    @Override
     public void initView() {
         super.initView();
 
@@ -61,3 +67,5 @@ public class SearchResultActivity extends BaseActivity {
         mTab.setupWithViewPager(viewPager);
     }
 }
+
+
